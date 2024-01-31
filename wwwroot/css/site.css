@@ -1,0 +1,165 @@
+:root {
+  --border: 0.7px solid rgba(255, 255, 255, 0.1);
+  --bs-body-bg: #151515;
+  --bs-body-color: #eee;
+  --bs-body-color-rgb: 255,255,255;
+  --bs-body-color-opacity: 0.4;
+  --bs-input-bg: rgba(var(--bs-body-color-rgb), 0.05);
+  --bs-light: var(--bs-body-color);
+  --bs-text-secondary: rgba(var(--bs-body-color-rgb), var(--bs-body-color-opacity));
+  --bs-text-weight: 600;
+  --bs-text-size: 0.95rem;
+}
+
+.form-control {
+  background-color: var(--bs-input-bg) !important;
+  border-radius: 8px;
+  height: 36px !important;
+  padding: 0 14px;
+  color: var(--bs-light) !important;
+  border: 0 !important;
+}
+
+.border {
+  border: var(--border) !important;
+}
+
+.border-bottom {
+  border-bottom: var(--border) !important;
+}
+
+.text-secondary {
+  color: var(--bs-text-secondary) !important; 
+}
+
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 992px) {
+  .mw-primary {
+    max-width: 1080px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .w-sm-100 {
+    width: 100% !important;
+  }
+}
+
+.mw-primary-sm {
+  max-width: 600px !important;
+}
+
+.table th, .nav-link {
+  color: var(--bs-text-secondary) !important;
+  font-size: var(--bs-text-size) !important;
+  font-weight: normal;
+}
+
+.table td {
+  font-size: var(--bs-text-size) !important;
+  flex: 1;
+  vertical-align: middle;  
+  color: var(--bs-body-color);
+}
+
+.table tbody tr:hover {
+  cursor: pointer;
+  background-color: rgba(var(--bs-body-color-rgb), 0.05);
+}
+
+.table > :not(:last-child) > :last-child>*, .table {
+  border-bottom: var(--border);
+}
+
+.table tbody tr:last-child {
+  border-bottom-color: transparent;
+}
+
+.table .auto {
+  width: 1px;
+  white-space: nowrap;
+}
+
+.btn {
+  border-radius: 5px !important;
+  font-size: 0.85rem;
+  padding: 2px 10px;
+  color: var(--bs-body-color);
+  transition: none;
+}
+
+.btn:hover, .btn:focus {
+  color: var(--bs-text-secondary);
+  box-shadow: none;
+}
+
+.btn-sm{
+  font-size: 0.8rem;
+  padding: 1px 10px;
+}
+
+.dropdown-menu {
+  padding: 0;
+  background-color: var(--bs-body-bg);
+  border: var(--border);
+}
+
+.dropdown-divider {
+  margin: 0;
+  border-color: rgba(var(--bs-body-color-rgb), 0.1);
+}
+
+.dropdown-item {
+  cursor: pointer;
+  color: var(--bs-body-color);
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: rgba(var(--bs-body-color-rgb), 0.05);
+  color: var(--bs-body-color);
+
+}
+
+.navbar-nav .active{
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
+}
+
+
+.start > .input-group-text {
+  border-radius: 8px 0 0 8px  !important;
+}
+
+.end > .input-group-text {
+  border-radius: 0 8px 8px 0 !important;
+}
+
+.form-control::placeholder {
+  color: rgba(var(--bs-body-color-rgb), 0.08);
+  font-size: 0.85rem;
+}
+
+.input-group {
+  outline: 0;
+  display: flex;
+}
+
+.input-group-text {
+  margin: 0 !important;
+  background-color: var(--bs-input-bg) !important;
+  border: none !important;
+  outline: 0;
+  color: rgba(var(--bs-body-color-rgb), 0.1) !important;
+  border-radius: 8px 0 0 8px  !important;
+}

@@ -1,0 +1,56 @@
+@model IEnumerable<Product>
+
+@Html.Partial("_NavbarMenu")
+<div class="container mw-primary">
+    <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+        <h3>Products</h3>
+        @if (ViewBag.userId != null)
+        {
+            <div>
+                <a class="btn btn-primary" href="@Url.Action("Request","Product")">Request Product</a>
+                <a class="btn btn-primary" href="@Url.Action("Upload","Product")">Upload File</a>
+            </div>
+        }
+    </div>
+
+    <div class="border rounded rounded-5" style="width: 100%;">
+        <table class="table table-hover m-0">
+            <thead>
+                <tr>
+                    <th class="auto px-3">Name</th>
+                    <th></th>
+                    <th class="auto text-end px-3">SKU</th>
+
+                    <th class="auto text-end px-3">Weight</th>
+                    <th class="auto text-end px-3">Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td class="auto ps-3 pe-5">
+                            <div class="d-flex flex-row align-items-center gap-3">
+                                <img class="border rounded-circle" style="height: 30px; width: 30px" />
+                                @product.name
+                            </div>
+                        </td>
+                        <td>
+                            <span class="border rounded-pill badge">@product.color.ToUpper()</span>
+                            <span class="border rounded-pill badge badge-pill">@product.size.ToUpper()</span>
+                        </td>
+                        <td class="auto text-end px-3">@product.sku</td>
+
+                        <td class="auto text-end px-3">@product.weight KG</td>
+                        <td class="auto text-end px-3">@product.price</td>
+                        <td class="auto text-center px-3">
+                            <button class="btn btn-primary btn-sm box-shadow shadow-sm">add</button>
+                        </td>
+                    </tr>
+                }
+            
+            </tbody>
+        </table>
+    </div>
+</div>

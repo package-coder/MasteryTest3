@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@Html.Partial("_NavbarBack")
+<div class="container mw-primary">
+
+    <h3 class="mb-4 mt-5">Request Product</h3>
+
+    <form class="w-sm-100" style="width: 40%;" action="">
+        <table class="w-100 mb-5">
+            <tr>
+                <td class="text-secondary">Name</td>
+                <td class="auto">
+                    <input class="form-control" type="text" name="name">
+                </td>
+            </tr>
+            <tr>
+                <td class="text-secondary">Quantity</td>
+                <td class="auto">
+                    <div class="input-group end">
+                        <input class="form-control" type="text" name="weight" />
+                        <div class="input-group-text">1 is default</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-secondary">Weight</td>
+                <td class="auto">
+                    <div class="input-group end">
+                        <input class="form-control" type="text" name="weight" />
+                        <div class="input-group-text">kg</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit" class="btn btn-primary" href="@Url.Action("Request","Product")">Submit</button>
+    </form>
+</div>
