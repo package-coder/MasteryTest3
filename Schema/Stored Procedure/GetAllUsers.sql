@@ -1,0 +1,6 @@
+CREATE PROCEDURE GetAllUsers
+AS BEGIN
+	SELECT *
+	FROM 
+		AppUser
+END

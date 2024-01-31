@@ -1,0 +1,6 @@
+CREATE PROCEDURE GetCategories
+AS BEGIN
+	SELECT *
+	FROM
+		Category
+END
