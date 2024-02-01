@@ -1,10 +1,18 @@
+@using MasteryTest3.Models
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    int? userId = HttpContextAccessor.HttpContext?.Session.GetInt32("userId");
+}
+
 @model IEnumerable<Product>
 
 @Html.Partial("_NavbarMenu")
 <div class="container mw-primary">
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
         <h3>Products</h3>
-        @if (ViewBag.userId != null)
+        @if (userId != null)
         {
             <div>
                 <a class="btn btn-primary" href="@Url.Action("Request","Product")">Request Product</a>
@@ -45,7 +53,7 @@
                         <td class="auto text-end px-3">@product.weight KG</td>
                         <td class="auto text-end px-3">@product.price</td>
                         <td class="auto text-center px-3">
-                            <button class="btn btn-primary btn-sm box-shadow shadow-sm">add</button>
+                            <button class="btn btn-primary btn-sm box-shadow shadow-sm" onclick="AddProduct(@product.Id)">add</button>
                         </td>
                     </tr>
                 }

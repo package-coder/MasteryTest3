@@ -163,3 +163,7 @@ html {
   color: rgba(var(--bs-body-color-rgb), 0.1) !important;
   border-radius: 8px 0 0 8px  !important;
 }
+
+#swal2-title, #swal2-html-container {
+    color: #FFFF;
+}

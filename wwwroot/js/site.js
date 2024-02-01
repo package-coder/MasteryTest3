@@ -1,4 +1,30 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function AddProduct(Id) {
+    $.ajax({
+        type: "POST",
+        url: `/Product/AddItem/${Id}`,
+        contentType: false,
+        dataType: false,
+        processData: false,
+        success: () => {
+            Swal.fire({
+                title: "Product has been added!",
+                text: "Item added to cart",
+                icon: "success",
+                background: '#151515',
+                showCancelButton: false,
+                allowOutsideClick: false
+            });
 
-// Write your JavaScript code.
+        },
+        error: () => {
+            Swal.fire({
+                title: "Something went wrong!",
+                text: "Your item has not been added",
+                icon: "error",
+                background: '#151515',
+                showCancelButton: false,
+                allowOutsideClick: false
+            });
+        }
+    });
+}

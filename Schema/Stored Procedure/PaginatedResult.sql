@@ -4,18 +4,19 @@ CREATE PROCEDURE GetPaginatedResult(
 )
 AS BEGIN
 	SELECT
-		p.Id,
-		p.name,
-		p.color,
-		p.size
+		id,
+		name,
+		sku,
+		[weight],
+		price,
+		size,
+		color
 	FROM
-		Product p
-	LEFT JOIN
-		Category c ON p.categoryId = c.Id
+		Product
 	WHERE
-		discontinued != 0 AND dateDeleted = NULL
+		discontinued = 0 AND dateDeleted = NULL
 	ORDER BY
-		p.name
+		name
 	OFFSET @offset ROWS
 	FETCH NEXT @next ROWS ONLY
 END

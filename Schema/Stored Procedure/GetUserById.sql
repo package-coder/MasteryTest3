@@ -1,14 +1,10 @@
-CREATE PROCEDURE GetOrderItems (
-	@Id INT
+CREATE PROCEDURE GetUserById (
+	@userId INT
 )
 AS BEGIN
-	SELECT
-		name,
-		quantity,
-		UOM,
-		remark
+	SELECT *
 	FROM
-		OrderItem
+		AppUser
 	WHERE
-		Id = @Id
+		Id = @userId
 END

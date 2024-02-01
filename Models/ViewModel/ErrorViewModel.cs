@@ -1,4 +1,4 @@
-namespace MasteryTest3.Models
+namespace MasteryTest3.Models.ViewModel
 {
     public class ErrorViewModel
     {

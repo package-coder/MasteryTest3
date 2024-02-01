@@ -1,6 +1,8 @@
 using System.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Repositories;
+using MasteryTest3.ViewComponents;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,22 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
 builder.Services.AddTransient<IDbConnection>(e => new SqlConnection(connectionString));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<HeaderViewComponent>();
+builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(1800);
+    options.Cookie.Name = ".MasteryTest.Session";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -28,6 +46,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

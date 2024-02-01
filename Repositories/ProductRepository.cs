@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
 
     public IEnumerable<Product> GetAllProducts()
     {
-        return _connection.Query<Product>("sp_get_products", commandType: CommandType.StoredProcedure);
+        return _connection.Query<Product>("NonPaginatedResult");
     }
 
     public Product? GetProductById<T>(T id)
@@ -37,11 +37,11 @@ public class ProductRepository : IProductRepository
             {
                 product.name,
                 product.description,
-                product.urlPhoto,
+                product.photo,
                 product.sku,
                 product.size,
                 product.color,
-                product.categoryId,
+                categoryId = product.category.Id,
                 product.weight,
                 product.price
             },
@@ -58,11 +58,11 @@ public class ProductRepository : IProductRepository
                 id,
                 product.name,
                 product.description,
-                product.urlPhoto,
+                product.photo,
                 product.sku,
                 product.size,
                 product.color,
-                product.categoryId,
+                categoryId = product.category.Id,
                 product.weight,
                 product.price
             },

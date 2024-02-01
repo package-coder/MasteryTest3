@@ -1,0 +1,28 @@
+﻿@using MasteryTest3.Models.ViewModel;
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    string? userName = HttpContextAccessor.HttpContext?.Session.GetString("userName");
+}
+<nav class="border-bottom navbar navbar-light border-bottom">
+    <div class="container mw-primary">
+        <a class="navbar-brand text-light fs-5" asp-area="" asp-controller="Home" asp-action="Index">MasteryTest</a>
+        <div class="btn-group">
+            <button class="btn rounded-pill border dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown">
+                @userName
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                @foreach (var user in Model)
+                {
+                    <li class="dropdown-item">
+                        <a href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</nav>
