@@ -11,7 +11,7 @@
   --bs-text-size: 0.95rem;
 }
 
-.form-control {
+.form-control, .form-select {
   background-color: var(--bs-input-bg) !important;
   border-radius: 8px;
   height: 36px !important;
@@ -20,8 +20,13 @@
   border: 0 !important;
 }
 
+    .form-select option {
+        background-color: #31304D;
+        color: var(--bs-light) !important;
+    }
+
 .border {
-  border: var(--border) !important;
+   border: var(--border) !important;
 }
 
 .border-bottom {
@@ -166,4 +171,13 @@ html {
 
 #swal2-title, #swal2-html-container {
     color: #FFFF;
+}
+
+.dropdown-item > a {
+    text-decoration: none;
+    color: #FFFF;
+}
+
+.dropdown-item:hover > a {
+    color: var(--bs-text-secondary);
 }

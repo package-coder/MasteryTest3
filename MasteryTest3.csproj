@@ -11,4 +11,8 @@
     <PackageReference Include="microsoft.data.sqlclient" Version="5.1.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

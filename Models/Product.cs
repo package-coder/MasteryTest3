@@ -10,6 +10,7 @@
         public string size { get; set; }
         public string color { get; set; }
         public Category category { get; set; }
+        public UOM uom { get; set; }
         public decimal weight { get; set; }
         public decimal price { get; set; }
         public DateTime? dateAdded { get; set; }

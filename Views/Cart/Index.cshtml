@@ -1,0 +1,28 @@
+﻿@Html.Partial("_NavbarMenu")
+@model IEnumerable<OrderItem>
+
+<div class="container mw-primary">
+    <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+        <h3>Cart</h3>
+    </div>
+    <div class="container">
+        @foreach(var cartItem in Model)
+        {
+            <div class="border rounded rounded-5 mb-2" style="width: 600px; height: 115px">
+                <div class="d-flex">
+                    <div class="cart-photo p-2">
+                        <img height="100px" width="100px" src=@(cartItem.product != null ? cartItem.product.photo : "/img/placeholder.svg") />
+                    </div>
+                    <div class="p-2 cart-content w-100 h-100">
+                        <div class="cart-item-details ms-3">
+                            <h5>@cartItem.name</h5>
+                        </div>
+                        <div class="text-end p-2">
+                            <button class="btn btn-sm btn-danger" onclick="RemoveCartItem(@cartItem.Id)">REMOVE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

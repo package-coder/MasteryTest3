@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Dapper;
-using Microsoft.Identity.Client;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 
@@ -17,7 +16,13 @@ public class ProductRepository : IProductRepository
 
     public IEnumerable<Product> GetAllProducts()
     {
-        return _connection.Query<Product>("NonPaginatedResult");
+        return _connection.Query<Product, UOM, Product>(
+            "NonPaginatedResult",
+            (product, uom)=>{
+                product.uom = uom;
+                return product;
+            },
+            splitOn:"Id");
     }
 
     public Product? GetProductById<T>(T id)

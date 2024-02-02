@@ -1,7 +1,14 @@
-﻿function AddProduct(Id) {
+﻿function AddOrderItem(productId, uomId) {
+    var formData = new FormData();
+
+    formData.append("product.Id", productId);
+    formData.append("uom.Id", uomId);
+    formData.append("quantity", 1);
+
     $.ajax({
         type: "POST",
-        url: `/Product/AddItem/${Id}`,
+        url: `/Order/AddOrderItem`,
+        data: formData,
         contentType: false,
         dataType: false,
         processData: false,
@@ -24,6 +31,40 @@
                 background: '#151515',
                 showCancelButton: false,
                 allowOutsideClick: false
+            });
+        }
+    });
+}
+
+function RemoveCartItem(Id) {
+    Swal.fire({
+        title: "Proceed?",
+        text: "Do you wish to remove this item from your cart?",
+        icon: "warning",
+        background: "#151515",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: `/Cart/RemoveCartItem/${Id}`,
+                contentType: false,
+                dataType: false,
+                processData: false,
+                success: ()=>{
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Item has been removed from your cart",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+
+                        }
+                    });
+                }
             });
         }
     });

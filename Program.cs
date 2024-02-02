@@ -15,9 +15,12 @@ builder.Services.AddTransient<IDbConnection>(e => new SqlConnection(connectionSt
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-builder.Services.AddScoped<HeaderViewComponent>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IUOMRepository, UOMRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
+//ViewComponents
+builder.Services.AddScoped<HeaderViewComponent>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();

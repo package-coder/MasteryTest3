@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
@@ -9,26 +10,29 @@ namespace MasteryTest3.Controllers
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class ProductController : Controller
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IUOMRepository _uomRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IUOMRepository uomRepository, IOrderRepository orderRepository)
         {
-            _productRepository = productRepository;
+            _uomRepository = uomRepository;
+            _orderRepository = orderRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Request()
         {
-            var products = _productRepository.GetAllProducts();
-            return View(products);
+            var uom = await _uomRepository.GetAllUOM();
+            return View(uom);
         }
 
-        public IActionResult AddItem(int Id) {
-            return StatusCode(200);
-        }
+        [HttpPost]
+        public async Task<IActionResult> Request(OrderItem item) {
+            if (await _orderRepository.AddOrderItem(item) != 0) {
+                return StatusCode(200);
+            }
 
-        public IActionResult Request()
-        {
-            return View();
+            return StatusCode(403);
+           
         }
 
         public IActionResult Upload()

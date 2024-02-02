@@ -2,40 +2,102 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+@model IEnumerable<UOM>
 
 @Html.Partial("_NavbarBack")
+
 <div class="container mw-primary">
 
     <h3 class="mb-4 mt-5">Request Product</h3>
 
-    <form class="w-sm-100" style="width: 40%;" action="">
+    <form id="request-form" class="w-sm-100" style="width: 40%;">
         <table class="w-100 mb-5">
-            <tr>
+            <tr class="mb-2">
                 <td class="text-secondary">Name</td>
                 <td class="auto">
-                    <input class="form-control" type="text" name="name">
+                    <input class="form-control" type="text" name="name" id="name">
                 </td>
             </tr>
-            <tr>
+            <tr class="mb-2">
                 <td class="text-secondary">Quantity</td>
                 <td class="auto">
                     <div class="input-group end">
-                        <input class="form-control" type="text" name="quantity" />
+                        <input type="number" class="form-control" type="text" name="quantity" id="quantity" step="0.01"/>
                         <div class="input-group-text">1 is default</div>
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td class="text-secondary">Weight</td>
+            <tr class="mb-2">
+                <td class="text-secondary">UOM</td>
                 <td class="auto">
                     <div class="input-group end">
-                        <input class="form-control" type="text" name="weight" />
-                        <div class="input-group-text">kg</div>
+                        <select class="form-select" type="text" name="uomId" id="uomId">
+                            <option value="" selected disabled>choose</option>
+                            @foreach(var uom in Model)
+                            {
+                                <option value="@uom.Id">@uom.name.ToUpper()</option>
+                            }                   
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr class="mb-2">
+                <td class="text-secondary">Remarks</td>
+                <td class="auto">
+                    <div class="input-group end">
+                        <input class="form-control" type="text" name="remark" id="remark"/>
                     </div>
                 </td>
             </tr>
         </table>
 
-        <button type="submit" class="btn btn-primary" href="@Url.Action("Request","Product")">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+<script>
+    $("#request-form").submit((e) => {
+        e.preventDefault();
+
+        var formData = new FormData();
+        formData.append("product.id", 0);
+        formData.append("name", $("#name").val());
+        formData.append("quantity", $("#quantity").val());
+        formData.append("remark", $("#remark").val());
+        formData.append("uom.Id", $("#uomId").val())
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Request","Product")",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: false,
+            success: ()=>{
+                Swal.fire({
+                    title: "Product has been added!",
+                    text: "Item added to cart",
+                    icon: "success",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                }).then((result)=>{
+                    if (result.isConfirmed) { 
+                        window.location.reload();
+                    }
+                });
+            },
+            error: ()=>{
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: "Your item has not been added",
+                    icon: "error",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                });
+            }
+        });
+    });
+
+</script>
