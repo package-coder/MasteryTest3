@@ -181,3 +181,12 @@ html {
 .dropdown-item:hover > a {
     color: var(--bs-text-secondary);
 }
+
+label.error {
+    font-size: 12px;
+    color: #FF0000;
+}
+
+.required {
+    color: #FF0000
+}

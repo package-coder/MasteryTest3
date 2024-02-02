@@ -13,30 +13,29 @@
     <form id="request-form" class="w-sm-100" style="width: 40%;">
         <table class="w-100 mb-5">
             <tr class="mb-2">
-                <td class="text-secondary">Name</td>
+                <td class="text-secondary">Name<span class="required">*</span></td>
                 <td class="auto">
-                    <input class="form-control" type="text" name="name" id="name">
+                    <input class="form-control" type="text" name="name" id="name"/>
                 </td>
             </tr>
             <tr class="mb-2">
-                <td class="text-secondary">Quantity</td>
+                <td class="text-secondary">Quantity<span class="required">*</span></td>
                 <td class="auto">
-                    <div class="input-group end">
-                        <input type="number" class="form-control" type="text" name="quantity" id="quantity" step="0.01"/>
-                        <div class="input-group-text">1 is default</div>
+                    <div class="form-group end">
+                        <input type="number" class="form-control" name="quantity" id="quantity" step="0.01" />
                     </div>
                 </td>
             </tr>
             <tr class="mb-2">
-                <td class="text-secondary">UOM</td>
+                <td class="text-secondary">UOM<span class="required">*</span></td>
                 <td class="auto">
-                    <div class="input-group end">
+                    <div class="form-group">
                         <select class="form-select" type="text" name="uomId" id="uomId">
                             <option value="" selected disabled>choose</option>
-                            @foreach(var uom in Model)
+                            @foreach (var uom in Model)
                             {
                                 <option value="@uom.Id">@uom.name.ToUpper()</option>
-                            }                   
+                            }
                         </select>
                     </div>
                 </td>
@@ -44,8 +43,8 @@
             <tr class="mb-2">
                 <td class="text-secondary">Remarks</td>
                 <td class="auto">
-                    <div class="input-group end">
-                        <input class="form-control" type="text" name="remark" id="remark"/>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="remark" id="remark" />
                     </div>
                 </td>
             </tr>
@@ -59,45 +58,49 @@
     $("#request-form").submit((e) => {
         e.preventDefault();
 
-        var formData = new FormData();
-        formData.append("product.id", 0);
-        formData.append("name", $("#name").val());
-        formData.append("quantity", $("#quantity").val());
-        formData.append("remark", $("#remark").val());
-        formData.append("uom.Id", $("#uomId").val())
+        ValidateRequestForm()
 
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("Request","Product")",
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: false,
-            success: ()=>{
-                Swal.fire({
-                    title: "Product has been added!",
-                    text: "Item added to cart",
-                    icon: "success",
-                    background: '#151515',
-                    showCancelButton: false,
-                    allowOutsideClick: false
-                }).then((result)=>{
-                    if (result.isConfirmed) { 
-                        window.location.reload();
-                    }
-                });
-            },
-            error: ()=>{
-                Swal.fire({
-                    title: "Something went wrong!",
-                    text: "Your item has not been added",
-                    icon: "error",
-                    background: '#151515',
-                    showCancelButton: false,
-                    allowOutsideClick: false
-                });
-            }
-        });
+        if ($("#request-form").valid()) { 
+            var formData = new FormData();
+            formData.append("product.id", 0);
+            formData.append("name", $("#name").val());
+            formData.append("quantity", $("#quantity").val());
+            formData.append("remark", $("#remark").val());
+            formData.append("uom.Id", $("#uomId").val())
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Request", "Product")",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: false,
+                success: () => {
+                    Swal.fire({
+                        title: "Product has been added!",
+                        text: "Item added to cart",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                },
+                error: () => {
+                    Swal.fire({
+                        title: "Something went wrong!",
+                        text: "Your item has not been added",
+                        icon: "error",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
     });
 
 </script>
