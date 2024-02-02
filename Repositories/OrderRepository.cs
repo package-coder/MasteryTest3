@@ -29,5 +29,10 @@ namespace MasteryTest3.Repositories
                     uomId = item.uom.Id,
                 });
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrders(int? clientId)
+        {
+            return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId});
+        }
     }
 }

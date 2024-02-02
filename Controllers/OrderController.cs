@@ -10,13 +10,17 @@ namespace MasteryTest3.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly ISessionRepository _sessionRepository;
 
-        public OrderController(IOrderRepository orderRepository) {
+        public OrderController(IOrderRepository orderRepository, ISessionRepository sessionRepository) {
             _orderRepository = orderRepository;
+            _sessionRepository = sessionRepository;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int? Id = _sessionRepository.GetInt("userId");
+            var orders = await _orderRepository.GetAllOrders(Id);
+            return View(orders);
         }
 
         [HttpPost]
@@ -29,7 +33,6 @@ namespace MasteryTest3.Controllers
             return StatusCode(403);
             
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
