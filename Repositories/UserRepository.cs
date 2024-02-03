@@ -21,7 +21,7 @@ namespace MasteryTest3.Repositories
 
         public async Task<User> GetUserById(int Id)
         {
-            return await _connection.QuerySingleAsync<User>("GetUserById", new {Id});
+            return await _connection.QuerySingleAsync<User>("GetUserById", new { userId = Id});
         }
     }
 }

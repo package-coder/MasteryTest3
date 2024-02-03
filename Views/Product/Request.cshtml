@@ -12,40 +12,38 @@
 
     <form id="request-form" class="w-sm-100" style="width: 40%;">
         <table class="w-100 mb-5">
-            <tr class="mb-2">
-                <td class="text-secondary">Name<span class="required">*</span></td>
+            <tr>
+                <td class="text-secondary">Name <span class="required">*</span></td>
                 <td class="auto">
                     <input class="form-control" type="text" name="name" id="name"/>
                 </td>
             </tr>
-            <tr class="mb-2">
-                <td class="text-secondary">Quantity<span class="required">*</span></td>
+            <tr>
+                <td class="text-secondary">Quantity <span class="required">*</span></td>
                 <td class="auto">
                     <div class="form-group end">
                         <input type="number" class="form-control" name="quantity" id="quantity" step="0.01" />
                     </div>
                 </td>
             </tr>
-            <tr class="mb-2">
-                <td class="text-secondary">UOM<span class="required">*</span></td>
+            <tr>
+                <td class="text-secondary">Unit <span class="required">*</span></td>
                 <td class="auto">
                     <div class="form-group">
                         <select class="form-select" type="text" name="uomId" id="uomId">
                             <option value="" selected disabled>choose</option>
                             @foreach (var uom in Model)
                             {
-                                <option value="@uom.Id">@uom.name.ToUpper()</option>
+                                <option value="@uom.Id" class="bg-dark text-secondary">@uom.name (@uom.unit.ToUpper())</option>
                             }
                         </select>
                     </div>
                 </td>
             </tr>
-            <tr class="mb-2">
-                <td class="text-secondary">Remarks</td>
-                <td class="auto">
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="remark" id="remark" />
-                    </div>
+            <tr>
+                <td class="text-secondary" style="vertical-align: baseline">Remarks</td>
+                <td class="auto" style="height: 80px; vertical-align: baseline">
+                    <textarea class="form-control" style="height: 100% !important;" name="remark" id="remark" rows="3"></textarea>
                 </td>
             </tr>
         </table>

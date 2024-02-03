@@ -16,8 +16,8 @@
             <ul class="dropdown-menu dropdown-menu-end">
                 @foreach (var user in Model)
                 {
-                    <li class="dropdown-item">
-                        <a href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
+                    <li>
+                        <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
                     </li>
                     <li class="dropdown-divider"></li>
                 }

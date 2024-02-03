@@ -15,7 +15,7 @@
 @Html.Partial("_NavbarMenu")
 <div class="container mw-primary">
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
-        <h3>BROWSE PRODUCTS</h3>
+        <h3>Browse Products</h3>
         @if (userId != null)
         {
             <div>
@@ -50,13 +50,15 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="border rounded-pill badge">@product.color.ToUpper()</span>
-                                <span class="border rounded-pill badge badge-pill">@product.size.ToUpper()</span>
+                                <span class="border rounded-pill badge text-secondary">@product.color.ToUpper()</span>
+                                <span class="border rounded-pill badge badge-pill text-secondary">
+                                    @(product.size == "S" ? "SMALL" : product.size == "M" ? "MEDIUM" : "LARGE")
+                                </span>
                             </td>
                             <td class="auto text-end px-3">@product.sku</td>
                             <td class="auto text-end px-3">@product.price</td>
                             <td class="auto text-center px-3">
-                                <button class="btn btn-primary btn-sm box-shadow shadow-sm" onclick="AddOrderItem(@product.Id,@product.uom.Id)">add</button>
+                                <button class="btn btn-primary btn-sm box-shadow shadow-sm" onclick="AddOrderItem(@product.Id,@product.uom.Id)">Add</button>
                             </td>
                         </tr>
                     }
