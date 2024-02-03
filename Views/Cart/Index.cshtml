@@ -8,21 +8,30 @@
     <div class="container">
         @foreach(var cartItem in Model)
         {
-            <div class="border rounded rounded-5 mb-2" style="width: 600px; height: 115px">
+            <div class="border rounded rounded-5 mb-2" style="width: 600px; height: max-content">
                 <div class="d-flex">
                     <div class="cart-photo p-2">
                         <img height="100px" width="100px" src=@(cartItem.product != null ? cartItem.product.photo : "/img/placeholder.svg") />
                     </div>
-                    <div class="p-2 cart-content w-100 h-100">
-                        <div class="cart-item-details ms-3">
-                            <h5>@cartItem.name</h5>
+                    <div class="p-2 cart-content w-100">
+                        <div class="cart-details ms-1">
+                            <div class="product-title">
+                                <h5>@cartItem.name</h5>
+                            </div>
+                            <div class="row ms-3">
+                                <span>QUANTITY: @cartItem.quantity @cartItem.uom.unit.ToUpper()</span>
+                            </div>
                         </div>
                         <div class="text-end p-2">
+                            <a class="btn btn-sm btn-secondary" asp-controller="Cart" asp-action="Update" asp-route-id="@cartItem.Id">MODIFY</a>
                             <button class="btn btn-sm btn-danger" onclick="RemoveCartItem(@cartItem.Id)">REMOVE</button>
                         </div>
                     </div>
                 </div>
             </div>
         }
+        <div>
+            <button class="btn btn-primary">PLACE ORDER</button>
+        </div>
     </div>
 </div>

@@ -31,7 +31,6 @@ namespace MasteryTest3.Controllers
             }
 
             return StatusCode(403);
-            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

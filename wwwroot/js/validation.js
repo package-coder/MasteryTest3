@@ -1,5 +1,5 @@
 ﻿function ValidateRequestForm() {
-    $("#request-form").validate({
+    $("#order-form").validate({
         rules: {
             name: "required",
             quantity: {

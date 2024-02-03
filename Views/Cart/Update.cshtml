@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+@using MasteryTest3.Models.ViewModel
+@model UpdateItemViewModel
+
+@Html.Partial("_NavbarBack")
+
+<div class="container mw-primary">
+
+    <h3 class="mb-4 mt-5">Request Product</h3>
+
+    <form id="order-form" class="w-sm-100" style="width: 40%;">
+        <table class="w-100 mb-5">
+            <tr class="mb-2">
+                <td class="text-secondary">Name<span class="required">*</span></td>
+                <td class="auto">
+                    <input class="form-control" type="text" name="name" id="name" value="@Model.orderItem.name"/>
+                </td>
+            </tr>
+            <tr class="mb-2">
+                <td class="text-secondary">Quantity<span class="required">*</span></td>
+                <td class="auto">
+                    <div class="form-group end">
+                        <input type="number" class="form-control" name="quantity" id="quantity" step="0.01" value="@Model.orderItem.quantity"/>
+                    </div>
+                </td>
+            </tr>
+            <tr class="mb-2">
+                <td class="text-secondary">UOM<span class="required">*</span></td>
+                <td class="auto">
+                    <div class="form-group">
+                        <select class="form-select" name="uom.Id" asp-for="orderItem.uom.Id">
+                            <option value="" selected disabled>choose</option>
+                            @foreach (var uom in Model.uomList)
+                            {
+                                <option value="@uom.Id">@uom.name.ToUpper()</option>
+                            }
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr class="mb-2">
+                <td class="text-secondary">Remarks</td>
+                <td class="auto">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="remark" id="remark" value="@Model.orderItem.remark" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit" class="btn btn-primary">UPDATE</button>
+    </form>
+</div>
+
+<script>
+    $("#order-form").submit((e) => {
+        e.preventDefault();
+
+        ValidateRequestForm()
+
+        if ($("#order-form").valid()) {
+            var formData = new FormData();
+            formData.append("Id", @Model.orderItem.Id);
+            formData.append("name", $("#name").val());
+            formData.append("quantity", $("#quantity").val());
+            formData.append("remark", $("#remark").val());
+            formData.append("uom.Id", $("#orderItem_uom_Id").val())
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Update", "Cart")",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: false,
+                success: () => {
+                    Swal.fire({
+                        title: "Item has been updated!",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                },
+                error: () => {
+                    Swal.fire({
+                        title: "Something went wrong!",
+                        icon: "error",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
+    });
+
+</script>

@@ -34,5 +34,30 @@ namespace MasteryTest3.Repositories
         {
             return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId});
         }
+
+        public async Task<OrderItem> GetOrderItem(int Id) {
+            var result = await _connection.QueryAsync<OrderItem, UOM, OrderItem>(
+                "GetOrderItemById",
+                (orderItem, uom) => {
+                    orderItem.uom = uom;
+                    return orderItem;
+                },
+                new { Id }, splitOn: "Id");
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<int> UpdateOrderItem(OrderItem orderItem)
+        {
+            return await _connection.ExecuteAsync(
+                "UpdateOrderItem",
+                new {
+                    orderItem.Id,
+                    orderItem.name,
+                    orderItem.remark,
+                    orderItem.quantity,
+                    uomId = orderItem.uom.Id,
+                });
+        }
     }
 }
