@@ -203,3 +203,9 @@ label.error {
 .required {
     color: #FF0000
 }
+
+.alert-dark {
+  border: var(--border) !important;
+  background-color: transparent !important;
+color: var(--bs-text-secondary) !important;
+}

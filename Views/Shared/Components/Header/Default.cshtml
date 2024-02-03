@@ -1,6 +1,7 @@
 ﻿@using MasteryTest3.Models.ViewModel;
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<User>;
 
 @{
     string? userName = HttpContextAccessor.HttpContext?.Session.GetString("userName");
@@ -11,7 +12,7 @@
         <div class="btn-group">
             <button class="btn rounded-pill border dropdown-toggle" type="button"
                     data-bs-toggle="dropdown">
-                @userName
+                🟢  @userName
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 @foreach (var user in Model)

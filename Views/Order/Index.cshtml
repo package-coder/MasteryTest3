@@ -1,12 +1,12 @@
 @using MasteryTest3.Models
 @using Microsoft.AspNetCore.Http
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IHttpContextAccessor httpContextAccessor
 
 @{
-    int? userId = HttpContextAccessor.HttpContext?.Session.GetInt32("userId");
+    var userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
 }
 @model IEnumerable<Order>
-@Html.Partial("_NavbarMenu")
+@await Html.PartialAsync("_NavbarMenu")
 
 <div class="container mw-primary">
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
@@ -53,8 +53,16 @@
                     }
                 </tbody>
             </table>
+            @if(!Model.Any()) {
+                <div class="p-5 text-secondary text-center">
+                    No data for this table yet
+                </div>
+            }
         </div>
-    
+    } else {
+        <div class="alert alert-dark" role="alert">
+            Select user first!
+        </div>
     }
    
 </div>

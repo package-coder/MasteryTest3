@@ -5,33 +5,51 @@
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
         <h3>Cart</h3>
     </div>
-    <div class="container">
-        @foreach(var cartItem in Model)
-        {
-            <div class="border rounded rounded-5 mb-2" style="width: 600px; height: max-content">
-                <div class="d-flex">
-                    <div class="cart-photo p-2">
-                        <img height="100px" width="100px" src=@(cartItem.product != null ? cartItem.product.photo : "/img/placeholder.svg") />
-                    </div>
-                    <div class="p-2 cart-content w-100">
-                        <div class="cart-details ms-1">
-                            <div class="product-title">
-                                <h5>@cartItem.name</h5>
-                            </div>
-                            <div class="row ms-3">
-                                <span>QUANTITY: @cartItem.quantity @cartItem.uom.unit.ToUpper()</span>
-                            </div>
-                        </div>
-                        <div class="text-end p-2">
-                            <a class="btn btn-sm btn-secondary" asp-controller="Cart" asp-action="Update" asp-route-id="@cartItem.Id">MODIFY</a>
-                            <button class="btn btn-sm btn-danger" onclick="RemoveCartItem(@cartItem.Id)">REMOVE</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-        <div>
-            <button class="btn btn-primary">PLACE ORDER</button>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-dark" role="alert">
+            Your cart is empty. Try adding one!
         </div>
+    }
+    <div class="d-flex gap-4">
+        <div class="flex-fill align-self-start w-75">
+            <div class="border rounded rounded-5" style="height: 100px;">
+                
+            </div>
+            <button class="btn btn-primary mt-5">Place Order</button>
+        </div>
+        <div class="flex-fill w-100">
+            @foreach (var cartItem in Model)
+                {
+                    <div class="border rounded rounded-5 mb-2 overflow-hidden" style="height: max-content">
+                        <div class="d-flex">
+                            <div class="cart-photo">
+                                <img height="100px" width="100px" src=@(cartItem.product != null ? cartItem.product.photo :
+                                "/img/placeholder.svg") />
+                            </div>
+                            <div class="p-3 cart-content w-100 d-flex">
+                                <div class="cart-details flex-fill">
+                                    <h6>@cartItem.name</h6>
+                                    <div class="text-secondary" style="font-size: 0.85rem">Quantity: @cartItem.quantity @cartItem.uom.unit.ToUpper()</div>
+                                    <div class="text-secondary" style="font-size: 0.85rem">Price: @cartItem.product.price</div>
+                                </div>
+                                <div class="align-self-end">
+                                    <div >
+                                      <button type="button" class="btn border btn-sm" >-</button>
+                                      <button type="button" class="btn border btn-sm" >+</button>
+                                      <button type="button" class="btn border btn-sm" onclick="RemoveCartItem(@cartItem.Id)">Remove</button>
+                                    </div>
+                                </div>
+                                @* <div class="text-end"> *@
+                                @*     <a class="btn btn-sm btn-secondary" asp-controller="Cart" asp-action="Update" *@
+                                @*         asp-route-id="@cartItem.Id">MODIFY</a> *@
+                                @*     <button class="btn btn-sm btn-danger" onclick="RemoveCartItem(@cartItem.Id)">REMOVE</button> *@
+                                @* </div> *@
+                            </div>
+                        </div>
+                    </div>
+                }
+        </div>
+        
     </div>
 </div>
