@@ -1,0 +1,28 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Initial Migration" type="DatabaseScript" editBeforeRun="true">
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/AddOrderItem.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/DeleteOrder.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/DeleteOrderItem.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/DeleteProductById.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetAllCategories.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetAllOrders.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetAllUOM.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetAllUsers.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetCartItems.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetCategories.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetOrderById.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetOrderItemById.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetProductById.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/GetUserById.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/NonPaginatedResult.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/PaginatedResult.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/UpdateOrderItem.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/UpdateOrderStatus.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Stored Procedure/UpdateProduct.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/InitialTables.sql" />
+    <script-file value="$PROJECT_DIR$/Schema/Seed.sql" />
+    <script-mode>FILE</script-mode>
+    <data-source id="7924993b-8223-4196-b117-923e05b741fe" namespace="database/&quot;AppDB&quot;/schema/&quot;dbo&quot;" />
+    <method v="2" />
+  </configuration>
+</component>
