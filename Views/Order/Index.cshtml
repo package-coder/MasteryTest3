@@ -48,7 +48,9 @@
                             <td class="text-end px-3">@order.totalItems item(s)</td>
 
                             <td class="auto px-3 text-end">@order.dateOrdered.ToString("MM/dd/yyyy")</td>
-                            <td class="auto px-3"><button class="btn btn-primary btn-sm box-shadow shadow-sm">Request Printout</button></td>
+                            <td class="auto px-3"><a class="btn btn-primary btn-sm box-shadow shadow-sm" 
+                                asp-action="DownloadOrderReceipt" 
+                                asp-controller="Order" asp-route-id="@order.Id">Request Printout</a></td>
                         </tr>
                     }
                 </tbody>

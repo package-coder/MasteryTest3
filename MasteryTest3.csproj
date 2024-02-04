@@ -9,9 +9,11 @@
   <ItemGroup>
     <PackageReference Include="dapper" Version="2.1.28" />
     <PackageReference Include="microsoft.data.sqlclient" Version="5.1.5" />
+    <PackageReference Include="PDFsharp" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="PDF\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

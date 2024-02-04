@@ -78,5 +78,29 @@ namespace MasteryTest3.Repositories
                     crc
                 });
         }
+
+        public async Task<Order> GetOrderById(int Id) {
+            var result = await _connection.QueryAsync<Order, User, Order>(
+                "GetOrderById",
+                (order, user) =>
+                {
+                    order.user = user;
+                    return order;
+                }, 
+                new { Id }, splitOn: "Id");
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int Id)
+        {
+            return await _connection.QueryAsync<OrderItem, UOM, OrderItem>(
+                    "GetAllOrderItems",
+                    (orderItem, uom) => { 
+                        orderItem.uom = uom;
+                        return orderItem;
+                    },
+                    new { Id}, splitOn: "Id");
+        }
     }
 }

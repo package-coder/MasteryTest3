@@ -4,6 +4,7 @@ using MasteryTest3.Repositories;
 using MasteryTest3.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Data.SqlClient;
+using PdfSharp.Fonts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IUOMRepository, UOMRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IPdfRepository, PdfRepository>();
 
 //ViewComponents
 builder.Services.AddScoped<HeaderViewComponent>();
