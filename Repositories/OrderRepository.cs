@@ -24,7 +24,7 @@ namespace MasteryTest3.Repositories
                 return await _connection.ExecuteAsync("AddOrderItems", new
                 {
                     clientId = _sessionRepository.GetInt("userId"),
-                    productId = item.product.Id,
+                    productId = item.product?.Id,
                     item.quantity,
                     item.name,
                     item.remark,
@@ -74,7 +74,7 @@ namespace MasteryTest3.Repositories
                 "UpdateOrderStatus",
                 new {
                     clientId = _sessionRepository.GetInt("userId"),
-                    status = "FOR APPROVAL",
+                    status = "FOR_APPROVAL",
                     crc
                 });
         }

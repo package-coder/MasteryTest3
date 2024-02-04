@@ -60,7 +60,7 @@
 
         if ($("#order-form").valid()) { 
             var formData = new FormData();
-            formData.append("product.id", 0);
+            formData.append("product", null);
             formData.append("name", $("#name").val());
             formData.append("quantity", $("#quantity").val());
             formData.append("remark", $("#remark").val());
