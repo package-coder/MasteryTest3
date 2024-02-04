@@ -10,11 +10,13 @@ namespace MasteryTest3.Repositories
     {
         private readonly IDbConnection _connection;
         private readonly ISessionRepository _sessionRepository;
+        private readonly ICartRepository _cartRepository;
 
-        public OrderRepository(IDbConnection connection, ISessionRepository sessionRepository)
+        public OrderRepository(IDbConnection connection, ISessionRepository sessionRepository, ICartRepository cartRepository)
         {
             _connection = connection;
             _sessionRepository = sessionRepository;
+            _cartRepository = cartRepository;
         }
 
         public async Task<int> AddOrderItem(OrderItem item)
@@ -57,6 +59,23 @@ namespace MasteryTest3.Repositories
                     orderItem.remark,
                     orderItem.quantity,
                     uomId = orderItem.uom.Id,
+                });
+        }
+
+        public async Task<int> UpdateOrderStatus() {
+            var cartItems = await _cartRepository.GetCartItems();
+            int crc = 0;
+
+            foreach (var item in cartItems) {
+                crc += item.name.Sum(ch => (int)ch) + item.quantity + item.uom.Id;
+            }
+
+            return await _connection.ExecuteAsync(
+                "UpdateOrderStatus",
+                new {
+                    clientId = _sessionRepository.GetInt("userId"),
+                    status = "FOR APPROVAL",
+                    crc
                 });
         }
     }

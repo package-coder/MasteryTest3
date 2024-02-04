@@ -33,6 +33,15 @@ namespace MasteryTest3.Controllers
             return StatusCode(403);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrder() {
+            if (await _orderRepository.UpdateOrderStatus() != 0) {
+                return StatusCode(200);
+            }
+
+            return StatusCode(403);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

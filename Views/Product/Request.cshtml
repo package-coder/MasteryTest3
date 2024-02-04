@@ -10,7 +10,7 @@
 
     <h3 class="mb-4 mt-5">Request Product</h3>
 
-    <form id="request-form" class="w-sm-100" style="width: 40%;">
+    <form id="order-form" class="w-sm-100" style="width: 40%;">
         <table class="w-100 mb-5">
             <tr>
                 <td class="text-secondary">Name <span class="required">*</span></td>
@@ -53,12 +53,12 @@
 </div>
 
 <script>
-    $("#request-form").submit((e) => {
+    $("#order-form").submit((e) => {
         e.preventDefault();
 
         ValidateRequestForm()
 
-        if ($("#request-form").valid()) { 
+        if ($("#order-form").valid()) { 
             var formData = new FormData();
             formData.append("product.id", 0);
             formData.append("name", $("#name").val());

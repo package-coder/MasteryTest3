@@ -12,12 +12,14 @@
         </div>
     }
     <div class="d-flex gap-4">
-        <div class="flex-fill align-self-start w-75">
-            <div class="border rounded rounded-5" style="height: 100px;">
-                
+        @if (Model.Any())
+        {
+            <div class="flex-fill align-self-start w-75">
+                <div class="border rounded rounded-5" style="height: 100px;">
+                </div>
+                <button class="btn btn-primary mt-5" onclick="PlaceOrder()">Place Order</button>
             </div>
-            <button class="btn btn-primary mt-5">Place Order</button>
-        </div>
+        }
         <div class="flex-fill w-100">
             @foreach (var cartItem in Model)
                 {
@@ -29,9 +31,19 @@
                             </div>
                             <div class="p-3 cart-content w-100 d-flex">
                                 <div class="cart-details flex-fill">
-                                    <h6>@cartItem.name</h6>
+                                    <h6>
+                                        @cartItem.name
+                                        @if (@cartItem.product == null)
+                                        {
+                                            <span class="border rounded-pill badge text-danger">Requested</span>
+                                        }
+                                   </h6>
+                               
                                     <div class="text-secondary" style="font-size: 0.85rem">Quantity: @cartItem.quantity @cartItem.uom.unit.ToUpper()</div>
+                                @if (@cartItem.product != null)
+                                {
                                     <div class="text-secondary" style="font-size: 0.85rem">Price: @cartItem.product.price</div>
+                                }
                                 </div>
                                 <div class="align-self-end">
                                     <div >

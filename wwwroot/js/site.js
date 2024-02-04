@@ -69,3 +69,47 @@ function RemoveCartItem(Id) {
         }
     });
 }
+
+function PlaceOrder() {
+    Swal.fire({
+        title: "Proceed?",
+        text: "Do you wish to finalize this order?",
+        icon: "warning",
+        background: "#151515",
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "/Order/PlaceOrder",
+                dataType: false,
+                contentType: false,
+                processData: false,
+                success: () => {
+                    console.log("success");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Your order has been placed!",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "/Order";
+                        }
+                    });
+                },
+                error: () => {
+                    Swal.fire({
+                        title: "Something went wrong",
+                        text: "We were unable to place your order",
+                        icon: "error",
+                        background: '#151515',
+                        showCancelButton: false,
+                    })
+                }
+            })
+        }
+    })
+}
