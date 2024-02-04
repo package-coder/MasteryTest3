@@ -56,7 +56,7 @@ CREATE TABLE OrderItem(
 	orderId INT FOREIGN KEY REFERENCES [Order](Id),
 	productId INT FOREIGN KEY REFERENCES Product(Id),
 	name VARCHAR(100) NOT NULL,
-	quantity DECIMAL(7,2) NOT NULL,
+	quantity INT NOT NULL,
 	uom INT FOREIGN KEY REFERENCES UOM(Id),
 	remark VARCHAR(100),
 );
