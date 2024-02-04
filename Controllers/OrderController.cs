@@ -3,6 +3,7 @@ using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using PdfSharp.Pdf.Advanced;
 
 namespace MasteryTest3.Controllers
 {
@@ -11,10 +12,13 @@ namespace MasteryTest3.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ISessionRepository _sessionRepository;
+        private readonly IPdfRepository _pdfRepository;
 
-        public OrderController(IOrderRepository orderRepository, ISessionRepository sessionRepository) {
+        public OrderController(IOrderRepository orderRepository, ISessionRepository sessionRepository, IPdfRepository pdfRepository = null)
+        {
             _orderRepository = orderRepository;
             _sessionRepository = sessionRepository;
+            _pdfRepository = pdfRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -40,6 +44,15 @@ namespace MasteryTest3.Controllers
             }
 
             return StatusCode(403);
+        }
+
+        public async Task<IActionResult> DownloadOrderReceipt(int Id) {
+            var order = await _orderRepository.GetOrderById(Id);
+            var orderItems = await _orderRepository.GetOrderAllOrderItems(Id);
+
+            var orderPdf = _pdfRepository.GenerateOrderReceipt(Id, order, orderItems);
+
+            return File(orderPdf, "application/pdf", $"Order#{order.Id}.pdf");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
