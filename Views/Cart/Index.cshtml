@@ -1,67 +1,95 @@
 ﻿@Html.Partial("_NavbarMenu")
 @model IEnumerable<OrderItem>
 
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    var userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
+}
+
 <div class="container mw-primary">
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
         <h3>Cart</h3>
     </div>
-    @if (!Model.Any())
+    @if (userId == null)
+    {
+        <div class="alert alert-dark" role="alert">
+            Select user first!
+        </div>
+    }
+    else if (!Model.Any())
     {
         <div class="alert alert-dark" role="alert">
             Your cart is empty. Try adding one!
         </div>
     }
-    <div class="d-flex gap-4">
-        @if (Model.Any())
-        {
+    else
+    {
+        <div class="d-flex gap-4">
+
             <div class="flex-fill align-self-start w-75">
-                <div class="border rounded rounded-5" style="height: 100px;">
+                <div class="border rounded rounded-5 p-3">
+                    <table class="w-100">
+                        <tr>
+                            <td>Quantity</td>
+                            <td class="text-end text-secondary">20</td>
+                        </tr>
+                        <tr>
+                            <td>Amount</td>
+                            <td class="text-end text-secondary">500</td>
+                        </tr>
+                    </table>
                 </div>
-                <button class="btn btn-primary mt-5" onclick="PlaceOrder()">Place Order</button>
+                <button class="btn btn-primary mt-4" onclick="PlaceOrder()">Place Order</button>
             </div>
-        }
-        <div class="flex-fill w-100">
-            @foreach (var cartItem in Model)
+            <div class="flex-fill w-100">
+                @foreach (var item in Model)
                 {
                     <div class="border rounded rounded-5 mb-2 overflow-hidden" style="height: max-content">
                         <div class="d-flex">
-                            <div class="cart-photo">
-                                <img height="100px" width="100px" src=@(cartItem.product != null ? cartItem.product.photo :
-                                "/img/placeholder.svg") />
-                            </div>
+                            @if (item.product?.photo != null)
+                            {
+                                <div class="cart-photo">
+                                    <img height="100px" width="100px" src="@item.product.photo"/>
+                                </div>
+                            }
                             <div class="p-3 cart-content w-100 d-flex">
                                 <div class="cart-details flex-fill">
                                     <h6>
-                                        @cartItem.name
-                                        @if (@cartItem.product == null)
+                                        @item.name
+                                        @if (@item.product == null)
                                         {
                                             <span class="border rounded-pill badge text-danger">Requested</span>
                                         }
-                                   </h6>
-                               
-                                    <div class="text-secondary" style="font-size: 0.85rem">Quantity: @cartItem.quantity @cartItem.uom.unit.ToUpper()</div>
-                                @if (@cartItem.product != null)
-                                {
-                                    <div class="text-secondary" style="font-size: 0.85rem">Price: @cartItem.product.price</div>
-                                }
+                                    </h6>
+
+                                    <div class="text-secondary" style="font-size: 0.85rem">Qty: @item.quantity @item.uom.unit.ToUpper()</div>
+                                    <div class="text-secondary" style="font-size: 0.85rem">Price: @item.product?.price</div>
                                 </div>
-                                <div class="align-self-end">
-                                    <div >
-                                      <button type="button" class="btn border btn-sm" >-</button>
-                                      <button type="button" class="btn border btn-sm" >+</button>
-                                      <button type="button" class="btn border btn-sm" onclick="RemoveCartItem(@cartItem.Id)">Remove</button>
+                                <div>
+                                    <div class="h-100 d-flex flex-column justify-content-between align-items-end">
+                                        <div>
+                                            @if (@item.quantity > 1)
+                                            {
+                                                <button type="button" class="btn border btn-sm">-</button>
+                                            }
+                                            <button type="button" class="btn border btn-sm">+</button>
+                                        </div>
+                                        <div>
+                                            @if (@item.quantity > 1)
+                                            {
+                                                <a type="button" class="btn border btn-sm"  asp-controller="Cart" asp-action="Update" asp-route-id="@item.Id">Edit</a>
+                                            }
+                                            <button type="button" class="btn border btn-sm" onclick="RemoveCartItem(@item.Id)">Remove</button>
+                                        </div>
                                     </div>
                                 </div>
-                                @* <div class="text-end"> *@
-                                @*     <a class="btn btn-sm btn-secondary" asp-controller="Cart" asp-action="Update" *@
-                                @*         asp-route-id="@cartItem.Id">MODIFY</a> *@
-                                @*     <button class="btn btn-sm btn-danger" onclick="RemoveCartItem(@cartItem.Id)">REMOVE</button> *@
-                                @* </div> *@
                             </div>
                         </div>
                     </div>
                 }
+            </div>
+
         </div>
-        
-    </div>
+    }
 </div>

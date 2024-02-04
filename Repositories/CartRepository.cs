@@ -19,14 +19,14 @@ namespace MasteryTest3.Repositories
         {
             int? clientId = _sessionRepository.GetInt("userId");
 
-            return await _connection.QueryAsync<OrderItem, UOM, Product, OrderItem>(
+            return await _connection.QueryAsync<OrderItem, Product, UOM, OrderItem>(
                 "GetCartItems", 
-                (orderItem, uom, product) => { 
-                    orderItem.uom = uom;
+                (orderItem, product, uom) => { 
                     orderItem.product = product;
+                    orderItem.uom = uom;
                     return orderItem;
                 },
-                new { clientId }, splitOn: "Id");
+                new { clientId }, splitOn: "Id");;
         }
 
         public async Task<int> RemoveOrderItem(int Id) {

@@ -1,9 +1,10 @@
-﻿function AddOrderItem(productId, uomId) {
+﻿function AddOrderItem(productId, name, uomId) {
     var formData = new FormData();
 
     formData.append("product.Id", productId);
     formData.append("uom.Id", uomId);
     formData.append("quantity", 1);
+    formData.append("name", name);
 
     $.ajax({
         type: "POST",
