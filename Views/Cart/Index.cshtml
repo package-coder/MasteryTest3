@@ -31,12 +31,12 @@
                 <div class="border rounded rounded-5 p-3">
                     <table class="w-100">
                         <tr>
-                            <td>Quantity</td>
-                            <td class="text-end text-secondary">20</td>
+                            <td>Total Items</td>
+                            <td class="text-end text-secondary">@Model.Count()</td>
                         </tr>
                         <tr>
                             <td>Amount</td>
-                            <td class="text-end text-secondary">500</td>
+                            <td class="text-end text-secondary">@Model.Sum(orderItem => orderItem.product.price)</td>
                         </tr>
                     </table>
                 </div>
