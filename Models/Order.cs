@@ -7,6 +7,8 @@
         public string crc { get; set; }
         public string status { get; set; }
         public int totalItems { get; set; }
+
+        public double totalAmount { get; set; }
         public DateTime dateOrdered { get; set; }
         public DateTime datePrinted { get; set; }
     }

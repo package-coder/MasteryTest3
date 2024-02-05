@@ -17,7 +17,7 @@ namespace MasteryTest3.Repositories
         }
         public async Task<IEnumerable<OrderItem>> GetCartItems()
         {
-            int? clientId = _sessionRepository.GetInt("userId");
+            var clientId = _sessionRepository.GetInt("userId");
 
             return await _connection.QueryAsync<OrderItem, Product, UOM, OrderItem>(
                 "GetCartItems", 
@@ -26,11 +26,18 @@ namespace MasteryTest3.Repositories
                     orderItem.uom = uom;
                     return orderItem;
                 },
-                new { clientId }, splitOn: "Id");;
+                new { clientId }, splitOn: "Id");
         }
 
         public async Task<int> RemoveOrderItem(int Id) {
             return await _connection.ExecuteAsync("DeleteOrderItem", new { Id });
+        }
+
+        public async Task<Order?> GetCardOrder()
+        {
+            var clientId = _sessionRepository.GetInt("userId");
+            var orders = await _connection.QueryAsync<Order>("GetCartOrder", new { clientId }, commandType: CommandType.StoredProcedure);
+            return orders.FirstOrDefault();
         }
     }
 }

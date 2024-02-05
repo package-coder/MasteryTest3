@@ -32,11 +32,11 @@
                     <table class="w-100">
                         <tr>
                             <td>Quantity</td>
-                            <td class="text-end text-secondary">20</td>
+                            <td class="text-end text-secondary">@ViewBag.cartOrder?.totalQuantity</td>
                         </tr>
                         <tr>
                             <td>Amount</td>
-                            <td class="text-end text-secondary">500</td>
+                            <td class="text-end text-secondary">@ViewBag.cartOrder?.totalAmount</td>
                         </tr>
                     </table>
                 </div>

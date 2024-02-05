@@ -20,6 +20,9 @@ namespace MasteryTest3.Controllers
         public async Task<IActionResult> Index()
         {
             var cartItems = await _cartRepository.GetCartItems();
+            var cartOrder = await _cartRepository.GetCardOrder();
+            ViewBag.cartOrder = cartOrder;
+            
             return View(cartItems);
         }
 

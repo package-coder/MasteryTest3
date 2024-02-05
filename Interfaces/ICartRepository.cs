@@ -6,5 +6,7 @@ namespace MasteryTest3.Interfaces
     {
         public Task<IEnumerable<OrderItem>> GetCartItems();
         public Task<int> RemoveOrderItem(int Id);
+
+        public Task<Order?> GetCardOrder();
     }
 }
