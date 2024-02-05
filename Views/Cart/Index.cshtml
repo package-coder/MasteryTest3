@@ -36,7 +36,7 @@
                         </tr>
                         <tr>
                             <td>Amount</td>
-                            <td class="text-end text-secondary">@Model.Sum(orderItem => orderItem.product.price)</td>
+                            <td class="text-end text-secondary">@Model.Sum(orderItem => orderItem.product?.price)</td>
                         </tr>
                     </table>
                 </div>
