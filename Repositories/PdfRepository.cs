@@ -49,7 +49,7 @@ namespace MasteryTest3.Repositories
                 yPosition += 20;
             }
             graphics.DrawString("************** nothing follows **************", textFont, XBrushes.Black, new XRect(150, yPosition + 20, 0, 0));
-            graphics.DrawString($"Total Items: ***{order.totalItems} item(s)", textFont, XBrushes.Black, new XRect(xPosition, yPosition + 35, 0, 0));
+            graphics.DrawString($"Total Items: ***{orderItems.Count()} item(s)", textFont, XBrushes.Black, new XRect(xPosition, yPosition + 35, 0, 0));
 
 
             graphics.DrawString("For approval by:", textFont, XBrushes.Black, new XRect(400, yPosition+50, 0, 0));
