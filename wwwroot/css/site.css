@@ -1,6 +1,6 @@
 :root {
   --border: 0.7px solid rgba(255, 255, 255, 0.1);
-  --bs-body-bg: #151515;
+  --bs-body-bg: rgb(21, 21, 21);
   --bs-body-color: #eee;
   --bs-body-color-rgb: 255,255,255;
   --bs-body-color-opacity: 0.4;
@@ -62,6 +62,10 @@ html {
   min-height: 100%;
 }
 
+body {
+  height: 100vh;
+}
+
 @media (min-width: 992px) {
   .mw-primary {
     max-width: 1080px !important;
@@ -91,6 +95,15 @@ html {
   color: var(--bs-body-color);
 }
 
+.table td, .table th {
+  padding: 8px 16px;
+}
+
+.table td:not(:last-child), .table th:not(:last-child) {
+  border-right: var(--border) !important;
+
+}
+
 .table tbody tr:hover {
   cursor: pointer;
   background-color: rgba(var(--bs-body-color-rgb), 0.05);
@@ -101,13 +114,43 @@ html {
 }
 
 .table tbody tr:last-child {
-  border-bottom-color: transparent;
+  border-bottom: transparent;
 }
 
 .table .auto {
   width: 1px;
   white-space: nowrap;
 }
+
+.table input {
+  width: 100% !important;
+  background-color: rgb(15, 15, 15);
+  outline: 0 !important;
+  border: var(--border) !important;
+  border-width: 2px !important;
+
+  color: var(--bs-body-color);  
+  text-align: center;
+  padding: 0 12px;  
+  height: 32px;
+  border-radius: 4px;
+}
+
+.table input:hover, .table input:focus, 
+.table tr:hover > input, .table tr:focus > input {
+  border-color: var(--bs-primary) !important;
+  border-width: 2px !important;
+}
+
+.table-input td {
+  padding: 2px 2px;
+
+}
+
+.table-input {
+  background-color: transparent !important;
+}
+
 
 .btn {
   border-radius: 5px !important;

@@ -6,11 +6,59 @@
 
 @Html.Partial("_NavbarBack")
 
-<div class="container mw-primary">
+<div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
 
-    <h3 class="mb-4 mt-5">Request Product</h3>
-
-    <form id="order-form" class="w-sm-100" style="width: 40%;">
+         <h3 class="my-4">Request Product</h3>
+    <div class="overflow-auto" style="height: calc(100% - 180px)">
+         <form id="form">
+                      <div class="alert alert-dark mb-4">
+                          This table is empty
+                      </div>
+                      <div class="border rounded rounded-5" style="width: 100%;">
+                          <table class="table table-hover m-0">
+                              <thead>
+                              <tr>
+                                  <th class="text-center" style="width: 8ch">Qty</th>
+                                  <th class="auto text-center" style="width: 8ch">Unit</th>
+                                  <th>Name</th>
+                                  <th >Remarks</th>
+                                  <th class="auto text-center vertical-align-center"></th>
+                         
+                              </tr>
+                              </thead>
+                              <tbody id="requestBody">
+                              <tr class="table-input">
+                                  <td>
+                                      <input autofocus type="text" id="quantity"/>
+                                  </td>
+                                  <td>
+                                      <input autofocus type="text" id="unit"/>
+                                  </td>
+                                  <td>
+                                      <input autofocus class="text-start" type="text" id="name"/>
+                                  </td>
+                                  <td>
+                                      <input autofocus class="text-start" type="text" id="remarks"/>
+                                  </td>
+                                  <td>
+                                      <button type="submit" class="btn btn-primary" style="margin: 2px 2px 2px 3px;">Submit</button>
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>
+                         
+                      </div>
+                  </form>
+    </div>
+    <div class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute" style="left: 0; right: 0; bottom: 0">
+        <div>
+            <button type="submit" class="btn border">Discard</button>
+            <button type="submit" class="btn border">Save</button>
+        </div>
+        <button type="submit" class="btn bg-primary">Send Request</button>
+    </div>
+    
+    @* <form id="order-form" class="w-sm-100 mt-5" style="width: 40%;">
         <table class="w-100 mb-5">
             <tr>
                 <td class="text-secondary">Name <span class="required">*</span></td>
@@ -49,10 +97,76 @@
         </table>
 
         <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    </form> *@
 </div>
 
 <script>
+    const requests = []
+    const requestElement = document.getElementById('requestBody');
+    const alertElement = document.querySelector('#form .alert');
+
+   function addRequestItem(value) {
+        if (requests.length === 0) {
+            alertElement.classList.add('d-none');
+        }
+        
+        const rowElement = document.createElement('tr');
+        rowElement.id = requests.length.toString();
+        
+        const quantityElement = rowElement.appendChild(document.createElement('td'))
+        quantityElement.textContent = value.quantity;
+        quantityElement.classList.add('text-center');
+        
+        const unitElement = rowElement.appendChild(document.createElement('td'))
+        unitElement.textContent = value.unit;   
+        unitElement.classList.add('text-center');
+                
+        rowElement.appendChild(document.createElement('td')).textContent = value.name
+        rowElement.appendChild(document.createElement('td')).textContent = value.remarks
+        
+        const actionElement = rowElement.appendChild(document.createElement('td'))
+        actionElement.classList.add('py-0')
+        actionElement.append(createRemoveItemButton(() => requestElement.removeChild(rowElement)))
+        
+        requestElement.append(rowElement)
+        requests.push(value);
+   }
+    
+
+   function createRemoveItemButton(handleClick) {
+       const element = document.createElement('button');
+       element.classList.add('btn', 'd-flex', 'align-items-center');
+       element.type = 'button';
+       element.addEventListener('click', handleClick)
+       
+       const child = element.appendChild(document.createElement('span'))
+       child.textContent = "delete";
+       child.classList.add('material-symbols-outlined', 'h-100');
+              
+       return element;
+   }
+   
+
+
+    $("#form").submit((e) => {
+        e.preventDefault();
+        const fields = ['quantity', 'unit', 'name', 'remarks']
+        const form = {}
+        
+        fields.forEach((field) => {
+            
+            const fieldElement = document.getElementById(field);
+            Object.assign(form, { [field]: fieldElement.value })
+            
+            fieldElement.value = null;
+        })
+                
+        addRequestItem(form)
+        
+        document.getElementById(fields[0]).focus();
+    });
+    
+   
     $("#order-form").submit((e) => {
         e.preventDefault();
 
