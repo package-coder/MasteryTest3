@@ -15,7 +15,7 @@
                           This table is empty
                       </div>
                       <div class="border rounded rounded-5" style="width: 100%;">
-                          <table class="table table-hover m-0">
+                          <table id="request-table" class="table table-hover m-0">
                               <thead>
                               <tr>
                                   <th class="text-center" style="width: 8ch">Qty</th>
@@ -50,8 +50,8 @@
                       </div>
                   </form>
     </div>
-    <div class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute" style="left: 0; right: 0; bottom: 0">
-        <div>
+    <div id="action-buttons" class=" d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute" style="left: 0; right: 0; bottom: 0">
+        <div id="action-buttons">
             <button type="submit" class="btn border">Discard</button>
             <button type="submit" class="btn border">Save</button>
         </div>
@@ -61,10 +61,18 @@
     
 </div>
 
+<script src="~/js/validation.js"></script>
 <script>
     const requests = []
     const requestElement = document.getElementById('requestBody');
     const alertElement = document.querySelector('#form .alert');
+    const buttons = document.querySelectorAll("#action-buttons button");
+    const table = document.querySelector("#request-table tbody");
+    const nameInput = document.getElementById("name");
+    const qtyInput = document.getElementById("quantity");
+    const unitInput = document.getElementById("unit");
+   
+    setDisabledButton();
 
    function addRequestItem(value) {
         if (requests.length === 0) {
@@ -87,7 +95,11 @@
         
         const actionElement = rowElement.appendChild(document.createElement('td'))
         actionElement.classList.add('py-0')
-        actionElement.append(createRemoveItemButton(() => requestElement.removeChild(rowElement)))
+
+        actionElement.append(createRemoveItemButton(function () {
+           requestElement.removeChild(rowElement);
+           setDisabledButton();
+        }));
         
         requestElement.append(rowElement)
         requests.push(value);
@@ -107,12 +119,6 @@
        return element;
    }
 
-    const form = document.getElementById("form");
-    const nameInput = document.getElementById("name");
-    const qtyInput = document.getElementById("quantity");
-    const unitInput = document.getElementById("unit");
-    
-
     form.addEventListener("submit", function (e) { 
 
         e.preventDefault();
@@ -127,25 +133,15 @@
         });
 
         if (validateForm(form)) addRequestItem(form);
+
+        setDisabledButton();
          
         document.getElementById(fields[0]).focus();
     });
 
-    function validateForm(form) {
+    qtyInput.addEventListener("keypress", function (e) {
 
-        if (!form.quantity) qtyInput.setAttribute("style", "border: 2px solid #ff0000 !important");
-        if (!form.unit) unitInput.setAttribute("style", "border: 2px solid #ff0000 !important");
-        if (!form.name) nameInput.setAttribute("style", "border: 2px solid #ff0000 !important");
-
-        if (form.quantity && form.unit && form.name) {
-            return true;
-        }
-    }
-
-    qtyInput.addEventListener("keypress", function(e){
-        var charValue = String.fromCharCode(e.keyCode);
-
-        if (isNaN(charValue) && (e.which != 8)) {
+        if ((isNaN(e.key) && (e.key != 8)) || (e.target.value.length >= 5)) {
             e.preventDefault();
         }
 
@@ -153,7 +149,30 @@
     });
 
     qtyInput.addEventListener("change", () => { qtyInput.removeAttribute("style") });
-    nameInput.addEventListener("change", () => { nameInput.removeAttribute("style")});
+    nameInput.addEventListener("change", () => { nameInput.removeAttribute("style") });
     unitInput.addEventListener("change", () => { unitInput.removeAttribute("style") });
 
+    function validateForm(form) {
+        var styleAttribute = "border: 2px solid #ff0000 !important";
+
+        if (!form.quantity) qtyInput.setAttribute("style", styleAttribute);
+        if (!form.unit) unitInput.setAttribute("style", styleAttribute);
+        if (!form.name) nameInput.setAttribute("style", styleAttribute);
+
+        if (form.quantity && form.unit && form.name) {
+            return true;
+        }
+    }
+
+    function setDisabledButton() {
+        if (table.rows.length - 1 === 0) {
+            buttons.forEach((button) => {
+                button.setAttribute("disabled", true);
+            });
+        } else {
+            buttons.forEach((button) => {
+                button.removeAttribute("disabled");
+            });
+        }
+    }
 </script>
