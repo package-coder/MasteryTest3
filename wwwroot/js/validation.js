@@ -1,8 +1,2 @@
-﻿window.addEventListener("DOMContentLoaded", () => {
-   
-    
+﻿
 
-    
-
-    
-});

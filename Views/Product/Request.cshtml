@@ -52,10 +52,10 @@
     </div>
     <div id="action-buttons" class=" d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute" style="left: 0; right: 0; bottom: 0">
         <div id="action-buttons">
-            <button type="submit" class="btn border">Discard</button>
-            <button type="submit" class="btn border">Save</button>
+            <button type="submit" class="btn border" disabled>Discard</button>
+            <button type="submit" class="btn border" disabled>Save</button>
         </div>
-        <button id="btn-submit" type="submit" class="btn bg-primary">Send Request</button>
+        <button id="btn-submit" type="submit" class="btn bg-primary" disabled>Send Request</button>
     </div>
     
     
@@ -68,12 +68,10 @@
     const alertElement = document.querySelector('#form .alert');
     const buttons = document.querySelectorAll("#action-buttons button");
     const table = document.querySelector("#request-table tbody");
-    const nameInput = document.getElementById("name");
+    const fields = document.querySelectorAll("input");
     const qtyInput = document.getElementById("quantity");
-    const unitInput = document.getElementById("unit");
-   
-    setDisabledButton();
 
+    
    function addRequestItem(value) {
         if (requests.length === 0) {
             alertElement.classList.add('d-none');
@@ -148,16 +146,16 @@
         return true;
     });
 
-    qtyInput.addEventListener("change", () => { qtyInput.removeAttribute("style") });
-    nameInput.addEventListener("change", () => { nameInput.removeAttribute("style") });
-    unitInput.addEventListener("change", () => { unitInput.removeAttribute("style") });
+    fields.forEach((field) => {
+        field.addEventListener("change", () => { field.removeAttribute("style") });
+    });
 
     function validateForm(form) {
         var styleAttribute = "border: 2px solid #ff0000 !important";
 
-        if (!form.quantity) qtyInput.setAttribute("style", styleAttribute);
-        if (!form.unit) unitInput.setAttribute("style", styleAttribute);
-        if (!form.name) nameInput.setAttribute("style", styleAttribute);
+        if (!form.quantity) document.getElementById("quantity").setAttribute("style", styleAttribute);
+        if (!form.unit) document.getElementById("unit").setAttribute("style", styleAttribute);
+        if (!form.name) document.getElementById("name").setAttribute("style", styleAttribute);
 
         if (form.quantity && form.unit && form.name) {
             return true;
@@ -165,14 +163,12 @@
     }
 
     function setDisabledButton() {
-        if (table.rows.length - 1 === 0) {
-            buttons.forEach((button) => {
-                button.setAttribute("disabled", true);
-            });
-        } else {
-            buttons.forEach((button) => {
-                button.removeAttribute("disabled");
-            });
-        }
+        var tableRowCount = table.rows.length - 1;
+        buttons.forEach((button) => {
+            button.disabled = tableRowCount == 0 ? true : false
+        })
     }
+
+
+    
 </script>
