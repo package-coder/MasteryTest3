@@ -11,20 +11,12 @@ namespace MasteryTest3.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ISessionRepository _sessionRepository;
         private readonly IPdfRepository _pdfRepository;
 
-        public OrderController(IOrderRepository orderRepository, ISessionRepository sessionRepository, IPdfRepository pdfRepository = null)
+        public OrderController(IOrderRepository orderRepository, IPdfRepository pdfRepository)
         {
             _orderRepository = orderRepository;
-            _sessionRepository = sessionRepository;
             _pdfRepository = pdfRepository;
-        }
-        public async Task<IActionResult> Index()
-        {
-            int? Id = _sessionRepository.GetInt("userId");
-            var orders = await _orderRepository.GetAllOrders(Id);
-            return View(orders);
         }
 
         [HttpPost]

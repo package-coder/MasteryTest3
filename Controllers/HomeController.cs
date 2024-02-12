@@ -10,18 +10,21 @@ namespace MasteryTest3.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IProductRepository _productRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly ISessionRepository _sessionRepository;
        
-        public HomeController(ILogger<HomeController> logger, IProductRepository productRepository)
+        public HomeController(ILogger<HomeController> logger, IOrderRepository orderRepository, ISessionRepository sessionRepository)
         {
             _logger = logger;
-            _productRepository = productRepository;
+            _orderRepository = orderRepository;
+            _sessionRepository = sessionRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var products = _productRepository.GetAllProducts();
-            return View(products);
+            int? Id = _sessionRepository.GetInt("userId");
+            var orders = await _orderRepository.GetAllOrders(Id);
+            return View(orders);
         }
 
         public IActionResult Privacy()

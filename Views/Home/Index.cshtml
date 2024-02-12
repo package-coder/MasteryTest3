@@ -6,7 +6,7 @@
     int? userId = HttpContextAccessor.HttpContext?.Session.GetInt32("userId");
 }
 
-@model IEnumerable<Product>
+@model IEnumerable<Order>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -15,8 +15,9 @@
 @Html.Partial("_NavbarMenu")
 <div class="container mw-primary">
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
-        <h3>Browse Products</h3>
-
+        <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+            <h3>Order History</h3>
+        </div>
         @if (userId != null)
         {
             <div>
@@ -33,46 +34,59 @@
 
     }
 
-    <div class="border rounded rounded-5" style="width: 100%;">
-        <table class="table table-hover m-0">
-            <thead>
-                <tr>
-                    <th class="auto px-3">Name</th>
-                    <th></th>
-                    <th class="auto text-end px-3">SKU</th>
-                    <th class="auto text-end px-3">Price</th>
-                    @if (userId != null)
-                    {
-                        <th></th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Model)
-                {
-                    <tr>
-                        <td class="auto ps-3 pe-5">
-                            <div class="d-flex flex-row align-items-center gap-3">
-                                <img class="border rounded-circle" style="height: 30px; width: 30px" />
-                                @product.name
-                            </div>
-                        </td>
-                        <td>
-                            <span class="border rounded-pill badge text-secondary">@product.color.ToUpper()</span>
-                            <span class="border rounded-pill badge badge-pill text-secondary">@product.size.ToUpper()</span>
-                        </td>
-                        <td class="auto text-end px-3">@product.sku</td>
-                        <td class="auto text-end px-3">@product.price</td>
-                        @if (userId != null)
+    <div class="container mw-primary">
+       
+        @if (userId != null)
+        {
+            <div class="border rounded rounded-5" style="width: 100%;">
+                <table class="table table-hover m-0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="auto px-3">Order #</th>
+                            <th class="auto ps-3 pe-5">
+                                CRC #
+                            </th>
+                            <th></th>
+                            <th class="text-end px-3">Total</th>
+                            <th class="auto px-3 text-end">Date</th>
+                            <th class="auto px-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
                         {
-                            <td class="auto text-center px-3">
-                                <button class="btn btn-primary btn-sm box-shadow shadow-sm"
-                                    onclick="AddOrderItem(@product.Id, '@product.name', @product.uom.Id)">add</button>
-                            </td>
+                            <tr>
+                                <td class="auto text-center ps-3 pe-2">+</td>
+                                <td class="auto px-3">
+                                    <div class="d-flex flex-row align-items-center gap-3">
+                                        @order.Id
+                                    </div>
+                                </td>
+                                <td class="auto ps-3 pe-5">
+                                    @order.crc
+                                </td>
+                                <td>
+                                    <span class="border rounded-pill badge text-secondary">@order.status</span>
+                                </td>
+                                <td class="text-end px-3">@order.totalItems item(s)</td>
+
+                                <td class="auto px-3 text-end">@order.dateOrdered.ToString("MM/dd/yyyy")</td>
+                                <td class="auto px-3">
+                                    <a class="btn btn-primary btn-sm box-shadow shadow-sm"
+                                       asp-action="DownloadOrderReceipt"
+                                       asp-controller="Order" asp-route-id="@order.Id">Request Printout</a>
+                                </td>
+                            </tr>
                         }
-                    </tr>
+                    </tbody>
+                </table>
+                @if (!Model.Any())
+                {
+                    <div class="p-5 text-secondary text-center">
+                        No data for this table yet
+                    </div>
                 }
-            </tbody>
-        </table>
+            </div>
+        }
     </div>
-</div>
