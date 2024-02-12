@@ -29,10 +29,10 @@
                               <tbody id="requestBody">
                               <tr class="table-input">
                                   <td>
-                                      <input autofocus type="text" id="quantity"/>
+                                <input autofocus type="text" id="quantity"/>
                                   </td>
                                   <td>
-                                      <input autofocus type="text" id="unit"/>
+                                      <input autofocus type="text" id="unit" />
                                   </td>
                                   <td>
                                       <input autofocus class="text-start" type="text" id="name"/>
@@ -55,49 +55,10 @@
             <button type="submit" class="btn border">Discard</button>
             <button type="submit" class="btn border">Save</button>
         </div>
-        <button type="submit" class="btn bg-primary">Send Request</button>
+        <button id="btn-submit" type="submit" class="btn bg-primary">Send Request</button>
     </div>
     
-    @* <form id="order-form" class="w-sm-100 mt-5" style="width: 40%;">
-        <table class="w-100 mb-5">
-            <tr>
-                <td class="text-secondary">Name <span class="required">*</span></td>
-                <td class="auto">
-                    <input class="form-control" type="text" name="name" id="name"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-secondary">Quantity <span class="required">*</span></td>
-                <td class="auto">
-                    <div class="form-group end">
-                        <input type="number" class="form-control" name="quantity" id="quantity" step="0.01" />
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-secondary">Unit <span class="required">*</span></td>
-                <td class="auto">
-                    <div class="form-group">
-                        <select class="form-select" type="text" name="uomId" id="uomId">
-                            <option value="" selected disabled>choose</option>
-                            @foreach (var uom in Model)
-                            {
-                                <option value="@uom.Id" class="bg-dark text-secondary">@uom.name (@uom.unit.ToUpper())</option>
-                            }
-                        </select>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-secondary" style="vertical-align: baseline">Remarks</td>
-                <td class="auto" style="height: 80px; vertical-align: baseline">
-                    <textarea class="form-control" style="height: 100% !important;" name="remark" id="remark" rows="3"></textarea>
-                </td>
-            </tr>
-        </table>
-
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form> *@
+    
 </div>
 
 <script>
@@ -145,74 +106,54 @@
               
        return element;
    }
-   
 
+    const form = document.getElementById("form");
+    const nameInput = document.getElementById("name");
+    const qtyInput = document.getElementById("quantity");
+    const unitInput = document.getElementById("unit");
+    
 
-    $("#form").submit((e) => {
+    form.addEventListener("submit", function (e) { 
+
         e.preventDefault();
-        const fields = ['quantity', 'unit', 'name', 'remarks']
-        const form = {}
-        
+
+        const fields = ['quantity', 'unit', 'name', 'remarks'];
+        const form = {};
+
         fields.forEach((field) => {
-            
             const fieldElement = document.getElementById(field);
-            Object.assign(form, { [field]: fieldElement.value })
-            
+            Object.assign(form, { [field]: fieldElement.value });
             fieldElement.value = null;
-        })
-                
-        addRequestItem(form)
-        
+        });
+
+        if (validateForm(form)) addRequestItem(form);
+         
         document.getElementById(fields[0]).focus();
     });
-    
-   
-    $("#order-form").submit((e) => {
-        e.preventDefault();
 
-        ValidateRequestForm()
+    function validateForm(form) {
 
-        if ($("#order-form").valid()) { 
-            var formData = new FormData();
-            formData.append("product", null);
-            formData.append("name", $("#name").val());
-            formData.append("quantity", $("#quantity").val());
-            formData.append("remark", $("#remark").val());
-            formData.append("uom.Id", $("#uomId").val())
+        if (!form.quantity) qtyInput.setAttribute("style", "border: 2px solid #ff0000 !important");
+        if (!form.unit) unitInput.setAttribute("style", "border: 2px solid #ff0000 !important");
+        if (!form.name) nameInput.setAttribute("style", "border: 2px solid #ff0000 !important");
 
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Request", "Product")",
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: false,
-                success: () => {
-                    Swal.fire({
-                        title: "Product has been added!",
-                        text: "Item added to cart",
-                        icon: "success",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.reload();
-                        }
-                    });
-                },
-                error: () => {
-                    Swal.fire({
-                        title: "Something went wrong!",
-                        text: "Your item has not been added",
-                        icon: "error",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    });
-                }
-            });
+        if (form.quantity && form.unit && form.name) {
+            return true;
         }
+    }
+
+    qtyInput.addEventListener("keypress", function(e){
+        var charValue = String.fromCharCode(e.keyCode);
+
+        if (isNaN(charValue) && (e.which != 8)) {
+            e.preventDefault();
+        }
+
+        return true;
     });
+
+    qtyInput.addEventListener("change", () => { qtyInput.removeAttribute("style") });
+    nameInput.addEventListener("change", () => { nameInput.removeAttribute("style")});
+    unitInput.addEventListener("change", () => { unitInput.removeAttribute("style") });
 
 </script>
