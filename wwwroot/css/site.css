@@ -252,3 +252,15 @@ label.error {
   background-color: transparent !important;
 color: var(--bs-text-secondary) !important;
 }
+
+.modal-content, .modal-footer {
+    background-color: var(--bs-body-bg) !important;
+}
+
+.modal-header {
+    border-bottom: var(--border) !important;
+}
+
+.modal-footer {
+    border-top: var(--border) !important;
+}

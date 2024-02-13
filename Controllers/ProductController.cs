@@ -4,25 +4,26 @@ using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace MasteryTest3.Controllers
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class ProductController : Controller
     {
-        private readonly IUOMRepository _uomRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ProductController(IUOMRepository uomRepository, IOrderRepository orderRepository)
+
+        public ProductController(IOrderRepository orderRepository, IProductRepository productRepository)
         {
-            _uomRepository = uomRepository;
+            _productRepository = productRepository;
             _orderRepository = orderRepository;
         }
 
-        public async Task<IActionResult> Request()
+        public IActionResult Request()
         {
-            var uom = await _uomRepository.GetAllUOM();
-            return View(uom);
+            return View();
         }
 
         [HttpPost]
@@ -33,6 +34,11 @@ namespace MasteryTest3.Controllers
 
             return StatusCode(403);
            
+        }
+
+        public IActionResult GetAllProducts() {
+            var products = _productRepository.GetAllProducts();
+            return Json(products);
         }
 
         public IActionResult Upload()

@@ -1,54 +1,59 @@
 ﻿@{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Request Product";
     Layout = "_Layout";
 }
-@model IEnumerable<UOM>
 
 @Html.Partial("_NavbarBack")
 
 <div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
 
-         <h3 class="my-4">Request Product</h3>
+    <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+        <h3 class="my-4">Request Product</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#browseProductModal">
+            Choose Products
+        </button>
+    </div>
+
     <div class="overflow-auto" style="height: calc(100% - 180px)">
-         <form id="form">
-                      <div class="alert alert-dark mb-4">
-                          This table is empty
-                      </div>
-                      <div class="border rounded rounded-5" style="width: 100%;">
-                          <table id="request-table" class="table table-hover m-0">
-                              <thead>
-                              <tr>
-                                  <th class="text-center" style="width: 8ch">Qty</th>
-                                  <th class="auto text-center" style="width: 8ch">Unit</th>
-                                  <th>Name</th>
-                                  <th >Remarks</th>
-                                  <th class="auto text-center vertical-align-center"></th>
-                         
-                              </tr>
-                              </thead>
-                              <tbody id="requestBody">
-                              <tr class="table-input">
-                                  <td>
-                                <input autofocus type="text" id="quantity"/>
-                                  </td>
-                                  <td>
-                                      <input autofocus type="text" id="unit" />
-                                  </td>
-                                  <td>
-                                      <input autofocus class="text-start" type="text" id="name"/>
-                                  </td>
-                                  <td>
-                                      <input autofocus class="text-start" type="text" id="remarks"/>
-                                  </td>
-                                  <td>
-                                      <button type="submit" class="btn btn-primary" style="margin: 2px 2px 2px 3px;">Submit</button>
-                                  </td>
-                              </tr>
-                              </tbody>
-                          </table>
-                         
-                      </div>
-                  </form>
+        <form id="table-request">
+            <div class="alert alert-dark mb-4">
+                This table is empty
+            </div>
+            <div class="border rounded rounded-5" style="width: 100%;">
+                <table id="request-table" class="table table-hover m-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 8ch">Qty</th>
+                            <th class="auto text-center" style="width: 8ch">Unit</th>
+                            <th>Name</th>
+                            <th>Remarks</th>
+                            <th class="auto text-center vertical-align-center"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="requestBody">
+                        <tr class="table-input">
+                            <td>
+                                <input autofocus type="text" id="quantity" name="quantity" />
+                            </td>
+                            <td>
+                                <input autofocus type="text" id="unit" />
+                            </td>
+                            <td>
+                                <input autofocus class="text-start" type="text" id="name" />
+                            </td>
+                            <td>
+                                <input autofocus class="text-start" type="text" id="remarks" />
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-primary" style="margin: 2px 2px 2px 3px;">Submit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </form>
     </div>
     <div id="action-buttons" class=" d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute" style="left: 0; right: 0; bottom: 0">
         <div id="action-buttons">
@@ -57,118 +62,109 @@
         </div>
         <button id="btn-submit" type="submit" class="btn bg-primary" disabled>Send Request</button>
     </div>
-    
-    
-</div>
 
-<script src="~/js/validation.js"></script>
-<script>
-    const requests = []
-    const requestElement = document.getElementById('requestBody');
-    const alertElement = document.querySelector('#form .alert');
-    const buttons = document.querySelectorAll("#action-buttons button");
-    const table = document.querySelector("#request-table tbody");
-    const fields = document.querySelectorAll("input");
-    const qtyInput = document.getElementById("quantity");
+    <div class="modal fade" id="browseProductModal" tabindex="-1" aria-labelledby="browseProductModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="browseProductModal">Browse Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-request-form">
+                        <div class="form-group mb-2">
+                            <select id="name2" class="form-select">
+                                <option selected disabled>--select products--</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-item mb-2">
+                                <label>Qunatity</label>
+                                <input class="form-control quantity" id="quantity2" name="quantity" />
+                            </div>
+                            <div class="form-item mb-2">
+                                <label>Unit</label>
+                                <input class="form-control" id="unit2" />
+                            </div>
+                            <div class="form-item mb-2">
+                                <label>Remarks</label>
+                                <input class="form-control" id="remark2" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="modal-request-form" value="submit">Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        const requests = []
+        const requestElement = document.getElementById('requestBody');
+        const alertElement = document.querySelector('#table-request .alert');
 
-    
-   function addRequestItem(value) {
-        if (requests.length === 0) {
-            alertElement.classList.add('d-none');
-        }
-        
-        const rowElement = document.createElement('tr');
-        rowElement.id = requests.length.toString();
-        
-        const quantityElement = rowElement.appendChild(document.createElement('td'))
-        quantityElement.textContent = value.quantity;
-        quantityElement.classList.add('text-center');
-        
-        const unitElement = rowElement.appendChild(document.createElement('td'))
-        unitElement.textContent = value.unit;   
-        unitElement.classList.add('text-center');
-                
-        rowElement.appendChild(document.createElement('td')).textContent = value.name
-        rowElement.appendChild(document.createElement('td')).textContent = value.remarks
-        
-        const actionElement = rowElement.appendChild(document.createElement('td'))
-        actionElement.classList.add('py-0')
+        function addRequestItem(value) {
+            if (requests.length === 0) {
+                alertElement.classList.add('d-none');
+            }
 
-        actionElement.append(createRemoveItemButton(function () {
-           requestElement.removeChild(rowElement);
-           setDisabledButton();
-        }));
-        
-        requestElement.append(rowElement)
-        requests.push(value);
-   }
-    
+            const rowElement = document.createElement('tr');
+            rowElement.id = requests.length.toString();
 
-   function createRemoveItemButton(handleClick) {
-       const element = document.createElement('button');
-       element.classList.add('btn', 'd-flex', 'align-items-center');
-       element.type = 'button';
-       element.addEventListener('click', handleClick)
-       
-       const child = element.appendChild(document.createElement('span'))
-       child.textContent = "delete";
-       child.classList.add('material-symbols-outlined', 'h-100');
-              
-       return element;
-   }
+            const quantityElement = rowElement.appendChild(document.createElement('td'))
+            quantityElement.textContent = value.quantity;
+            quantityElement.classList.add('text-center');
 
-    form.addEventListener("submit", function (e) { 
+            const unitElement = rowElement.appendChild(document.createElement('td'))
+            unitElement.textContent = value.unit;
+            unitElement.classList.add('text-center');
 
-        e.preventDefault();
+            rowElement.appendChild(document.createElement('td')).textContent = value.name
+            rowElement.appendChild(document.createElement('td')).textContent = value.remarks
 
-        const fields = ['quantity', 'unit', 'name', 'remarks'];
-        const form = {};
+            const actionElement = rowElement.appendChild(document.createElement('td'))
+            actionElement.classList.add('py-0')
 
-        fields.forEach((field) => {
-            const fieldElement = document.getElementById(field);
-            Object.assign(form, { [field]: fieldElement.value });
-            fieldElement.value = null;
-        });
+            actionElement.append(createRemoveItemButton(function () {
+                requestElement.removeChild(rowElement);
+                setDisabledButton();
+            }));
 
-        if (validateForm(form)) addRequestItem(form);
-
-        setDisabledButton();
-         
-        document.getElementById(fields[0]).focus();
-    });
-
-    qtyInput.addEventListener("keypress", function (e) {
-
-        if ((isNaN(e.key) && (e.key != 8)) || (e.target.value.length >= 5)) {
-            e.preventDefault();
+            requestElement.append(rowElement);
+            requests.push(value);
         }
 
-        return true;
-    });
 
-    fields.forEach((field) => {
-        field.addEventListener("change", () => { field.removeAttribute("style") });
-    });
+        function createRemoveItemButton(handleClick) {
+            const element = document.createElement('button');
+            element.classList.add('btn', 'd-flex', 'align-items-center');
+            element.type = 'button';
+            element.addEventListener('click', handleClick)
 
-    function validateForm(form) {
-        var styleAttribute = "border: 2px solid #ff0000 !important";
+            const child = element.appendChild(document.createElement('span'))
+            child.textContent = "delete";
+            child.classList.add('material-symbols-outlined', 'h-100');
 
-        if (!form.quantity) document.getElementById("quantity").setAttribute("style", styleAttribute);
-        if (!form.unit) document.getElementById("unit").setAttribute("style", styleAttribute);
-        if (!form.name) document.getElementById("name").setAttribute("style", styleAttribute);
-
-        if (form.quantity && form.unit && form.name) {
-            return true;
+            return element;
         }
-    }
 
-    function setDisabledButton() {
-        var tableRowCount = table.rows.length - 1;
-        buttons.forEach((button) => {
-            button.disabled = tableRowCount == 0 ? true : false
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetAllProducts", "Product")",
+            success: (data) => { 
+                data.forEach((item) => {
+                    var option = document.createElement("option");
+                    var selectElement = document.getElementById("name2");
+                    option.text = item.name,
+                    option.value = item.id
+                    selectElement.append(option);
+                });  
+            }
         })
-    }
+    </script>
+    <script src="~/js/validation.js"></script>
+    <script src="~/js/submitRequestHandler.js"> </script>
 
-
-    
-</script>
