@@ -1,18 +1,22 @@
 ﻿
 let order = null;
-let orderItems = []
-let deletedOrderItems = []
+let orderItems = [];
+let deletedOrderItems = [];
+let productList = [];
 
 const orderItemsElement = document.getElementById('request-list');
 const alertElement = document.querySelector('#form .alert');
 const actionButtons = document.querySelectorAll("footer button[type=submit]");
 
-const formElement = document.getElementById("form")
-const formFields = ['quantity', 'unit', 'name', 'remarks']
+const formElement = document.getElementById("form");
+const modalFormElement = document.getElementById("modal-form");
+const selectForm = document.getElementById("name2");
+const formFields = ['quantity', 'unit', 'name', 'remarks'];
 
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDraftOrderRequest();
+    await fectProductList();
     
     ///// Validation
     formElement.addEventListener("submit", (e) => {
@@ -39,35 +43,95 @@ document.addEventListener('DOMContentLoaded', async () => {
         addOrderItem(form);
         document.getElementById(formFields[0]).focus();
     });
-    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'))
-    document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'))
+
+    modalFormElement.addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        const form = {};
+        let valid = true;
+        const fieldIdName = ['quantity2', 'unit2', 'name2', 'remark2'];
+        console.log("clicked");
+
+        formFields.forEach((field, index) => {
+            const fieldElement = document.getElementById(fieldIdName[index]);
+
+            if (!fieldElement.value && fieldElement.hasAttribute("required")) {
+                fieldElement.classList.add('border-danger');
+                valid = false;
+            } else {
+                fieldElement.classList.remove('border-danger');
+            }
+
+            if (fieldElement.tagName == 'SELECT') {
+                var value = fieldElement.selectedIndex != 0 ? fieldElement.options[fieldElement.selectedIndex].text : '';
+                Object.assign(form, { [field]: value });
+            } else {
+                Object.assign(form, { [field]: fieldElement.value });
+            }
+        });
+
+        if (!valid) return;
+
+        addOrderItem(form);
+        modalFormElement.reset();
+
+        document.getElementById(fields[0]).focus();
+
+    });
+    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
+    document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
     
     ///// Styling
-    document.querySelectorAll("form input[required]")
+    document.querySelectorAll("input[required]")
         .forEach(element => 
             element.addEventListener('change', () => {
                 if(element.value) {
                     element.classList.remove('border-danger');
                 }
             }))
+
+    selectForm.addEventListener("change", () => {
+
+        if (selectForm.selectedIndex != 0) {
+            selectForm.classList.remove('border-danger');
+        }
+
+        const unit = document.getElementById("unit2");
+        unit.value = selectForm.options[selectForm.selectedIndex].getAttribute("data-unit").toUpperCase();
+    })
 })
 
 async function fetchDraftOrderRequest() {
     const response = await fetch('/Order/GetDraftOrderRequest', { method: "GET" });
     const data = await response.json();
 
-    data?.orderItems?.forEach(item => addOrderItem({ ...item, unit: item?.uom?.unit }))
+    data?.orderItems?.forEach(item => addOrderItem({ ...item, unit: item?.uom?.unit }));
     order = data;
 
     setDisableActionButtons(true);
 }
+
+async function fectProductList() {
+    const response = await fetch('/Product/GetAllProducts', { method: "GET" });
+    const data = await response.json();
+
+    data.forEach((item) => {
+        var option = document.createElement("option");
+        var selectElement = document.getElementById("name2");
+        option.text = item.name;
+        option.value = item.id;
+        option.setAttribute("data-unit", item.uom.unit);
+        selectElement.append(option);
+    });
+}
 function saveOrderRequest(status) {
-    const data = { 
+    const data = {
         ...order,
-        status, 
+        status,
         orderItems: orderItems,
         deletedOrderItems
-    }
+    };
 
     $.ajax({
         type: "POST",
@@ -109,13 +173,13 @@ function addOrderItem(value) {
     setDisableActionButtons(false);
     
     const index = orderItems.length;
-    orderItemsElement.append(createOrderItemRowElement(index, value))
+    orderItemsElement.append(createOrderItemRowElement(index, value));
     orderItems.push(value);
 }
 function deleteOrderItem(index, rowElement) {
     const item = orderItems[index];
     orderItems.splice(index, 1);
-    orderItemsElement.removeChild(rowElement)
+    orderItemsElement.removeChild(rowElement);
 
     if(item.id) {
         deletedOrderItems.push(item);
@@ -133,20 +197,20 @@ function createOrderItemRowElement(index, value) {
     const rowElement = document.createElement('tr');
     rowElement.id = index.toString();
 
-    const quantityElement = rowElement.appendChild(document.createElement('td'))
+    const quantityElement = rowElement.appendChild(document.createElement('td'));
     quantityElement.textContent = value.quantity;
     quantityElement.classList.add('text-center');
 
-    const unitElement = rowElement.appendChild(document.createElement('td'))
+    const unitElement = rowElement.appendChild(document.createElement('td'));
     unitElement.textContent = value.unit;
     unitElement.classList.add('text-center');
 
     rowElement.appendChild(document.createElement('td')).textContent = value.name
     rowElement.appendChild(document.createElement('td')).textContent = value.remarks
 
-    const actionElement = rowElement.appendChild(document.createElement('td'))
+    const actionElement = rowElement.appendChild(document.createElement('td'));
     actionElement.classList.add('py-0')
-    actionElement.append(createOrderItemDeleteButtonElement(index, rowElement))
+    actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
     
     return rowElement;
 }
@@ -154,9 +218,9 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
     const buttonElement = document.createElement('button');
     buttonElement.classList.add('btn', 'd-flex', 'align-items-center');
     buttonElement.type = 'button';
-    buttonElement.addEventListener('click', () => deleteOrderItem(index, rowElement))
+    buttonElement.addEventListener('click', () => deleteOrderItem(index, rowElement));
 
-    const child = buttonElement.appendChild(document.createElement('span'))
+    const child = buttonElement.appendChild(document.createElement('span'));
     child.textContent = "delete";
     child.classList.add('material-symbols-outlined', 'h-100');
 
@@ -165,6 +229,6 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
 
 ///// Styling
 function setDisableActionButtons(value = true) {
-    actionButtons.forEach(button => button.disabled = value)
+    actionButtons.forEach(button => button.disabled = value);
 }
 
