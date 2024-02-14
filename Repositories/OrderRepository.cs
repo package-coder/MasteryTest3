@@ -83,16 +83,24 @@ namespace MasteryTest3.Repositories
         }
 
         public async Task<Order?> GetOrderById(int id) {
-            var result = await _connection.QueryAsync<Order, User, Order>(
+            var orders = await _connection.QueryAsync<Order, User, OrderItem, Order>(
                 "GetOrderById",
-                (order, user) =>
+                (order, user, orderItem) =>
                 {
                     order.user = user;
+                    order.orderItems.Add(orderItem);
                     return order;
                 }, 
                 new { Id = id }, splitOn: "Id",  commandType: CommandType.StoredProcedure);
 
-            return result.FirstOrDefault();
+            return orders.GroupBy(order => order.Id)
+                    .Select(orders =>
+                    {
+                        var first = orders.First();
+                        first.orderItems = orders.Select(order => order.orderItems.Single()).ToList();
+                        return first;
+                    }
+                ).FirstOrDefault();
         }
     }
 }
