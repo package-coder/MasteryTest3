@@ -17,6 +17,6 @@ AS BEGIN
         orderItem.remark
     FROM dbo.[Order]
     JOIN OrderItem ON OrderItem.orderId = [Order].Id
-    WHERE clientId = @clientId AND status = 'DRAFT'
+    WHERE clientId = @clientId AND status = 'DRAFT' AND dateDeleted IS NULL
 END;
 
