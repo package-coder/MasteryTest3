@@ -24,11 +24,10 @@ window.addEventListener("DOMContentLoaded", () => {
     
 });
 
-function setDisabledButton() {
-    var tableRowCount = table.rows.length - 1;
+function setDisabledButton(isRequestEmpty) {
     buttons.forEach((button) => {
-        button.disabled = tableRowCount === 0
-    })
+        button.disabled = isRequestEmpty;
+    });
 }
 
 function validateForm(form, fieldName) {

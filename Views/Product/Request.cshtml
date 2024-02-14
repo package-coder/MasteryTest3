@@ -66,10 +66,10 @@
                 </div>
             </form>
         </div>
-        <div class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
+        <div id="action-buttons" class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
             style="left: 0; right: 0; bottom: 0">
-            <div id="action-buttons">
-                <button type="button" class="btn border">Discard</button>
+            <div>
+                <button type="button" class="btn border" disabled>Discard</button>
                 <button id="save-request" type="button" class="btn border" disabled onclick="saveRequest('DRAFT')">Save</button>
             </div>
             <button id="send-request" type="button" class="btn bg-primary" disabled onclick="saveRequest('FOR_APPROVAL')">Send Request</button>
@@ -147,17 +147,18 @@
         
         actionElement.append(
             createRemoveItemButton(() => {
-                setDisabledButton();
                 requests.splice(index, 1);
                 requestElement.removeChild(rowElement)
                 
                 if (requests.length === 0) {
                     alertElement.classList.remove('d-none');
+                    setDisabledButton(true);
                 }
             })
         )
         requestElement.append(rowElement)
         requests.push(value);
+        setDisabledButton(false);
     }
 
 
@@ -176,10 +177,11 @@
 
     function saveRequest(status = "DRAFT") {
             const data = { status, Id: order?.Id, orderItems: requests }
+        console.table(data.orderItems);
             
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("Request", "Product")",
+                url: "@Url.Action("SaveRequest", "Product")",
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 processData: false,
