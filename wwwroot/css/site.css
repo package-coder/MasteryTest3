@@ -165,6 +165,10 @@ body {
   box-shadow: none;
 }
 
+.btn:disabled {
+  opacity: 0.2 !important;
+}
+
 .btn-sm{
   font-size: 0.8rem;
   padding: 1px 10px;

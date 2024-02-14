@@ -49,6 +49,59 @@ namespace MasteryTest3.Repositories
             return result.FirstOrDefault();
         }
 
+        public async Task<int> SaveOrder(Order order)
+        {
+            if (order.Id != null) return (int)order.Id;
+            
+            return await _connection.ExecuteAsync("SaveOrder", new
+            {
+                clientId = _sessionRepository.GetInt("userId"),
+                order.Id,
+                order.status
+            });
+        }
+        
+        public async Task<int> SaveOrderItem(int orderId, IEnumerable<OrderItem> orderItems)
+        {
+            var data = orderItems.ToList()
+                .Where(item => item.Id == null)
+                .Select(item => new {
+                    orderId,
+                    item.Id,
+                    item.name,
+                    item.quantity,
+                    item.remark,
+                    uomId = item.uom?.Id,
+                    productId = item.product?.Id,
+                });
+            return await _connection.ExecuteAsync("SaveOrderItem", data);
+        }
+
+        public async Task<Order?> GetDraftOrder()
+        {
+            var orders =  await _connection.QueryAsync<Order, OrderItem, UOM, Order>(
+                "GetDraftOrderWithItems",
+                (order, orderItem, unit) =>
+                {
+                    orderItem.uom = unit;
+                    order.orderItems.Add(orderItem);
+                    return order;
+                },
+                new  {  clientId = _sessionRepository.GetInt("userId") },
+                splitOn: "Id",
+                commandType: CommandType.StoredProcedure
+            );
+
+            return orders.GroupBy(order => order.Id)
+                    .Select(orders =>
+                    {
+                        var first = orders.First();
+                        first.orderItems = orders.Select(order => order.orderItems.Single()).ToList();
+                        return first;
+                    }
+            ).FirstOrDefault();
+        }
+
         public async Task<int> UpdateOrderItem(OrderItem orderItem)
         {
             return await _connection.ExecuteAsync(

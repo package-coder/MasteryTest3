@@ -1,5 +1,5 @@
 ﻿var buttons = document.querySelectorAll("#action-buttons button");
-var table = document.querySelector("#request-table tbody");
+var table = document.querySelector("#request-list tbody");
 var inputFields = document.querySelectorAll("input");
 var selectField = document.getElementById("name2");
 var qtyInput = document.querySelectorAll("input[name='quantity']");
@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function setDisabledButton() {
     var tableRowCount = table.rows.length - 1;
     buttons.forEach((button) => {
-        button.disabled = tableRowCount == 0 ? true : false
+        button.disabled = tableRowCount === 0
     })
 }
 

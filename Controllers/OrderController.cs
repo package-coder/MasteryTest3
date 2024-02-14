@@ -47,6 +47,11 @@ namespace MasteryTest3.Controllers
             return File(orderPdf, "application/pdf", $"Order#{order.Id}.pdf");
         }
 
+        public async Task<IActionResult> Request()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

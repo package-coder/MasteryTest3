@@ -26,9 +26,31 @@ namespace MasteryTest3.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DraftOrder()
+        {
+            var order = await _orderRepository.GetDraftOrder();
+            return Json(order);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Request(OrderItem item) {
-            if (await _orderRepository.AddOrderItem(item) != 0) {
+        public async Task<IActionResult> SaveRequest([FromBody] OrderViewModel orderViewModel)
+        {
+            var order = orderViewModel.ToOrder();
+            var id = await _orderRepository.SaveOrder(order);
+            if (id > 0)
+            {
+                await _orderRepository.SaveOrderItem(orderId: id, order.orderItems);
+            } 
+            
+            return StatusCode(200);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SendRequest([FromBody] OrderViewModel orderViewModel)
+        {
+            var order = orderViewModel.ToOrder();
+            if (await _orderRepository.SaveOrder(order) != 0) {
                 return StatusCode(200);
             }
 

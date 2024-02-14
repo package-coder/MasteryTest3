@@ -66,14 +66,14 @@
                 </div>
             </form>
         </div>
-        <div class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
+        <footer class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
             style="left: 0; right: 0; bottom: 0">
             <div id="action-buttons">
-                <button type="button" class="btn border">Discard</button>
-                <button id="save-request" type="button" class="btn border" disabled onclick="saveRequest('DRAFT')">Save</button>
+                <button type="reset" class="btn border">Discard</button>
+                <button id="save-request" type="submit" class="btn border" disabled onclick="saveOrderRequest('DRAFT')">Save</button>
             </div>
-            <button id="send-request" type="button" class="btn bg-primary" disabled onclick="saveRequest('FOR_APPROVAL')">Send Request</button>
-        </div>
+            <button id="send-request" type="submit" class="btn bg-primary" disabled onclick="saveOrderRequest('FOR_APPROVAL')">Send Request</button>
+        </footer>
 
     }
     
@@ -117,108 +117,108 @@
 </div>
 
 <script>
-    let order = null;
-    let requests = []
-    const requestElement = document.getElementById('request-list');
-    const alertElement = document.querySelector('#form .alert');
-    const fields = ['quantity', 'unit', 'name', 'remarks']
-
-    function addRequestItem(value) {
-        if (requests.length === 0) {
-            alertElement.classList.add('d-none');
-        }
-        const index = requests.length;
-        const rowElement = document.createElement('tr');
-        rowElement.id = index.toString();
-
-        const quantityElement = rowElement.appendChild(document.createElement('td'))
-        quantityElement.textContent = value.quantity;
-        quantityElement.classList.add('text-center');
-
-        const unitElement = rowElement.appendChild(document.createElement('td'))
-        unitElement.textContent = value.unit;
-        unitElement.classList.add('text-center');
-
-        rowElement.appendChild(document.createElement('td')).textContent = value.name
-        rowElement.appendChild(document.createElement('td')).textContent = value.remarks
-
-        const actionElement = rowElement.appendChild(document.createElement('td'))
-        actionElement.classList.add('py-0')
-        
-        actionElement.append(
-            createRemoveItemButton(() => {
-                setDisabledButton();
-                requests.splice(index, 1);
-                requestElement.removeChild(rowElement)
-                
-                if (requests.length === 0) {
-                    alertElement.classList.remove('d-none');
-                }
-            })
-        )
-        requestElement.append(rowElement)
-        requests.push(value);
-    }
-
-
-    function createRemoveItemButton(handleClick) {
-        const element = document.createElement('button');
-        element.classList.add('btn', 'd-flex', 'align-items-center');
-        element.type = 'button';
-        element.addEventListener('click', handleClick)
-
-        const child = element.appendChild(document.createElement('span'))
-        child.textContent = "delete";
-        child.classList.add('material-symbols-outlined', 'h-100');
-
-        return element;
-    }
-
-    function saveRequest(status = "DRAFT") {
-            const data = { status, Id: order?.Id, orderItems: requests }
-            
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Request", "Product")",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                processData: false,
-                dataType: false,
-                success: () => {
-                    Swal.fire({
-                        title: "Submitted Successfully!",
-                        text: "Request has been submitted",
-                        icon: "success",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.replace('/');
-                        }
-                    });
-                },
-                error: () => {
-                    Swal.fire({
-                        title: "Something went wrong!",
-                        text: "Your request has not been submitted",
-                        icon: "error",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    });
-                }
-            });
-        }
-    
-
-    document.addEventListener('DOMContentLoaded', async () => {        
-        const response = await fetch('@Url.Action("DraftOrder", "Product")', { method: "GET" });
-        const data = await response.json();
-        
-        order = data;
-        data?.orderItems?.forEach(item => addRequestItem({ ...item, unit: item.uom.unit }))
-    })
+    // let order = null;
+    // let requests = []
+    // const requestElement = document.getElementById('request-list');
+    // const alertElement = document.querySelector('#form .alert');
+    // const fields = ['quantity', 'unit', 'name', 'remarks']
+    //
+    // function addRequestItem(value) {
+    //     if (requests.length === 0) {
+    //         alertElement.classList.add('d-none');
+    //     }
+    //     const index = requests.length;
+    //     const rowElement = document.createElement('tr');
+    //     rowElement.id = index.toString();
+    //
+    //     const quantityElement = rowElement.appendChild(document.createElement('td'))
+    //     quantityElement.textContent = value.quantity;
+    //     quantityElement.classList.add('text-center');
+    //
+    //     const unitElement = rowElement.appendChild(document.createElement('td'))
+    //     unitElement.textContent = value.unit;
+    //     unitElement.classList.add('text-center');
+    //
+    //     rowElement.appendChild(document.createElement('td')).textContent = value.name
+    //     rowElement.appendChild(document.createElement('td')).textContent = value.remarks
+    //
+    //     const actionElement = rowElement.appendChild(document.createElement('td'))
+    //     actionElement.classList.add('py-0')
+    //    
+    //     actionElement.append(
+    //         createRemoveItemButton(() => {
+    //             setDisabledButton();
+    //             requests.splice(index, 1);
+    //             requestElement.removeChild(rowElement)
+    //            
+    //             if (requests.length === 0) {
+    //                 alertElement.classList.remove('d-none');
+    //             }
+    //         })
+    //     )
+    //     requestElement.append(rowElement)
+    //     requests.push(value);
+    // }
+    //
+    //
+    // function createRemoveItemButton(handleClick) {
+    //     const element = document.createElement('button');
+    //     element.classList.add('btn', 'd-flex', 'align-items-center');
+    //     element.type = 'button';
+    //     element.addEventListener('click', handleClick)
+    //
+    //     const child = element.appendChild(document.createElement('span'))
+    //     child.textContent = "delete";
+    //     child.classList.add('material-symbols-outlined', 'h-100');
+    //
+    //     return element;
+    // }
+    //
+    // function saveRequest(status = "DRAFT") {
+    //         const data = { status, Id: order?.Id, orderItems: requests }
+    //        
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "@Url.Action("Request", "Product")",
+    //             data: JSON.stringify(data),
+    //             contentType: "application/json",
+    //             processData: false,
+    //             dataType: false,
+    //             success: () => {
+    //                 Swal.fire({
+    //                     title: "Submitted Successfully!",
+    //                     text: "Request has been submitted",
+    //                     icon: "success",
+    //                     background: '#151515',
+    //                     showCancelButton: false,
+    //                     allowOutsideClick: false
+    //                 }).then((result) => {
+    //                     if (result.isConfirmed) {
+    //                         window.location.replace('/');
+    //                     }
+    //                 });
+    //             },
+    //             error: () => {
+    //                 Swal.fire({
+    //                     title: "Something went wrong!",
+    //                     text: "Your request has not been submitted",
+    //                     icon: "error",
+    //                     background: '#151515',
+    //                     showCancelButton: false,
+    //                     allowOutsideClick: false
+    //                 });
+    //             }
+    //         });
+    //     }
+    //
+    //
+    // document.addEventListener('DOMContentLoaded', async () => {        
+    //     const response = await fetch('@Url.Action("DraftOrder", "Product")', { method: "GET" });
+    //     const data = await response.json();
+    //    
+    //     order = data;
+    //     data?.orderItems?.forEach(item => addRequestItem({ ...item, unit: item.uom.unit }))
+    // })
 
     $.ajax({
             type: "GET",
@@ -234,5 +234,6 @@
             }
     })
 </script>
-<script src="~/js/validation.js"></script>
+<script src="../Views/Order/Request.cshtml.js" type="module"></script>
+@* <script src="~/js/validation.js"></script> *@
 <script src="~/js/submitRequestHandler.js"> </script>
