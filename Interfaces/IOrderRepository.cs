@@ -10,5 +10,7 @@ namespace MasteryTest3.Interfaces
         public Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems);
         public Task<Order?> GetDraftOrderRequest();
         public Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems);
+        public Task<int> DeleteDraftOrderRequest(Order order);
     }
 }
+    

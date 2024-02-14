@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
@@ -38,15 +39,20 @@ namespace MasteryTest3.Controllers
         }
         
         [HttpPost]
-        public new async Task<IActionResult> Request([FromBody] OrderViewModel orderViewModel)
+        public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
             // if (!ModelState.IsValid)
             // {
             //     return View(orderViewModel);
             // }
 
-            await _orderService.RequestOrder(orderViewModel.ToOrder());
-            return View();
+            await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
+        }
+
+        [HttpDelete]
+        public async Task DeleteDraftOrderRequest([FromBody] Order? order)
+        {
+            await _orderService.DeleteDraftOrderRequest(order);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

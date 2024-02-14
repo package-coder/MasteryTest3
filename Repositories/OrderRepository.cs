@@ -19,7 +19,7 @@ namespace MasteryTest3.Repositories
         
         public async Task<IEnumerable<Order>> GetAllOrders(int? clientId)
         {
-            return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId});
+            return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId},  commandType: CommandType.StoredProcedure);
         }
         
         public async Task<int?> SaveOrder(Order order)
@@ -44,7 +44,7 @@ namespace MasteryTest3.Repositories
                     item.unit,
                     productId = item.product?.Id,
                 });
-            return await _connection.ExecuteAsync("SaveOrderItem", data);
+            return await _connection.ExecuteAsync("SaveOrderItem", data,  commandType: CommandType.StoredProcedure);
         }
 
         public async Task<Order?> GetDraftOrderRequest()
@@ -71,9 +71,15 @@ namespace MasteryTest3.Repositories
             ).FirstOrDefault();
         }
 
-        public Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems)
+        public async Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems)
         {
-            throw new NotImplementedException();
+            var ids = orderItems.Select(item => new { item.Id });
+            return await _connection.ExecuteAsync("DeleteOrderItem", ids,  commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<int> DeleteDraftOrderRequest(Order order)
+        {
+            return await _connection.ExecuteAsync("DeleteDraftOrderRequest", new { order.Id }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<Order?> GetOrderById(int id) {
@@ -84,7 +90,7 @@ namespace MasteryTest3.Repositories
                     order.user = user;
                     return order;
                 }, 
-                new { Id = id }, splitOn: "Id");
+                new { Id = id }, splitOn: "Id",  commandType: CommandType.StoredProcedure);
 
             return result.FirstOrDefault();
         }

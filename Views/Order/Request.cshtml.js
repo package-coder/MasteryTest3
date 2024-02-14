@@ -16,7 +16,7 @@ const formFields = ['quantity', 'unit', 'name', 'remarks'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDraftOrderRequest();
-    await fectProductList();
+    // await fectProductList();
     
     ///// Validation
     formElement.addEventListener("submit", (e) => {
@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
     document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
+    document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
     
     ///// Styling
     document.querySelectorAll("input[required]")
@@ -112,7 +113,6 @@ async function fetchDraftOrderRequest() {
 
     setDisableActionButtons(true);
 }
-
 async function fectProductList() {
     const response = await fetch('/Product/GetAllProducts', { method: "GET" });
     const data = await response.json();
@@ -193,6 +193,51 @@ function deleteOrderItem(index, rowElement) {
     }
 
     setDisableActionButtons(orderItems.length === 0);
+}
+
+function discardOrderRequest() {
+    Swal.fire({
+        title: "Discard Order Request?",
+        text: "All the items will be deleted",
+        icon: "question",
+        background: '#151515',
+        showCancelButton: true,
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: "/Order/DeleteDraftOrderRequest",
+                data: JSON.stringify(order),
+                contentType: "application/json",
+                processData: false,
+                dataType: false,
+                success: () => {
+                    Swal.fire({
+                        title: "Order request has been discarded!",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                },
+                error: () => {
+                    Swal.fire({
+                        title: "Something went wrong!",
+                        text: "Your request has not been submitted",
+                        icon: "error",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
+    });
 }
 
 ///// Element Creation
