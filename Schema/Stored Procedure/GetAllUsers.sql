@@ -3,4 +3,5 @@ AS BEGIN
 	SELECT *
 	FROM 
 		AppUser
-END
+END;
+

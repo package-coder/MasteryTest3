@@ -7,4 +7,5 @@ AS BEGIN
 		AppUser
 	WHERE
 		Id = @userId
-END
+END;
+

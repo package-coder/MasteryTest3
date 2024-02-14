@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE SaveOrder
+CREATE PROCEDURE [dbo].[SaveOrder]
 (
     @clientId INT,
     @Id INT,
@@ -7,12 +7,14 @@
 AS BEGIN
     IF (@Id IS NULL) BEGIN 
         INSERT INTO [Order](clientId, totalItems, status)
+		OUTPUT INSERTED.Id
         VALUES(@clientId, 0, @status)
-        SELECT SCOPE_IDENTITY()
     END ELSE 
     BEGIN
         UPDATE [Order] 
-        SET status = @status
+        SET [status] = @status
+		OUTPUT INSERTED.Id
         WHERE Id = @Id
     END
-END
+END;
+

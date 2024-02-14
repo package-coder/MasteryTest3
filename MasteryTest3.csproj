@@ -11,6 +11,9 @@
     <Content Remove="PDF\**" />
     <EmbeddedResource Remove="PDF\**" />
     <None Remove="PDF\**" />
+    <None Remove="Schema\Stored Procedure\GetAllUsers.sql" />
+    <None Remove="Schema\Stored Procedure\UpdateProduct.sql" />
+    <None Remove="Schema\Stored Procedure\GetOrSaveOrder.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Schema\Stored Procedure\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

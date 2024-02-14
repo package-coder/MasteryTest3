@@ -10,13 +10,11 @@ namespace MasteryTest3.Repositories
     {
         private readonly IDbConnection _connection;
         private readonly ISessionRepository _sessionRepository;
-        private readonly ICartRepository _cartRepository;
 
-        public OrderRepository(IDbConnection connection, ISessionRepository sessionRepository, ICartRepository cartRepository)
+        public OrderRepository(IDbConnection connection, ISessionRepository sessionRepository)
         {
             _connection = connection;
             _sessionRepository = sessionRepository;
-            _cartRepository = cartRepository;
         }
         
         public async Task<IEnumerable<Order>> GetAllOrders(int? clientId)
@@ -31,7 +29,7 @@ namespace MasteryTest3.Repositories
                 clientId = _sessionRepository.GetInt("userId"),
                 order.Id,
                 order.status
-            });
+            }, commandType: CommandType.StoredProcedure);
         }
         
         public async Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems)
@@ -43,7 +41,7 @@ namespace MasteryTest3.Repositories
                     item.name,
                     item.quantity,
                     item.remark,
-                    uomId = item.uom?.Id,
+                    item.unit,
                     productId = item.product?.Id,
                 });
             return await _connection.ExecuteAsync("SaveOrderItem", data);
@@ -51,11 +49,10 @@ namespace MasteryTest3.Repositories
 
         public async Task<Order?> GetDraftOrderRequest()
         {
-            var orders =  await _connection.QueryAsync<Order, OrderItem, UOM, Order>(
+            var orders =  await _connection.QueryAsync<Order, OrderItem, Order>(
                 "GetDraftOrderRequest",
-                (order, orderItem, unit) =>
+                (order, orderItem) =>
                 {
-                    orderItem.uom = unit;
                     order.orderItems.Add(orderItem);
                     return order;
                 },
@@ -78,22 +75,6 @@ namespace MasteryTest3.Repositories
         {
             throw new NotImplementedException();
         }
-        public async Task<int> UpdateOrderStatus() {
-            var cartItems = await _cartRepository.GetCartItems();
-            int crc = 0;
-
-            foreach (var item in cartItems) {
-                crc += item.name.Sum(ch => (int)ch) + item.quantity + item.uom.Id;
-            }
-
-            return await _connection.ExecuteAsync(
-                "UpdateOrderStatus",
-                new {
-                    clientId = _sessionRepository.GetInt("userId"),
-                    status = "FOR_APPROVAL",
-                    crc
-                });
-        }
 
         public async Task<Order?> GetOrderById(int id) {
             var result = await _connection.QueryAsync<Order, User, Order>(
@@ -106,17 +87,6 @@ namespace MasteryTest3.Repositories
                 new { Id = id }, splitOn: "Id");
 
             return result.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int id)
-        {
-            return await _connection.QueryAsync<OrderItem, UOM, OrderItem>(
-                    "GetAllOrderItems",
-                    (orderItem, uom) => { 
-                        orderItem.uom = uom;
-                        return orderItem;
-                    },
-                    new { Id = id}, splitOn: "Id");
         }
     }
 }

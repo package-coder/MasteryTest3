@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE GetDraftOrderRequest (@clientId INT)
+CREATE PROCEDURE GetDraftOrderRequest (@clientId INT)
 AS BEGIN
     SELECT
         [Order].Id,
@@ -13,12 +13,10 @@ AS BEGIN
         orderItem.productId,
         orderItem.name,
         orderItem.quantity,
-        orderItem.remark,
-        UOM.Id,
-        UOM.name,
-        UOM.unit
+        orderItem.unit,       
+        orderItem.remark
     FROM dbo.[Order]
-    LEFT JOIN OrderItem ON OrderItem.orderId = [Order].Id
-    LEFT JOIN UOM ON OrderItem.uom = UOM.Id
+    JOIN OrderItem ON OrderItem.orderId = [Order].Id
     WHERE clientId = @clientId AND status = 'DRAFT'
-END
+END;
+

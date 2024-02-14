@@ -14,7 +14,7 @@ namespace MasteryTest3.Repositories
             _connection = connection;
         }
 
-        public async Task<IEnumerable<User>> GetAllUser()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
             return await _connection.QueryAsync<User>("GetAllUsers");
         }

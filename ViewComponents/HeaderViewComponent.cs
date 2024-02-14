@@ -13,7 +13,7 @@ namespace MasteryTest3.ViewComponents
         }
 
         public IViewComponentResult Invoke() {
-            var user = Task.Run(()=>_userRepository.GetAllUser()).Result;
+            var user = Task.Run(()=>_userRepository.GetAllUsers()).Result;
             return View("Default", user);
         }
     }

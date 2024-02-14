@@ -25,15 +25,6 @@ public class ProductRepository : IProductRepository
             splitOn:"Id");
     }
 
-    public Product? GetProductById<T>(T id)
-    {
-        var products = _connection.Query<Product?>(
-            "sp_get_product_by_id", 
-            new { id }
-            );
-        return products.FirstOrDefault();
-    }
-
     public int AddProduct(Product product)
     {
         return _connection.Execute(

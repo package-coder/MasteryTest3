@@ -20,9 +20,6 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-
-builder.Services.AddScoped<IUOMRepository, UOMRepository>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 
 //ViewComponents

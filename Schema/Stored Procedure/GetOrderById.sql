@@ -18,14 +18,11 @@ AS BEGIN
         orderItem.productId,
         orderItem.name,
         orderItem.quantity,
-        orderItem.remark,
-        uom.Id,
-        uom.name,
-        uom.unit
+        orderItem.remark
     FROM
         [Order] ord
             JOIN AppUser appUser ON appUser.id = ord.clientId
             JOIN OrderItem orderItem ON orderItem.orderId = ord.Id
-            JOIN UOM uom ON orderItem.uom = uom.Id
     WHERE ord.Id = @id
-END
+END;
+
