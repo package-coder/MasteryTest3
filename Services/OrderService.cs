@@ -14,11 +14,10 @@ public class OrderService : IOrderService
 
     public async Task RequestOrder(Order order)
     {
-        var orderId = await _orderRepository.SaveOrder(order);
-        if (orderId != null)
-        {
-            await _orderRepository.SaveOrderItems((int)orderId, order.orderItems);
-        }
+        order.Id = await _orderRepository.SaveOrder(order);
+
+        var unsavedItems = order.orderItems.Where(item => item.Id == null);
+        await _orderRepository.SaveOrderItems((int)order.Id!, unsavedItems);
     }
 
     public async Task<Order?> GetOrderById(int id)

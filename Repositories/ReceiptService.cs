@@ -40,7 +40,7 @@ namespace MasteryTest3.Repositories
             int yPosition = 170;
             foreach (var item in order.orderItems) {
                 graphics.DrawString(item.quantity.ToString(), textFont, XBrushes.Black, new XRect(xPosition, yPosition, 50, 20), XStringFormats.TopLeft);
-                graphics.DrawString(item.uom.unit, textFont, XBrushes.Black, new XRect(xPosition + 60, yPosition, 50, 20), XStringFormats.TopLeft);
+                graphics.DrawString(item.unit, textFont, XBrushes.Black, new XRect(xPosition + 60, yPosition, 50, 20), XStringFormats.TopLeft);
                 graphics.DrawString(item.name, textFont, XBrushes.Black, new XRect(xPosition + 120, yPosition, 150, 20), XStringFormats.TopLeft);
                 if (item.remark != null) { 
                     graphics.DrawString(item.remark.ToString(), textFont, XBrushes.Black, new XRect(xPosition + 350, yPosition, 150, 20), XStringFormats.TopLeft);

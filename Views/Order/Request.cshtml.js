@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(!fieldElement.value && fieldElement.hasAttribute("required")) {
                 fieldElement.classList.add('border-danger');
                 valid = false;
+                return;
             } else {
                 fieldElement.classList.remove('border-danger');
             }
@@ -106,7 +107,7 @@ async function fetchDraftOrderRequest() {
     const response = await fetch('/Order/GetDraftOrderRequest', { method: "GET" });
     const data = await response.json();
 
-    data?.orderItems?.forEach(item => addOrderItem({ ...item, unit: item?.uom?.unit }));
+    data?.orderItems?.forEach(item => addOrderItem({ ...item }))
     order = data;
 
     setDisableActionButtons(true);
@@ -167,6 +168,8 @@ function saveOrderRequest(status) {
     });
 }
 function addOrderItem(value) {
+    if(!value) return;
+    
     if (orderItems.length === 0) {
         alertElement.classList.add('d-none');
     }
