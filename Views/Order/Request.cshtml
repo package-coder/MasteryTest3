@@ -83,31 +83,30 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="modal-request-form">
+                    <form id="modal-form" novalidate>
                         <div class="form-group mb-2">
-                            <select id="name2" class="form-select">
-                                <option selected disabled>--select products--</option>
-                        </select>
+                            <select id="name2" required>
+                                <option selected disabled value="">--select products--</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <div class="form-item mb-2">
                                 <label>Qunatity</label>
-                                <input class="form-control quantity" id="quantity2" name="quantity" />
+                                <input  quantity" id="quantity2" name="quantity" required/>
                             </div>
-                            <div class="form-item mb-2">
-                                <label>Unit</label>
-                                <input class="form-control" id="unit2" />
+                            <div class="form-item">
+                                <input  type="hidden" id="unit2" required/>
                             </div>
                             <div class="form-item mb-2">
                                 <label>Remarks</label>
-                                <input class="form-control" id="remark2" />
+                                <input  id="remark2" required/>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="modal-request-form" value="submit">Add Product</button>
+                    <button type="submit" class="btn btn-primary" form="modal-form" value="submit">Add Product</button>
                 </div>
             </div>
         </div>
