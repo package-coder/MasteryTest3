@@ -1,6 +1,7 @@
 using System.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Repositories;
+using MasteryTest3.Services;
 using MasteryTest3.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Data.SqlClient;
@@ -16,10 +17,13 @@ builder.Services.AddTransient<IDbConnection>(e => new SqlConnection(connectionSt
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 builder.Services.AddScoped<IUOMRepository, UOMRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<IPdfRepository, PdfRepository>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
 
 //ViewComponents
 builder.Services.AddScoped<HeaderViewComponent>();

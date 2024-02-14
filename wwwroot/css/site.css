@@ -1,5 +1,8 @@
 :root {
-  --border: 0.7px solid rgba(255, 255, 255, 0.1);
+  --border-width: 0.7px;
+  --border-color: rgba(255, 255, 255, 0.1);
+  
+  --border: var(--border-width) solid var(--border-color);
   --bs-body-bg: rgb(21, 21, 21);
   --bs-body-color: #eee;
   --bs-body-color-rgb: 255,255,255;
@@ -33,10 +36,10 @@
   border: 0 !important;
 }
 
-    .form-select option {
-        background-color: #31304D;
-        color: var(--bs-light) !important;
-    }
+.form-select option {
+    background-color: #31304D;
+    color: var(--bs-light) !important;
+}
 
 .border {
    border: var(--border) !important;
@@ -121,36 +124,6 @@ body {
   width: 1px;
   white-space: nowrap;
 }
-
-.table input {
-  width: 100% !important;
-  background-color: rgb(15, 15, 15);
-  outline: 0 !important;
-  border: var(--border) !important;
-  border-width: 2px !important;
-
-  color: var(--bs-body-color);  
-  text-align: center;
-  padding: 0 12px;  
-  height: 32px;
-  border-radius: 4px;
-}
-
-.table input:hover, .table input:focus, 
-.table tr:hover > input, .table tr:focus > input {
-  border-color: var(--bs-primary) !important;
-  border-width: 2px !important;
-}
-
-.table-input td {
-  padding: 2px 2px;
-
-}
-
-.table-input {
-  background-color: transparent !important;
-}
-
 
 .btn {
   border-radius: 5px !important;

@@ -10,45 +10,42 @@ namespace MasteryTest3.Controllers
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class OrderController : Controller
     {
-        private readonly IOrderRepository _orderRepository;
-        private readonly IPdfRepository _pdfRepository;
+        private readonly IOrderService _orderService;  
+        private readonly IReceiptService _receiptService;
 
-        public OrderController(IOrderRepository orderRepository, IPdfRepository pdfRepository)
+        public OrderController(IReceiptService receiptService, IOrderService orderService)
         {
-            _orderRepository = orderRepository;
-            _pdfRepository = pdfRepository;
+            _receiptService = receiptService;
+            _orderService = orderService;
         }
 
+        public async Task<IActionResult> DownloadOrderReceipt(int id) {
+            var order = await _orderService.GetOrderById(id);
+
+            var orderPdf = _receiptService.GenerateOrderReceipt(id, order!);
+
+            return File(orderPdf, "application/pdf", $"Order#{order!.Id}.pdf");
+        }
+
+        [HttpGet]
+        public new IActionResult Request() => View();
+
+        [HttpGet]
+        public async Task<IActionResult> GetDraftOrderRequest()
+        {
+            var order = await _orderService.GetDraftOrderRequest();
+            return Json(order);
+        }
+        
         [HttpPost]
-        public async Task<IActionResult> AddOrderItem(OrderItem orderItem)
+        public new async Task<IActionResult> Request([FromBody] OrderViewModel orderViewModel)
         {
-            if (await _orderRepository.AddOrderItem(orderItem) != 0) {
-                return StatusCode(200);
-            }
-
-            return StatusCode(403);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PlaceOrder() {
-            if (await _orderRepository.UpdateOrderStatus() != 0) {
-                return StatusCode(200);
-            }
-
-            return StatusCode(403);
-        }
-
-        public async Task<IActionResult> DownloadOrderReceipt(int Id) {
-            var order = await _orderRepository.GetOrderById(Id);
-            var orderItems = await _orderRepository.GetOrderAllOrderItems(Id);
-
-            var orderPdf = _pdfRepository.GenerateOrderReceipt(Id, order, orderItems);
-
-            return File(orderPdf, "application/pdf", $"Order#{order.Id}.pdf");
-        }
-
-        public async Task<IActionResult> Request()
-        {
+            // if (!ModelState.IsValid)
+            // {
+            //     return View(orderViewModel);
+            // }
+            
+            await _orderService.RequestOrder(orderViewModel.ToOrder());
             return View();
         }
 

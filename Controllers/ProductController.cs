@@ -29,7 +29,7 @@ namespace MasteryTest3.Controllers
         [HttpGet]
         public async Task<IActionResult> DraftOrder()
         {
-            var order = await _orderRepository.GetDraftOrder();
+            var order = await _orderRepository.GetDraftOrderRequest();
             return Json(order);
         }
 
@@ -37,11 +37,6 @@ namespace MasteryTest3.Controllers
         public async Task<IActionResult> SaveRequest([FromBody] OrderViewModel orderViewModel)
         {
             var order = orderViewModel.ToOrder();
-            var id = await _orderRepository.SaveOrder(order);
-            if (id > 0)
-            {
-                await _orderRepository.SaveOrderItem(orderId: id, order.orderItems);
-            } 
             
             return StatusCode(200);
         }

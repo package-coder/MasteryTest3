@@ -18,42 +18,15 @@ namespace MasteryTest3.Repositories
             _sessionRepository = sessionRepository;
             _cartRepository = cartRepository;
         }
-
-        public async Task<int> AddOrderItem(OrderItem item)
-        {
-                return await _connection.ExecuteAsync("AddOrderItems", new
-                {
-                    clientId = _sessionRepository.GetInt("userId"),
-                    productId = item.product?.Id,
-                    item.quantity,
-                    item.name,
-                    item.remark,
-                    uomId = item.uom.Id,
-                });
-        }
-
+        
         public async Task<IEnumerable<Order>> GetAllOrders(int? clientId)
         {
             return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId});
         }
-
-        public async Task<OrderItem> GetOrderItem(int Id) {
-            var result = await _connection.QueryAsync<OrderItem, UOM, OrderItem>(
-                "GetOrderItemById",
-                (orderItem, uom) => {
-                    orderItem.uom = uom;
-                    return orderItem;
-                },
-                new { Id }, splitOn: "Id");
-
-            return result.FirstOrDefault();
-        }
-
-        public async Task<int> SaveOrder(Order order)
+        
+        public async Task<int?> SaveOrder(Order order)
         {
-            if (order.Id != null) return (int)order.Id;
-            
-            return await _connection.ExecuteAsync("SaveOrder", new
+            return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
                 clientId = _sessionRepository.GetInt("userId"),
                 order.Id,
@@ -61,10 +34,9 @@ namespace MasteryTest3.Repositories
             });
         }
         
-        public async Task<int> SaveOrderItem(int orderId, IEnumerable<OrderItem> orderItems)
+        public async Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems)
         {
             var data = orderItems.ToList()
-                .Where(item => item.Id == null)
                 .Select(item => new {
                     orderId,
                     item.Id,
@@ -77,10 +49,10 @@ namespace MasteryTest3.Repositories
             return await _connection.ExecuteAsync("SaveOrderItem", data);
         }
 
-        public async Task<Order?> GetDraftOrder()
+        public async Task<Order?> GetDraftOrderRequest()
         {
             var orders =  await _connection.QueryAsync<Order, OrderItem, UOM, Order>(
-                "GetDraftOrderWithItems",
+                "GetDraftOrderRequest",
                 (order, orderItem, unit) =>
                 {
                     orderItem.uom = unit;
@@ -102,19 +74,10 @@ namespace MasteryTest3.Repositories
             ).FirstOrDefault();
         }
 
-        public async Task<int> UpdateOrderItem(OrderItem orderItem)
+        public Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems)
         {
-            return await _connection.ExecuteAsync(
-                "UpdateOrderItem",
-                new {
-                    orderItem.Id,
-                    orderItem.name,
-                    orderItem.remark,
-                    orderItem.quantity,
-                    uomId = orderItem.uom.Id,
-                });
+            throw new NotImplementedException();
         }
-
         public async Task<int> UpdateOrderStatus() {
             var cartItems = await _cartRepository.GetCartItems();
             int crc = 0;
@@ -132,7 +95,7 @@ namespace MasteryTest3.Repositories
                 });
         }
 
-        public async Task<Order> GetOrderById(int Id) {
+        public async Task<Order?> GetOrderById(int id) {
             var result = await _connection.QueryAsync<Order, User, Order>(
                 "GetOrderById",
                 (order, user) =>
@@ -140,12 +103,12 @@ namespace MasteryTest3.Repositories
                     order.user = user;
                     return order;
                 }, 
-                new { Id }, splitOn: "Id");
+                new { Id = id }, splitOn: "Id");
 
             return result.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int Id)
+        public async Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int id)
         {
             return await _connection.QueryAsync<OrderItem, UOM, OrderItem>(
                     "GetAllOrderItems",
@@ -153,7 +116,7 @@ namespace MasteryTest3.Repositories
                         orderItem.uom = uom;
                         return orderItem;
                     },
-                    new { Id}, splitOn: "Id");
+                    new { Id = id}, splitOn: "Id");
         }
     }
 }

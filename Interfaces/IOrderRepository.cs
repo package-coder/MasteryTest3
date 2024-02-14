@@ -4,15 +4,12 @@ namespace MasteryTest3.Interfaces
 {
     public interface IOrderRepository
     {
-        public Task<int> AddOrderItem(OrderItem item);
         public Task<IEnumerable<Order>> GetAllOrders(int? clientId);
-        public Task<OrderItem> GetOrderItem(int Id);
-        public Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int Id);
-        public Task<Order> GetOrderById(int Id);
-        public Task<int> SaveOrder(Order order);
-        public Task<int> SaveOrderItem(int orderId, IEnumerable<OrderItem> orderItems);
-        public Task<Order?> GetDraftOrder();
-        public Task<int> UpdateOrderItem(OrderItem orderItem);
-        public Task<int> UpdateOrderStatus();
+        public Task<IEnumerable<OrderItem>> GetOrderAllOrderItems(int id);
+        public Task<Order?> GetOrderById(int id);
+        public Task<int?> SaveOrder(Order order);
+        public Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems);
+        public Task<Order?> GetDraftOrderRequest();
+        public Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems);
     }
 }

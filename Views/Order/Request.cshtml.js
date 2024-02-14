@@ -8,42 +8,70 @@ const alertElement = document.querySelector('#form .alert');
 const actionButtons = document.querySelectorAll("footer button[type=submit]");
 
 const formElement = document.getElementById("form")
-const fields = ['quantity', 'unit', 'name', 'remarks']
+const formFields = ['quantity', 'unit', 'name', 'remarks']
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await fetchOrderItems();
-
+    await fetchDraftOrderRequest();
+    
+    ///// Validation
     formElement.addEventListener("submit", (e) => {
         e.preventDefault();
         const form = {};
-
-        fields.forEach((field) => {
+        let valid = true;
+        
+        formFields.forEach((field) => {
             const fieldElement = document.getElementById(field);
+            
+            if(!fieldElement.value && fieldElement.hasAttribute("required")) {
+                fieldElement.classList.add('border-danger');
+                valid = false;
+            } else {
+                fieldElement.classList.remove('border-danger');
+            }
+            
             Object.assign(form, { [field]: fieldElement.value });
             fieldElement.value = null;
         });
-
+        
+        if(!valid) return;
+        
         addOrderItem(form);
-        document.getElementById(fields[0]).focus();
+        document.getElementById(formFields[0]).focus();
     });
+    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'))
+    document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'))
+    
+    ///// Styling
+    document.querySelectorAll("form input[required]")
+        .forEach(element => 
+            element.addEventListener('change', () => {
+                if(element.value) {
+                    element.classList.remove('border-danger');
+                }
+            }))
 })
 
-async function fetchOrderItems() {
-    const response = await fetch('/Product/DraftOrder', { method: "GET" });
+async function fetchDraftOrderRequest() {
+    const response = await fetch('/Order/GetDraftOrderRequest', { method: "GET" });
     const data = await response.json();
 
-    data?.orderItems?.forEach(item => addOrderItem({ ...item, unit: item.uom.unit }))
+    data?.orderItems?.forEach(item => addOrderItem({ ...item, unit: item?.uom?.unit }))
     order = data;
 
     setDisableActionButtons(true);
 }
-function saveOrderRequest(status = "DRAFT") {
-    const data = { status, Id: order?.Id, orderItems: orderItems }
+function saveOrderRequest(status) {
+    const data = { 
+        ...order,
+        status, 
+        orderItems: orderItems,
+        deletedOrderItems
+    }
 
     $.ajax({
         type: "POST",
-        url: "/Product/Request/",
+        url: "/Order/Request",
         data: JSON.stringify(data),
         contentType: "application/json",
         processData: false,
@@ -98,8 +126,9 @@ function deleteOrderItem(index, rowElement) {
     }
 
     setDisableActionButtons(orderItems.length === 0);
-    
 }
+
+///// Element Creation
 function createOrderItemRowElement(index, value) {
     const rowElement = document.createElement('tr');
     rowElement.id = index.toString();
@@ -133,6 +162,9 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
 
     return buttonElement;
 }
+
+///// Styling
 function setDisableActionButtons(value = true) {
     actionButtons.forEach(button => button.disabled = value)
 }
+
