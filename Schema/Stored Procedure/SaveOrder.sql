@@ -2,7 +2,8 @@ CREATE PROCEDURE [dbo].[SaveOrder]
 (
     @clientId INT,
     @Id INT,
-    @status VARCHAR(20) = 'DRAFT'
+    @status VARCHAR(20) = 'DRAFT',
+	@crc INT
 ) 
 AS BEGIN
     IF (@Id IS NULL) BEGIN 
@@ -12,9 +13,10 @@ AS BEGIN
     END ELSE 
     BEGIN
         UPDATE [Order] 
-        SET [status] = @status
+        SET 
+			[status] = @status,
+			crc = @crc
 		OUTPUT INSERTED.Id
         WHERE Id = @Id
     END
 END;
-
