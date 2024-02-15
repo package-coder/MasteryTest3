@@ -148,27 +148,36 @@ async function fetchDraftOrderRequest() {
     setDisableActionButtons(true);
 }
 async function fetchProductList() {
-   
+    var productList = {}
     if (localStorage.getItem("productList")) {
 
-        var productList = JSON.parse(localStorage.getItem("productList"));
+        productList = JSON.parse(localStorage.getItem("productList"));
+        populateSelectList(productList);
 
-        productList.forEach((item) => {
-            var option = document.createElement("option");
-            var selectElement = document.getElementById("name2");
-            option.text = item.name;
-            option.value = item.id;
-            option.setAttribute("data-unit", item.uom.unit);
-            selectElement.append(option);
-        });
+       
     } else {
         const response = await fetch('/Product/GetAllProducts', { method: "GET" });
         const data = await response.json();
 
         localStorage.setItem("productList", JSON.stringify(data));
+        productList = JSON.parse(localStorage.getItem("productList"));
+
+        populateSelectList(productList);
     }
     
 }
+
+function populateSelectList(productList) {
+    productList.forEach((item) => {
+        var option = document.createElement("option");
+        var selectElement = document.getElementById("name2");
+        option.text = item.name;
+        option.value = item.id;
+        option.setAttribute("data-unit", item.uom.unit);
+        selectElement.append(option);
+    });
+}
+
 function saveOrderRequest(status) {
     const data = {
         ...order,
