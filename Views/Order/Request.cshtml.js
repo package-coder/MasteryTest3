@@ -16,7 +16,7 @@ const formFields = ['quantity', 'unit', 'name', 'remarks'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDraftOrderRequest();
-    // await fectProductList();
+    await fectProductList();
     
     ///// Validation
     formElement.addEventListener("submit", (e) => {
@@ -102,6 +102,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const unit = document.getElementById("unit2");
         unit.value = selectForm.options[selectForm.selectedIndex].getAttribute("data-unit").toUpperCase();
     })
+
+    document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
+    document.getElementById("quantity2").addEventListener("keypress", function (e) { validateKeyInput(e) });
 })
 
 async function fetchDraftOrderRequest() {
@@ -278,5 +281,13 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
 ///// Styling
 function setDisableActionButtons(value = true) {
     actionButtons.forEach(button => button.disabled = value);
+}
+
+function validateKeyInput(e) {
+
+    if ((isNaN(e.key)) && (e.key != 8) || e.target.value.length >= 5) {
+        e.preventDefault();
+    }
+    return true;
 }
 

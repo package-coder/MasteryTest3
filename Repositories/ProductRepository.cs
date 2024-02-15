@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
     public IEnumerable<Product> GetAllProducts()
     {
         return _connection.Query<Product, UOM, Product>(
-            "NonPaginatedResult",
+            "GetProductList",
             (product, uom)=>{
                 product.uom = uom;
                 return product;
