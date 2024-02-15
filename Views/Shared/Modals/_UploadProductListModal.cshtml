@@ -1,0 +1,38 @@
+﻿<div class="modal fade" id="uploadProductList" tabindex="-1" aria-labelledby="uploadProductList" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="uploadProductList">Upload Product List</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
+            </div>
+            <div class="modal-body">
+                <div class="info-block">
+                    <h6>INSTRUCTIONS</h6>
+                    <ol>
+                        <li>Download this <a asp-controller="Order" asp-action="DownloadExcelTemplate">template</a> first</li>
+                        <li>
+                            You may download this <a asp-controller="Product" asp-action="DownloadProductList">product list</a>
+                            as your reference for choosing existing products</li>
+                        <li>
+                            Ensure your have filled out the required fields in the template.
+                            The remark field is optional and the unit field has a dropdown option for you to choose
+                        </li>
+                        <li>
+                           Once you filled the template. You may now upload the file and click upload list.
+                        </li>
+                    </ol>
+                </div>
+                <form id="upload-form" novalidate>
+                    <div class="form-group mb-2">
+                       <label>Upload Excel File</label>
+                       <input type="file" name="productList" id="product-list"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="upload-form" value="submit">Upload List</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -21,6 +21,7 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
 
 //ViewComponents
 builder.Services.AddScoped<HeaderViewComponent>();

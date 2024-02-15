@@ -13,11 +13,13 @@ namespace MasteryTest3.Controllers
     {
         private readonly IOrderService _orderService;  
         private readonly IReceiptService _receiptService;
+        private readonly IExcelService _excelService;
 
-        public OrderController(IReceiptService receiptService, IOrderService orderService)
+        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService)
         {
             _receiptService = receiptService;
             _orderService = orderService;
+            _excelService = excelService;
         }
 
         public async Task<IActionResult> DownloadOrderReceipt(int id) {
@@ -41,18 +43,26 @@ namespace MasteryTest3.Controllers
         [HttpPost]
         public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
-            // if (!ModelState.IsValid)
-            // {
-            //     return View(orderViewModel);
-            // }
-
-            await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
+           await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
         }
 
         [HttpDelete]
         public async Task DeleteDraftOrderRequest([FromBody] Order? order)
         {
             await _orderService.DeleteDraftOrderRequest(order);
+        }
+
+        [HttpPost]
+        public IActionResult UploadExcelFile(IFormFile productList) {
+
+            var items = _excelService.ParseExcelFile(productList);
+            return Json(items);
+        }
+
+        public IActionResult DownloadExcelTemplate() {
+
+            var templateFile = _excelService.GetExcelTemplate();
+            return File(templateFile, "application/vnd.ms-excel", "Product List Template.xlsx");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -7,16 +7,17 @@ let productList = [];
 const orderItemsElement = document.getElementById('request-list');
 const alertElement = document.querySelector('#form .alert');
 const actionButtons = document.querySelectorAll("footer button[type=submit]");
+const btnBrowseProduct = document.getElementById("btn-browse-product");
 
 const formElement = document.getElementById("form");
 const modalFormElement = document.getElementById("modal-form");
+const modalUploadFormElement = document.getElementById("upload-form");
 const selectForm = document.getElementById("name2");
 const formFields = ['quantity', 'unit', 'name', 'remarks'];
 
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDraftOrderRequest();
-    await fectProductList();
     
     ///// Validation
     formElement.addEventListener("submit", (e) => {
@@ -80,6 +81,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById(fields[0]).focus();
 
     });
+
+    modalUploadFormElement.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        var formData = new FormData();
+
+        const fileInput = document.getElementById("product-list");
+        const excelFile = fileInput.files[0];
+
+        formData.append("productList", excelFile);
+
+        $.ajax({
+            type: "POST",
+            url: "/Order/UploadExcelFile",
+            data: formData,
+            dataType: false,
+            processData: false,
+            contentType: false,
+            enctype: "multipart/form-data",
+            success: (data) => {
+                data.forEach(item => addOrderItem({ ...item }));
+            }
+        })
+    });
+
+    btnBrowseProduct.addEventListener('click', () => {
+        fetchProductList();
+
+    });
+
     document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
     document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
     document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
@@ -116,18 +147,27 @@ async function fetchDraftOrderRequest() {
 
     setDisableActionButtons(true);
 }
-async function fectProductList() {
-    const response = await fetch('/Product/GetAllProducts', { method: "GET" });
-    const data = await response.json();
+async function fetchProductList() {
+   
+    if (localStorage.getItem("productList")) {
 
-    data.forEach((item) => {
-        var option = document.createElement("option");
-        var selectElement = document.getElementById("name2");
-        option.text = item.name;
-        option.value = item.id;
-        option.setAttribute("data-unit", item.uom.unit);
-        selectElement.append(option);
-    });
+        var productList = JSON.parse(localStorage.getItem("productList"));
+
+        productList.forEach((item) => {
+            var option = document.createElement("option");
+            var selectElement = document.getElementById("name2");
+            option.text = item.name;
+            option.value = item.id;
+            option.setAttribute("data-unit", item.uom.unit);
+            selectElement.append(option);
+        });
+    } else {
+        const response = await fetch('/Product/GetAllProducts', { method: "GET" });
+        const data = await response.json();
+
+        localStorage.setItem("productList", JSON.stringify(data));
+    }
+    
 }
 function saveOrderRequest(status) {
     const data = {

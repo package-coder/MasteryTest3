@@ -1,0 +1,40 @@
+﻿<div class="modal fade" id="browseProductModal" tabindex="-1" aria-labelledby="browseProductModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="browseProductModal">Browse Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-form" novalidate>
+                        <div class="form-group mb-2">
+                            <select id="name2" required>
+                                <option selected disabled value="">--select products--</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-item mb-2 d-flex">
+                                <div class="form-item-group col-8">
+                                    <label>Quantity</label>
+                                    <input id="quantity2" name="quantity" required />
+                                </div>
+                                <div class="form-item-group ms-2">
+                                    <label>Unit</label>
+                                    <input type="text" id="unit2" readonly/>
+                                </div>
+                            </div>
+                           
+                            <div class="form-item mb-2">
+                                <label>Remarks</label>
+                                <input  id="remark2"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="modal-form" value="submit">Add Product</button>
+                </div>
+            </div>
+        </div>
+    </div>

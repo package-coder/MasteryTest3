@@ -24,11 +24,24 @@ namespace MasteryTest3.Repositories
         
         public async Task<int?> SaveOrder(Order order)
         {
+           
+            if (order.status == "FOR_APPROVAL") {
+                var items = await GetDraftOrderRequest();
+
+                foreach (var item in items.orderItems) {
+                    int productNameTotal = item.name.Sum(ch => ch);
+                    int unitTotal = item.unit.Sum(ch => ch);
+                    
+                    order.crc += productNameTotal + unitTotal + item.quantity;
+                }
+            }
+
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
                 clientId = _sessionRepository.GetInt("userId"),
                 order.Id,
-                order.status
+                order.status,
+                order.crc
             }, commandType: CommandType.StoredProcedure);
         }
         

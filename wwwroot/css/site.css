@@ -227,7 +227,7 @@ label.error {
 .alert-dark {
   border: var(--border) !important;
   background-color: transparent !important;
-color: var(--bs-text-secondary) !important;
+  color: var(--bs-text-secondary) !important;
 }
 
 .modal-content, .modal-footer {
@@ -240,4 +240,21 @@ color: var(--bs-text-secondary) !important;
 
 .modal-footer {
     border-top: var(--border) !important;
+}
+
+#modal-form div > input, select, input[type="file"] {
+    width: 100% !important;
+    background-color: rgb(15, 15, 15);
+    outline: 0 !important;
+    border-color: var(--border-color);
+    border-width: 2px;
+    border-style: solid;
+    color: var(--bs-body-color);
+    text-align: center;
+    padding: 0 12px;
+    height: 32px;
+    border-radius: 4px;
+}
+.info-block p {
+    font-size: 0.95rem;
 }

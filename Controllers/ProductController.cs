@@ -13,12 +13,14 @@ namespace MasteryTest3.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IExcelService _excelService;
 
 
-        public ProductController(IOrderRepository orderRepository, IProductRepository productRepository)
+        public ProductController(IOrderRepository orderRepository, IProductRepository productRepository, IExcelService excelService)
         {
             _productRepository = productRepository;
             _orderRepository = orderRepository;
+            _excelService = excelService;
         }
 
         public IActionResult Request()
@@ -58,9 +60,12 @@ namespace MasteryTest3.Controllers
             return Json(products);
         }
 
-        public IActionResult Upload()
-        {
-            return View();
+        public IActionResult DownloadProductList() { 
+
+            var productList = _productRepository.GetAllProducts();
+            var prouctListExcelFile = _excelService.GenerateExcelProductList(productList.ToList());
+
+            return File(prouctListExcelFile, "application/vnd.ms-excel", "List of Products.xlsx");
         }
 
         public IActionResult Error()
