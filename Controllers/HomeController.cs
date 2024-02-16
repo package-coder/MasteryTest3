@@ -22,8 +22,7 @@ namespace MasteryTest3.Controllers
 
         public async Task<IActionResult> Index()
         {
-            int? Id = _sessionRepository.GetInt("userId");
-            var orders = await _orderRepository.GetAllOrders(Id);
+            var orders = await _orderRepository.GetAllOrders();
             return View(orders);
         }
 

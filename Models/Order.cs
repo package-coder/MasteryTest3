@@ -5,7 +5,7 @@
         public int? Id { get; set; }
         public List<OrderItem> orderItems { get; set; } = new();
         public User user { get; set; }
-        public string crc { get; set; }
+        public int crc { get; set; }
         public string status { get; set; }
         public int totalItems { get; set; }
 

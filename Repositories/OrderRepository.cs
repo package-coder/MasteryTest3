@@ -17,24 +17,26 @@ namespace MasteryTest3.Repositories
             _sessionRepository = sessionRepository;
         }
         
-        public async Task<IEnumerable<Order>> GetAllOrders(int? clientId)
+        public async Task<IEnumerable<Order>> GetAllOrders()
         {
-            return await _connection.QueryAsync<Order>("GetAllOrders", new {clientId},  commandType: CommandType.StoredProcedure);
+            return await _connection.QueryAsync<Order>("GetAllOrders", 
+                new {clientId = _sessionRepository.GetInt("userId") }, 
+                commandType: CommandType.StoredProcedure);
         }
         
         public async Task<int?> SaveOrder(Order order)
         {
-           
-            /*if (order.status == "FOR_APPROVAL") {
-                var items = await GetDraftOrderRequest();
 
+            if (order.status == "FOR_APPROVAL") {
+                var items = await GetDraftOrderRequest();
+                
                 foreach (var item in items.orderItems) {
-                    int productNameTotal = item.name.Sum(ch => ch);
-                    int unitTotal = item.unit.Sum(ch => ch);
-                    
-                    order.crc += productNameTotal + unitTotal + item.quantity;
+                   int productNameTotal = item.name.Sum(ch => ch);
+                   int unitTotal = item.unit.Sum(ch => ch);
+
+                   order.crc += productNameTotal + unitTotal + item.quantity;
                 }
-            }*/
+            }
 
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
@@ -42,7 +44,7 @@ namespace MasteryTest3.Repositories
                 order.Id,
                 order.status,
                 order.crc
-            }, commandType: CommandType.StoredProcedure);
+            }, commandType: CommandType.StoredProcedure);;
         }
         
         public async Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems)
