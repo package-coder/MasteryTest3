@@ -13,7 +13,8 @@ const formElement = document.getElementById("form");
 const modalFormElement = document.getElementById("modal-form");
 const modalUploadFormElement = document.getElementById("upload-form");
 const selectForm = document.getElementById("name2");
-const formFields = ['quantity', 'unit', 'name', 'remarks'];
+const formFields = ['quantity', 'unit', 'name', 'remark'];
+const btnSendRequest = document.getElementById("send-request");
 const table = document.getElementById("table-request");
 
 
@@ -267,26 +268,25 @@ function addOrderItem(value) {
     if (orderItems.length === 0) {
         alertElement.classList.add('d-none');
     }
-    setDisableActionButtons(false);
     
     const index = orderItems.length;
     orderItemsElement.append(createOrderItemRowElement(index, value));
     orderItems.push(value);
+
+    setDisableActionButtons(false);
 }
 function deleteOrderItem(index, rowElement) {
-    
+
     const item = orderItems[index];
     orderItems.splice(index, 1);
     orderItemsElement.removeChild(rowElement);
 
-    if(item.id) {
-        deletedOrderItems.push(item);
-    }
+    deletedOrderItems.push(item);
     
     if (orderItems.length === 0) {
         alertElement.classList.remove('d-none');
     }
-    console.log(orderItems.length);
+    
     setDisableActionButtons(orderItems.length === 0);
 }
 
@@ -349,7 +349,7 @@ function createOrderItemRowElement(index, value) {
     unitElement.classList.add('text-center');
 
     rowElement.appendChild(document.createElement('td')).textContent = value.name
-    rowElement.appendChild(document.createElement('td')).textContent = value.remarks
+    rowElement.appendChild(document.createElement('td')).textContent = value.remark
 
     const actionElement = rowElement.appendChild(document.createElement('td'));
     actionElement.classList.add('py-0')
@@ -373,6 +373,8 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
 ///// Styling
 function setDisableActionButtons(value = true) {
     actionButtons.forEach(button => button.disabled = value);
+
+    btnSendRequest.disabled = table.tBodies[0].rows.length-1 === 0
 }
 
 function validateKeyInput(e) {

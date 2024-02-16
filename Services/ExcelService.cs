@@ -24,7 +24,7 @@ namespace MasteryTest3.Services
                         quantity = Convert.ToInt32(NullSafeString(sheet.Cells[row, 3].Value)),
                         unit = NullSafeString(sheet.Cells[row, 4].Value),
                         remark = NullSafeString(sheet.Cells[row, 5].Value),
-                    }); 
+                    });
                 }
             }
 
