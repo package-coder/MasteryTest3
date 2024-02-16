@@ -14,6 +14,7 @@ const modalFormElement = document.getElementById("modal-form");
 const modalUploadFormElement = document.getElementById("upload-form");
 const selectForm = document.getElementById("name2");
 const formFields = ['quantity', 'unit', 'name', 'remarks'];
+const table = document.getElementById("table-request");
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -37,10 +38,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             Object.assign(form, { [field]: fieldElement.value });
-            fieldElement.value = null;
         });
         
-        if(!valid) return;
+        if (!valid) {
+            return
+        } else {
+            formElement.reset()
+        };
         
         addOrderItem(form);
         document.getElementById(formFields[0]).focus();
@@ -53,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const form = {};
         let valid = true;
         const fieldIdName = ['quantity2', 'unit2', 'name2', 'remark2'];
-        console.log("clicked");
 
         formFields.forEach((field, index) => {
             const fieldElement = document.getElementById(fieldIdName[index]);
@@ -66,11 +69,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             if (fieldElement.tagName == 'SELECT') {
+                var productId = selectForm.options[selectForm.selectedIndex].value;
                 var value = fieldElement.selectedIndex != 0 ? fieldElement.options[fieldElement.selectedIndex].text : '';
+                
                 Object.assign(form, { [field]: value });
+                Object.assign(form, { ['product']: {id: productId} });
             } else {
                 Object.assign(form, { [field]: fieldElement.value });
             }
+
         });
 
         if (!valid) return;
@@ -78,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         addOrderItem(form);
         modalFormElement.reset();
 
-        document.getElementById(fields[0]).focus();
+        document.getElementById(formFields[0]).focus();
 
     });
 
@@ -90,20 +97,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fileInput = document.getElementById("product-list");
         const excelFile = fileInput.files[0];
 
-        formData.append("productList", excelFile);
+        if (excelFile != null) {
+            var extension = excelFile.name.split(".")[1];
+            if (extension == 'xlsx') {
+                formData.append("productList", excelFile);
 
-        $.ajax({
-            type: "POST",
-            url: "/Order/UploadExcelFile",
-            data: formData,
-            dataType: false,
-            processData: false,
-            contentType: false,
-            enctype: "multipart/form-data",
-            success: (data) => {
-                data.forEach(item => addOrderItem({ ...item }));
+                $.ajax({
+                    type: "POST",
+                    url: "/Order/UploadExcelFile",
+                    data: formData,
+                    dataType: false,
+                    processData: false,
+                    contentType: false,
+                    enctype: "multipart/form-data",
+                    success: (data) => {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Your product list has been uploaded",
+                            icon: "success",
+                            background: '#151515',
+                            showCancelButton: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                bootstrap.Modal.getInstance(document.getElementById("uploadProductList")).hide();
+                                data.forEach(item => addOrderItem({ ...item }));
+                            }
+                        });
+                    },
+                    error: () => {
+                        Swal.fire({
+                            title: "Something went wrong!",
+                            text: "Make your uploaded file could not be processed",
+                            icon: "error",
+                            background: '#151515',
+                            showCancelButton: false,
+                        });
+                    }
+
+                });
+                return;
             }
-        })
+        }
+
+        fileInput.classList.add("border-danger");
+        
     });
 
     btnBrowseProduct.addEventListener('click', () => {
@@ -114,6 +152,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
     document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
     document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
+
+    document.getElementById('product-list').addEventListener('change', () => {
+        document.getElementById('product-list').classList.remove("border-danger");
+    });
     
     ///// Styling
     document.querySelectorAll("input[required]")
@@ -232,6 +274,7 @@ function addOrderItem(value) {
     orderItems.push(value);
 }
 function deleteOrderItem(index, rowElement) {
+    
     const item = orderItems[index];
     orderItems.splice(index, 1);
     orderItemsElement.removeChild(rowElement);
@@ -243,7 +286,7 @@ function deleteOrderItem(index, rowElement) {
     if (orderItems.length === 0) {
         alertElement.classList.remove('d-none');
     }
-
+    console.log(orderItems.length);
     setDisableActionButtons(orderItems.length === 0);
 }
 
@@ -339,4 +382,3 @@ function validateKeyInput(e) {
     }
     return true;
 }
-

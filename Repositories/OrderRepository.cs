@@ -25,7 +25,7 @@ namespace MasteryTest3.Repositories
         public async Task<int?> SaveOrder(Order order)
         {
            
-            if (order.status == "FOR_APPROVAL") {
+            /*if (order.status == "FOR_APPROVAL") {
                 var items = await GetDraftOrderRequest();
 
                 foreach (var item in items.orderItems) {
@@ -34,7 +34,7 @@ namespace MasteryTest3.Repositories
                     
                     order.crc += productNameTotal + unitTotal + item.quantity;
                 }
-            }
+            }*/
 
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
@@ -62,10 +62,11 @@ namespace MasteryTest3.Repositories
 
         public async Task<Order?> GetDraftOrderRequest()
         {
-            var orders =  await _connection.QueryAsync<Order, OrderItem, Order>(
+            var orders =  await _connection.QueryAsync<Order, OrderItem, Product, Order>(
                 "GetDraftOrderRequest",
-                (order, orderItem) =>
+                (order, orderItem, product) =>
                 {
+                    orderItem.product = product;
                     order.orderItems.Add(orderItem);
                     return order;
                 },

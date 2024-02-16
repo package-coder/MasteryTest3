@@ -15,14 +15,15 @@ namespace MasteryTest3.Services
                 ExcelWorksheet sheet = package.Workbook.Worksheets[0];
 
                 int rowCount = sheet.Dimension.Rows;
-
+                
                 for (int row = 2; row <= rowCount; row++) {
                     items.Add( new()
                     {
-                        name = NullSafeString(sheet.Cells[row, 1].Value),
-                        quantity = Convert.ToInt32(NullSafeString(sheet.Cells[row, 2].Value)),
-                        unit = NullSafeString(sheet.Cells[row, 3].Value),
-                        remark = NullSafeString(sheet.Cells[row, 4].Value),
+                        product = sheet.Cells[row, 1].Value == null ? null : new (){ Id = Convert.ToInt32(NullSafeString(sheet.Cells[row, 1].Value)) },
+                        name = NullSafeString(sheet.Cells[row, 2].Value),
+                        quantity = Convert.ToInt32(NullSafeString(sheet.Cells[row, 3].Value)),
+                        unit = NullSafeString(sheet.Cells[row, 4].Value),
+                        remark = NullSafeString(sheet.Cells[row, 5].Value),
                     }); 
                 }
             }
