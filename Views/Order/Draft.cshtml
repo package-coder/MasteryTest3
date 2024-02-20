@@ -34,8 +34,8 @@
                             <th></th>
                             <th class="auto px-3">Order #</th>
                             <th>Status</th>
+                            <th>Total Items</th>
                             <th class="auto px-3 text-end">Date</th>
-                            <th class="auto px-3"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,12 +51,10 @@
                                 <td>
                                     <span class="border rounded-pill badge text-secondary">@order.status</span>
                                 </td>
-                                <td class="auto px-3 text-end">@order.dateOrdered.ToString("MM/dd/yyyy")</td>
-                                <td class="auto px-3">
-                                    <a class="btn btn-primary btn-sm box-shadow shadow-sm"
-                                       asp-action="DownloadOrderReceipt"
-                                       asp-controller="Order" asp-route-id="@order.Id">Request Printout</a>
+                                <td>
+                                    @order.totalItems
                                 </td>
+                                <td class="auto px-3 text-end">@order.dateOrdered.ToString("MM/dd/yyyy")</td>
                             </tr>
                         }
                     </tbody>

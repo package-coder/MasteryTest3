@@ -25,16 +25,9 @@ namespace MasteryTest3.Repositories
         }
 
         public async Task<IEnumerable<Order>> GetDraftOrders() { 
-            return await _connection.QueryAsync<Order, OrderItem, Product, Order>(
-                "GetDraftOrderRequest",
-                (order, orderItem, product) =>
-                {
-                    orderItem.product = product;
-                    order.orderItems.Add(orderItem);
-                    return order;
-                },
+            return await _connection.QueryAsync<Order>(
+                "GetDraftOrders",
                 new { clientId = _sessionRepository.GetInt("userId") },
-                splitOn: "Id",
                 commandType: CommandType.StoredProcedure
             );
         }
@@ -80,7 +73,7 @@ namespace MasteryTest3.Repositories
         public async Task<Order?> GetDraftOrderRequestWithItems()
         {
             var orders =  await _connection.QueryAsync<Order, OrderItem, Product, Order>(
-                "GetDraftOrderRequest",
+                "GetDraftOrderWithItems",
                 (order, orderItem, product) =>
                 {
                     orderItem.product = product;
