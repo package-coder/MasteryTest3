@@ -1,11 +1,12 @@
-CREATE PROCEDURE GetAllOrders(
+CREATE PROCEDURE [dbo].[GetNonDraftOrders](
 	@clientId INT
 )
 AS BEGIN
-		SELECT 
+	SELECT 
 		[order].Id,
 		crc,
 		COUNT(orderItem.orderId) totalItems,
+		[status],
 		dateOrdered
 	FROM
 		[Order] [order]
@@ -16,6 +17,6 @@ AS BEGIN
 	GROUP BY
 		[order].Id,
 		crc,
-		dateOrdered
-END;
-
+		dateOrdered,
+		[status]
+END

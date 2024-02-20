@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Folder Include="Schema\Stored Procedure\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

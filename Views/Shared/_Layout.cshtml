@@ -17,11 +17,14 @@
 </head>
 
 <body class="d-flex flex-column">
-    <header>
-        @await Component.InvokeAsync("Header")
-    </header>
-
-    @RenderBody()
+   
+    @await Component.InvokeAsync("Sidebar")
+   
+ 
+   <div class="mt-4 h-100" style="margin-left: 260px">
+        @RenderBody()
+   </div>
+  
 
     @await RenderSectionAsync("Scripts", required: false)
     

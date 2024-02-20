@@ -1,14 +1,18 @@
-CREATE PROCEDURE GetUserById (
+CREATE PROCEDURE [dbo].[GetUserById] (
 	@userId INT
 )
 AS BEGIN
 	SELECT 
-		Id,
-		name,
-		[address],
-		email
-	FROM
-		AppUser
-	WHERE
-		Id = @userId
+		a.Id,
+		a.name,
+		a.email,
+		a.[address],
+		u.Id,
+		u.name
+	FROM 
+		AppUser a
+	JOIN
+		UserRole u ON u.Id = a.role
+	WHERE 
+		a.Id = @userId
 END

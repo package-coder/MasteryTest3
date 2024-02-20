@@ -1,0 +1,54 @@
+﻿@using MasteryTest3.Models.ViewModel;
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<User>;
+
+@{
+    string? userName = HttpContextAccessor.HttpContext?.Session.GetString("userName");
+    int? role = HttpContextAccessor.HttpContext?.Session.GetInt32("role");
+}
+
+<div id="sidebar" class="border border-left border-light">
+    <div class="sidebar-title text-center p-4">
+        <a class="navbar-brand text-light fs-5" asp-area="" asp-controller="Home" asp-action="Index">MasteryTest</a>
+    </div>
+
+    <div class="sidebar-nav p-4">
+        <nav>
+            <div class="btn-group mb-3">
+                <button class="btn rounded-pill border dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown">
+                    🟢  @userName
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    @foreach (var user in Model)
+                    {
+                        <li>
+                            <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name (@user.role.name.ToUpper())</a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                    }
+                </ul>
+            </div>
+            @if (userName != null)
+            {
+                <div class="nav-group ms-3">
+                    <ul class="list-unstyled">
+                        <a class="text-decoration-none text-white" asp-controller="Order" asp-action="Request">
+                            <li class="p-3">Request</li>
+                        </a>
+                        <a class="text-decoration-none text-white"  asp-controller="Order" asp-action="Draft">
+                            <li class="p-3">Drafts</li>
+                        </a>
+                        @if (role != 1)
+                        {
+                            <li class="p-3">Request Approval</li>
+                            <li class="p-3">Approved Requests</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+        </nav>
+    </div>
+</div>

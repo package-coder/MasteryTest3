@@ -17,18 +17,33 @@ namespace MasteryTest3.Repositories
             _sessionRepository = sessionRepository;
         }
         
-        public async Task<IEnumerable<Order>> GetAllOrders()
+        public async Task<IEnumerable<Order>> GetNonDraftOrders()
         {
-            return await _connection.QueryAsync<Order>("GetAllOrders", 
-                new {clientId = _sessionRepository.GetInt("userId") }, 
+            return await _connection.QueryAsync<Order>("GetNonDraftOrders", 
+                new {clientId = _sessionRepository.GetInt("userId")}, 
                 commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<Order>> GetDraftOrders() { 
+            return await _connection.QueryAsync<Order, OrderItem, Product, Order>(
+                "GetDraftOrderRequest",
+                (order, orderItem, product) =>
+                {
+                    orderItem.product = product;
+                    order.orderItems.Add(orderItem);
+                    return order;
+                },
+                new { clientId = _sessionRepository.GetInt("userId") },
+                splitOn: "Id",
+                commandType: CommandType.StoredProcedure
+            );
         }
         
         public async Task<int?> SaveOrder(Order order)
         {
 
             if (order.status == "FOR_APPROVAL") {
-                var items = await GetDraftOrderRequest();
+                var items = await GetDraftOrderRequestWithItems();
                 
                 foreach (var item in items.orderItems) {
                    int productNameTotal = item.name.Sum(ch => ch);
@@ -62,7 +77,7 @@ namespace MasteryTest3.Repositories
             return await _connection.ExecuteAsync("SaveOrderItem", data,  commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<Order?> GetDraftOrderRequest()
+        public async Task<Order?> GetDraftOrderRequestWithItems()
         {
             var orders =  await _connection.QueryAsync<Order, OrderItem, Product, Order>(
                 "GetDraftOrderRequest",

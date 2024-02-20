@@ -18,7 +18,7 @@ namespace MasteryTest3.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var orders = await _orderRepository.GetAllOrders();
+            var orders = await _orderRepository.GetNonDraftOrders();
             return View(orders);
         }
 

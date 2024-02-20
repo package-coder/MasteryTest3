@@ -7,5 +7,6 @@ public interface IOrderService
     Task RequestOrder(Order order, List<OrderItem>? deletedOrderItems);
     Task DeleteDraftOrderRequest(Order? order);
     Task<Order?> GetOrderById(int id);
-    Task<Order?> GetDraftOrderRequest();
+    Task<Order?> GetDraftOrderRequestWithItems();
+    Task<IEnumerable<Order>> GetDraftOrders();
 }

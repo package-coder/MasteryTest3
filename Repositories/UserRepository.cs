@@ -25,7 +25,15 @@ namespace MasteryTest3.Repositories
 
         public async Task<User> GetUserById(int Id)
         {
-            return await _connection.QuerySingleAsync<User>("GetUserById", new { userId = Id});
+            var result =  await _connection.QueryAsync<User, UserRole, User>(
+                "GetUserById", 
+                (user, userRole) => {
+                    user.role = userRole;
+                    return user;
+                }, 
+                param: new { userId = Id}, splitOn: "Id");
+
+            return result.FirstOrDefault();
         }
     }
 }

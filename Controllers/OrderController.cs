@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
+using MasteryTest3.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using PdfSharp.Pdf.Advanced;
 
@@ -33,10 +34,16 @@ namespace MasteryTest3.Controllers
         [HttpGet]
         public new IActionResult Request() => View();
 
+        public async Task<IActionResult> Draft() {
+            var order = await _orderService.GetDraftOrders();
+            return View(order);
+        }
+        
+
         [HttpGet]
         public async Task<IActionResult> GetDraftOrderRequest()
         {
-            var order = await _orderService.GetDraftOrderRequest();
+            var order = await _orderService.GetDraftOrderRequestWithItems();
             return Json(order);
         }
         

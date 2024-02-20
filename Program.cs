@@ -24,7 +24,7 @@ builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
 
 //ViewComponents
-builder.Services.AddScoped<HeaderViewComponent>();
+builder.Services.AddScoped<SidebarViewComponent>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();

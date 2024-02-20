@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MasteryTest3.ViewComponents
 {
-    public class HeaderViewComponent : ViewComponent
+    public class SidebarViewComponent : ViewComponent
     {
         private readonly IUserRepository _userRepository;
 
-        public HeaderViewComponent(IUserRepository userRepository)
+        public SidebarViewComponent(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

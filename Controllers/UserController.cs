@@ -22,6 +22,7 @@ namespace MasteryTest3.Controllers
             if (user != null) { 
                 _sessionRepository.SetInt("userId", user.Id);
                 _sessionRepository.SetString("userName", user.name);
+                _sessionRepository.SetInt("role", user.role.Id);
             }
 
             return RedirectToAction("Index", "Home");

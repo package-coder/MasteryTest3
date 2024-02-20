@@ -269,3 +269,17 @@ input[type="file"] {
 input[type="file"]:hover, input::file-selector-button:hover {
     cursor: pointer
 }
+
+#sidebar {
+    position: fixed;
+    min-height: 100dvh;
+    top:0;
+    left: 0;
+    width: 250px;
+}
+
+.nav-group li:hover {
+    background-color: #292828;
+    cursor: pointer;
+    border-radius: 5px;
+}

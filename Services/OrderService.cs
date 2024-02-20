@@ -36,8 +36,13 @@ public class OrderService : IOrderService
         return await _orderRepository.GetOrderById(id);
     }
 
-    public async Task<Order?> GetDraftOrderRequest()
+    public async Task<Order?> GetDraftOrderRequestWithItems()
     {
-        return await _orderRepository.GetDraftOrderRequest();
+        return await _orderRepository.GetDraftOrderRequestWithItems();
+    }
+
+    public async Task<IEnumerable<Order>> GetDraftOrders()
+    {
+        return await _orderRepository.GetDraftOrders();
     }
 }
