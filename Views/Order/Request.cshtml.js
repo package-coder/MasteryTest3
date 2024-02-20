@@ -2,7 +2,6 @@
 let order = null;
 let orderItems = [];
 let deletedOrderItems = [];
-let productList = [];
 
 const orderItemsElement = document.getElementById('request-list');
 const alertElement = document.querySelector('#form .alert');
@@ -15,6 +14,7 @@ const modalUploadFormElement = document.getElementById("upload-form");
 const selectForm = document.getElementById("name2");
 const formFields = ['quantity', 'unit', 'name', 'remark'];
 const btnSendRequest = document.getElementById("send-request");
+const btnSaveRequest = document.getElementById("save-request");
 const table = document.getElementById("table-request");
 
 
@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             var extension = excelFile.name.split(".")[1];
             if (extension == 'xlsx') {
                 formData.append("productList", excelFile);
+                document.getElementById("btn-upload-active").style.display = "none";
+                document.getElementById("btn-upload-progress").style.display = "block";
 
                 $.ajax({
                     type: "POST",
@@ -112,6 +114,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     contentType: false,
                     enctype: "multipart/form-data",
                     success: (data) => {
+                        document.getElementById("btn-upload-active").style.display = "block";
+                        document.getElementById("btn-upload-progress").style.display = "none";
                         Swal.fire({
                             title: "Success!",
                             text: "Your product list has been uploaded",
@@ -188,7 +192,7 @@ async function fetchDraftOrderRequest() {
     data?.orderItems?.forEach(item => addOrderItem({ ...item }))
     order = data;
 
-    setDisableActionButtons(true);
+    setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
 }
 async function fetchProductList() {
     var productList = {}
@@ -246,7 +250,7 @@ function saveOrderRequest(status) {
                 allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.replace('/');
+                    window.location.reload();
                 }
             });
         },
@@ -273,7 +277,7 @@ function addOrderItem(value) {
     orderItemsElement.append(createOrderItemRowElement(index, value));
     orderItems.push(value);
 
-    setDisableActionButtons(false);
+    setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
 }
 function deleteOrderItem(index, rowElement) {
 
@@ -287,7 +291,7 @@ function deleteOrderItem(index, rowElement) {
         alertElement.classList.remove('d-none');
     }
     
-    setDisableActionButtons(orderItems.length === 0);
+    setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
 }
 
 function discardOrderRequest() {
@@ -371,10 +375,10 @@ function createOrderItemDeleteButtonElement(index, rowElement) {
 }
 
 ///// Styling
-function setDisableActionButtons(value = true) {
-    actionButtons.forEach(button => button.disabled = value);
+function setDisableActionButtons(value) {
 
-    btnSendRequest.disabled = table.tBodies[0].rows.length-1 === 0
+    btnSaveRequest.disabled = value;
+    btnSendRequest.disabled = value;
 }
 
 function validateKeyInput(e) {

@@ -9,26 +9,17 @@ namespace MasteryTest3.Controllers
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IOrderRepository _orderRepository;
-        private readonly ISessionRepository _sessionRepository;
        
-        public HomeController(ILogger<HomeController> logger, IOrderRepository orderRepository, ISessionRepository sessionRepository)
+        public HomeController( IOrderRepository orderRepository)
         {
-            _logger = logger;
             _orderRepository = orderRepository;
-            _sessionRepository = sessionRepository;
         }
 
         public async Task<IActionResult> Index()
         {
             var orders = await _orderRepository.GetAllOrders();
             return View(orders);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         public IActionResult Error()

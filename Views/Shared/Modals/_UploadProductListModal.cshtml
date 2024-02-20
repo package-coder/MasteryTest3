@@ -31,7 +31,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" form="upload-form" value="submit">Upload List</button>
+                <button id="btn-upload-active"type="submit" class="btn btn-primary" form="upload-form" value="submit">Upload List</button>
+                <button class="btn btn-primary btn-sm" id="btn-upload-progress" type="button" disabled style="display: none">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Uploading...</span>
+                </button>
             </div>
         </div>
     </div>
