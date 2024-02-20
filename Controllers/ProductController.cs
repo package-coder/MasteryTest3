@@ -22,12 +22,7 @@ namespace MasteryTest3.Controllers
             _orderRepository = orderRepository;
             _excelService = excelService;
         }
-
-        public IActionResult Request()
-        {
-            return View();
-        }
-
+        
         [HttpGet]
         public async Task<IActionResult> DraftOrder()
         {

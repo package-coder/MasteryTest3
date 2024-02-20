@@ -13,8 +13,7 @@
     border-radius: 4px;
 }
 
-.table input:hover, .table input:focus,
-.table tr:hover > input, .table tr:focus > input {
+.table input:focus {
     border-color: var(--bs-primary) !important;
     border-width: 2px !important;
 }

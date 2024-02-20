@@ -4,7 +4,7 @@ let orderItems = [];
 let deletedOrderItems = [];
 
 const orderItemsElement = document.getElementById('request-list');
-const alertElement = document.querySelector('#form .alert');
+const alertElement = document.querySelector('#alert');
 const actionButtons = document.querySelectorAll("footer button[type=submit]");
 const btnBrowseProduct = document.getElementById("btn-browse-product");
 
@@ -21,15 +21,13 @@ const table = document.getElementById("table-request");
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDraftOrderRequest();
     
-    ///// Validation
-    formElement.addEventListener("submit", (e) => {
-        e.preventDefault();
+    const formSubmit = () => {
         const form = {};
         let valid = true;
-        
+
         formFields.forEach((field) => {
             const fieldElement = document.getElementById(field);
-            
+
             if(!fieldElement.value && fieldElement.hasAttribute("required")) {
                 fieldElement.classList.add('border-danger');
                 valid = false;
@@ -37,20 +35,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 fieldElement.classList.remove('border-danger');
             }
-            
+
             Object.assign(form, { [field]: fieldElement.value });
+            fieldElement.value = null
         });
-        
-        if (!valid) {
-            return
-        } else {
-            formElement.reset()
-        };
+
+        if (!valid) return;
         
         addOrderItem(form);
         document.getElementById(formFields[0]).focus();
-    });
-
+    }
+    
     modalFormElement.addEventListener("submit", (e) => {
 
         e.preventDefault();
@@ -163,13 +158,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     ///// Styling
-    document.querySelectorAll("input[required]")
+    document.querySelectorAll(".table-input input[required]")
         .forEach(element => 
             element.addEventListener('change', () => {
-                if(element.value) {
-                    element.classList.remove('border-danger');
+                    if(element.value) {
+                        element.classList.remove('border-danger');
+                    }
+            })
+        )
+    
+    console.log(document.querySelectorAll(".table-input input"))
+    document.querySelectorAll(".table-input input")
+        .forEach((element, index, array) => {
+            element.addEventListener('keyup', (e) => {
+                e.preventDefault();
+
+                const currentIndex = parseInt(element.dataset.index)
+                const lastIndex = array.length - 1
+                
+                if(e.key !== "Enter") return;
+                if(currentIndex !== lastIndex && !element.value) return;
+
+                const nextIndex = (currentIndex + 1) % array.length;
+                const valid = Array.from(array.values()).every(item => {
+                    const required = item.hasAttribute('required')
+                    if(!required) return true;
+                    
+                    return item.value;
+                })
+
+                if(!valid || currentIndex !== lastIndex) {
+                    const nextElement = Array.from(array.values()).find(item => item.dataset.index === nextIndex.toString());
+                    nextElement?.focus();
+                } else if(currentIndex === lastIndex) {
+                    formSubmit()
                 }
-            }))
+            })
+        })
 
     selectForm.addEventListener("change", () => {
 
@@ -186,13 +211,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 })
 
 async function fetchDraftOrderRequest() {
-    const response = await fetch('/Order/GetDraftOrderRequest', { method: "GET" });
-    const data = await response.json();
+    try {
+        const response = await fetch('/Order/GetDraftOrderRequest', { method: "GET" });
+        const data = await response.json();
 
-    data?.orderItems?.forEach(item => addOrderItem({ ...item }))
-    order = data;
+        data?.orderItems?.forEach(item => addOrderItem({ ...item }))
+        order = data;
 
-    setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
+        setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
+    } catch (e) {
+        console.info(e);
+    }
 }
 async function fetchProductList() {
     var productList = {}

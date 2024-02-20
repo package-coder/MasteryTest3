@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Dapper;
+﻿using Dapper;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using System.Data;

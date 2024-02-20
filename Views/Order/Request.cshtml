@@ -30,8 +30,7 @@
     else
     {
         <div class="overflow-auto" style="height: calc(100% - 180px)">
-            <form id="form" novalidate>
-                <div class="alert alert-dark mb-4">
+                <div id="alert" class="alert alert-dark mb-4">
                     This table is empty
                 </div>
                 <div class="border rounded rounded-5" style="width: 100%;">
@@ -49,27 +48,25 @@
                         <tbody id="request-list">
                         <tr class="table-input">
                             <td>
-                                <input autofocus type="text" id="quantity" required />
+                                <input autofocus type="text" id="quantity" required data-index="0"/>
                             </td>
                             <td>
-                                <input autofocus type="text" id="unit" required />
+                                <input autofocus type="text" id="unit" required data-index="1"/>
                             </td>
                             <td>
-                                <input autofocus class="text-start" type="text" id="name" required />
+                                <input autofocus class="text-start" type="text" id="name" required data-index="2"/>
                             </td>
                             <td>
-                                <input autofocus class="text-start" type="text" id="remark" />
+                                <input autofocus class="text-start" type="text" id="remark" data-index="3"/>
                             </td>
-                            <td>
-                                <button type="submit" class="btn btn-primary"
-                                        style="margin: 2px 2px 2px 3px;">Submit</button>
+                            <td class="p-1">
+                                <button type="submit" class="btn btn-primary w-100">Add</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
 
                 </div>
-            </form>
         </div>
         <footer class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
             style="left: 0; right: 0; bottom: 0">
