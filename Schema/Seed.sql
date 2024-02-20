@@ -2,12 +2,18 @@ INSERT INTO Category (name)
 VALUES
 ('FOOD'),('TECHNOLOGY'),('KITCHENWARE'),('TOILETRIES')
 
-INSERT INTO AppUser (name, email, [address])
+INSERT INTO UserRole (name, visibilityLevel)
 VALUES
-('Peter Griffin', 'peter.griffin@example.com', 'Forda Street'),
-('Glen Quagmire', 'glen.quagmire@example.com', 'Eisenhower Street'),
-('Joe Swanson', 'joe.swanson@example.com', 'Thymes Street'),
-('Cleveland Brown', 'cleveland.brown@example.com', 'Sesame Street')
+('requestor', 0),
+('approver1', 1),
+('approver2', 2)
+
+INSERT INTO AppUser (name, email, [address], [role])
+VALUES
+('Peter Griffin', 'peter.griffin@example.com', 'Forda Street', 0),
+('Glen Quagmire', 'glen.quagmire@example.com', 'Eisenhower Street', 0),
+('Joe Swanson', 'joe.swanson@example.com', 'Thymes Street', 1),
+('Cleveland Brown', 'cleveland.brown@example.com', 'Sesame Street', 2)
 
 INSERT INTO UOM (name, unit)
 VALUES

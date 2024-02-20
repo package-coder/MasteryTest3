@@ -16,7 +16,11 @@ namespace MasteryTest3.Repositories
 
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return await _connection.QueryAsync<User>("GetAllUsers");
+            return await _connection.QueryAsync<User, UserRole, User>(
+                "GetAllUsers", (user, userRole) => {
+                    user.role = userRole;
+                    return user;
+                }, splitOn: "Id");
         }
 
         public async Task<User> GetUserById(int Id)

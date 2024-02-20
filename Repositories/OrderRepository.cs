@@ -34,7 +34,7 @@ namespace MasteryTest3.Repositories
                    int productNameTotal = item.name.Sum(ch => ch);
                    int unitTotal = item.unit.Sum(ch => ch);
 
-                   order.crc += productNameTotal + unitTotal + item.quantity;
+                   order.crc += productNameTotal + unitTotal + (int)item.quantity;
                 }
             }
 

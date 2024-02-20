@@ -2,10 +2,13 @@ CREATE PROCEDURE GetUserById (
 	@userId INT
 )
 AS BEGIN
-	SELECT *
+	SELECT 
+		Id,
+		name,
+		[address],
+		email
 	FROM
 		AppUser
 	WHERE
 		Id = @userId
-END;
-
+END
