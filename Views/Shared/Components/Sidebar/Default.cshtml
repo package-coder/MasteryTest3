@@ -1,54 +1,59 @@
-﻿@using MasteryTest3.Models.ViewModel;
-@using Microsoft.AspNetCore.Http
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
 @model IEnumerable<User>;
 
 @{
-    string? userName = HttpContextAccessor.HttpContext?.Session.GetString("userName");
-    int? role = HttpContextAccessor.HttpContext?.Session.GetInt32("role");
+    string? userName = httpContextAccessor.HttpContext?.Session.GetString("userName");
+    int? role = httpContextAccessor.HttpContext?.Session.GetInt32("role");
 }
 
-<div id="sidebar" class="border border-left border-light">
-    <div class="sidebar-title text-center p-4">
-        <a class="navbar-brand text-light fs-5" asp-area="" asp-controller="Home" asp-action="Index">MasteryTest</a>
+<div id="sidebar" class="border border-left border-light p-4">
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <a class="navbar-brand m-0 mb-1 text-light fs-5" asp-area="" asp-controller="Home" asp-action="Index">MasteryTest</a>
+         <div class="btn-group mb-3 align-self-stretch">
+            <button class="btn rounded-pill border dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown">
+                🟢  @userName
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                @foreach (var user in Model)
+                {
+                    <li>
+                        <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name (@user.role.name.ToUpper())</a>
+                     </li>
+                    <li class="dropdown-divider"></li>
+                }
+            </ul>
+        </div>
     </div>
 
-    <div class="sidebar-nav p-4">
-        <nav>
-            <div class="btn-group mb-3">
-                <button class="btn rounded-pill border dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown">
-                    🟢  @userName
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    @foreach (var user in Model)
-                    {
-                        <li>
-                            <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name (@user.role.name.ToUpper())</a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                    }
+    @if (userName != null)
+    {
+        <div class="nav-group mt-4">
+            <ul class="list-unstyled">
+                <li class="px-3 py-1 text-secondary">My Order Requests</li>
+                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "DRAFT", role = 1 })">
+                    <li class="ms-3 px-3 py-1">Drafts</li>
+                </a>
+                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "FOR_APPROVAL", role = 1 })">
+                    <li class="ms-3 px-3 py-1">Submitted</li>
+                </a>
+
+            </ul>
+        </div>
+        @if (role != 1)
+        {
+            <div class="nav-group mt-5">
+                <ul class="list-unstyled">
+                    <li class="px-3 py-1 text-secondary">Requests for Approval</li>
+                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "FOR_APPROVAL", role = 0 })">
+                        <li class="ms-3 px-3 py-1">Pending (1)</li>
+                    </a>
+                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "APPROVED", role = 0 })">
+                        <li class="ms-3 px-3 py-1">Approved</li>
+                    </a>
                 </ul>
             </div>
-            @if (userName != null)
-            {
-                <div class="nav-group ms-3">
-                    <ul class="list-unstyled">
-                        <a class="text-decoration-none text-white" asp-controller="Order" asp-action="Request">
-                            <li class="p-3">Request</li>
-                        </a>
-                        <a class="text-decoration-none text-white"  asp-controller="Order" asp-action="Draft">
-                            <li class="p-3">Drafts</li>
-                        </a>
-                        @if (role != 1)
-                        {
-                            <li class="p-3">Request Approval</li>
-                            <li class="p-3">Approved Requests</li>
-                        }
-                    </ul>
-                </div>
-            }
-
-        </nav>
-    </div>
+        }
+    }
 </div>
