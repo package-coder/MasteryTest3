@@ -16,10 +16,9 @@ namespace MasteryTest3.Controllers
             _orderRepository = orderRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var orders = await _orderRepository.GetNonDraftOrders();
-            return View(orders);
+            return Redirect("/order?status=DRAFT&role=1");
         }
 
         public IActionResult Error()

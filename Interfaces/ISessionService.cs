@@ -1,6 +1,6 @@
 ﻿namespace MasteryTest3.Interfaces
 {
-    public interface ISessionRepository
+    public interface ISessionService
     {
         public void SetString(string key, string value);
         public void SetInt(string key, int value);

@@ -16,7 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("SqlConnection"
 builder.Services.AddTransient<IDbConnection>(e => new SqlConnection(connectionString));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();

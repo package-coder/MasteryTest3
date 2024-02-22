@@ -1,13 +1,13 @@
 ﻿using MasteryTest3.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace MasteryTest3.Repositories
+namespace MasteryTest3.Services
 {
-    public class SessionRepository : ISessionRepository
+    public class SessionService : ISessionService
     {
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public SessionRepository(IHttpContextAccessor contextAccessor) { 
+        public SessionService(IHttpContextAccessor contextAccessor) { 
             _contextAccessor = contextAccessor;
         }
         public int? GetInt(string key)
