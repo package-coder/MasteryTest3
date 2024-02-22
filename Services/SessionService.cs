@@ -1,4 +1,5 @@
 ﻿using MasteryTest3.Interfaces;
+using MasteryTest3.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace MasteryTest3.Services
@@ -10,9 +11,15 @@ namespace MasteryTest3.Services
         public SessionService(IHttpContextAccessor contextAccessor) { 
             _contextAccessor = contextAccessor;
         }
+
         public int? GetInt(string key)
         {
             return _contextAccessor.HttpContext?.Session.GetInt32(key);
+        }
+
+        public SessionUser? GetSessionUser()
+        {
+            return null;
         }
 
         public string? GetString(string key)

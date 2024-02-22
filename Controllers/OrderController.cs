@@ -53,8 +53,7 @@ namespace MasteryTest3.Controllers
         [HttpPost] 
         public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
-           var orderId = await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
-           return Json(orderId);
+           await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
         }
 
         [HttpDelete]

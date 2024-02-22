@@ -1,10 +1,10 @@
 ﻿@using MasteryTest3.Interfaces
 @using Microsoft.AspNetCore.Http
-@inject ISessionRepository sessionRepository
+@inject ISessionService sessionService
 @model IEnumerable<User>;
 
 @{
-    SessionUser sessionUser = sessionRepository.sessionUser;
+    var sessionUser = sessionService.GetSessionUser();
 }
 
 
@@ -14,7 +14,7 @@
          <div class="btn-group align-self-stretch">
             <button class="btn rounded-pill border dropdown-toggle" type="button"
                     data-bs-toggle="dropdown">
-                🟢  @sessionUser.name
+                🟢  @sessionUser?.name
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 @foreach (var user in Model)
@@ -26,10 +26,10 @@
                 }
             </ul>
         </div>
-        <span class="text-white-50 fw-bold" style="font-size: 13px">@sessionUser.role.name.ToUpper()</span>
+        <span class="text-white-50 fw-bold" style="font-size: 13px">@sessionUser?.role.name.ToUpper()</span>
     </div>
 
-    @if (sessionRepository != null)
+    @if (sessionUser != null)
     {
         <div class="nav-group mt-4">
             <ul class="list-unstyled">
