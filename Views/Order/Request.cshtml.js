@@ -16,10 +16,14 @@ const formFields = ['quantity', 'unit', 'name', 'remark'];
 const btnSendRequest = document.getElementById("send-request");
 const btnSaveRequest = document.getElementById("save-request");
 const table = document.getElementById("table-request");
+const paramId = new URLSearchParams(window.location.search).get("id");
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await fetchDraftOrderRequest();
+
+    if (paramId != null) {
+        await fetchDraftOrderRequest(paramId);
+    }
     
     const formSubmit = () => {
         const form = {};
@@ -94,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const excelFile = fileInput.files[0];
 
         if (excelFile != null) {
-            var extension = excelFile.name.split(".")[1];
+            var extension = excelFile.name.substring(excelFile.name.lastIndexOf('.') + 1);
             if (extension == 'xlsx') {
                 formData.append("productList", excelFile);
                 document.getElementById("btn-upload-active").style.display = "none";
@@ -109,8 +113,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     contentType: false,
                     enctype: "multipart/form-data",
                     success: (data) => {
-                        document.getElementById("btn-upload-active").style.display = "block";
-                        document.getElementById("btn-upload-progress").style.display = "none";
                         Swal.fire({
                             title: "Success!",
                             text: "Your product list has been uploaded",
@@ -128,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     error: () => {
                         Swal.fire({
                             title: "Something went wrong!",
-                            text: "Make your uploaded file could not be processed",
+                            text: "Your uploaded file could not be processed",
                             icon: "error",
                             background: '#151515',
                             showCancelButton: false,
@@ -269,7 +271,8 @@ function saveOrderRequest(status) {
         contentType: "application/json",
         processData: false,
         dataType: false,
-        success: () => {
+        success: (data) => {
+            console.log(data);
             Swal.fire({
                 title: "Submitted Successfully!",
                 text: "Request has been submitted",
@@ -279,7 +282,7 @@ function saveOrderRequest(status) {
                 allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.reload();
+                    window.location.href = `/Order/Request?id=${data}`
                 }
             });
         },
@@ -349,7 +352,7 @@ function discardOrderRequest() {
                         allowOutsideClick: false
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.reload();
+                            window.location.href = '/Order/Draft';
                         }
                     });
                 },
@@ -412,7 +415,7 @@ function setDisableActionButtons(value) {
 
 function validateKeyInput(e) {
 
-    if ((isNaN(e.key)) && (e.key != 8) || e.target.value.length >= 5) {
+    if ((isNaN(e.key)) && (e.key != '.') || e.target.value.length >= 5) {
         e.preventDefault();
     }
     return true;

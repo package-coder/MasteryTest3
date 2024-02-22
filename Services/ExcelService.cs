@@ -73,6 +73,18 @@ namespace MasteryTest3.Services
             return (obj ?? string.Empty).ToString();
         }
 
-        
+        public bool validateExcelFile(IFormFile file)
+        {
+            try
+            {
+                using (var package = new ExcelPackage(file.OpenReadStream())) {
+                    return true;
+                }
+            }
+            catch (Exception)
+            { 
+                return false;
+            }
+        }
     }
 }

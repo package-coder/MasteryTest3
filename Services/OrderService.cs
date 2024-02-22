@@ -17,7 +17,7 @@ public class OrderService : IOrderService
         _sessionService = sessionService;
     }
 
-    public async Task RequestOrder(Order order, List<OrderItem>? deletedOrderItems)
+    public async Task<int?> RequestOrder(Order order, List<OrderItem>? deletedOrderItems)
     {
         order.Id = await _orderRepository.SaveOrder(order);
 
@@ -28,6 +28,8 @@ public class OrderService : IOrderService
         
         var unsavedItems = order.orderItems.Where(item => item.Id == null);
         await _orderRepository.SaveOrderItems((int)order.Id!, unsavedItems);
+
+        return order.Id;
     }
 
     public async Task DeleteOrderRequest(Order? order)

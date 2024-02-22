@@ -54,7 +54,9 @@ namespace MasteryTest3.Controllers
         [HttpPost] 
         public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
-           await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
+           var orderId = await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
+            Console.WriteLine(orderId);
+            return Json(orderId);
         }
 
         [HttpDelete]
@@ -65,9 +67,15 @@ namespace MasteryTest3.Controllers
 
         [HttpPost]
         public IActionResult UploadExcelFile(IFormFile productList) {
-
-            var items = _excelService.ParseExcelFile(productList);
-            return Json(items);
+            if (_excelService.validateExcelFile(productList))
+            {
+                var items = _excelService.ParseExcelFile(productList);
+                return Json(items);
+            }
+            else {
+                return StatusCode(400);
+            }
+            
         }
 
         public IActionResult DownloadExcelTemplate() {

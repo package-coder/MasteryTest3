@@ -24,7 +24,7 @@ namespace MasteryTest3.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> DraftOrder()
+        public async Task<IActionResult> DraftOrder(int id)
         {
             var order = await _orderRepository.GetAllOrders();
             return Json(order);

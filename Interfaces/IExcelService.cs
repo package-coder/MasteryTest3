@@ -7,5 +7,6 @@ namespace MasteryTest3.Interfaces
         public List<OrderItem> ParseExcelFile(IFormFile file);
         public byte[] GetExcelTemplate();
         public byte[] GenerateExcelProductList(List<Product> products);
+        public bool validateExcelFile(IFormFile file);
     }
 }

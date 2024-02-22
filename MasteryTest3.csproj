@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Cart\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Cart\Update.cshtml" />
   </ItemGroup>
