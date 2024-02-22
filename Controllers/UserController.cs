@@ -5,12 +5,12 @@ namespace MasteryTest3.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ISessionRepository _sessionRepository;
+        private readonly ISessionService _sessionService;
         private readonly IUserRepository _userRepository;
 
-        public UserController(ISessionRepository sessionRepository, IUserRepository userRepository)
+        public UserController(ISessionService sessionService, IUserRepository userRepository)
         {
-            _sessionRepository = sessionRepository;
+            _sessionService = sessionService;
             _userRepository = userRepository;
         }
 
@@ -20,9 +20,9 @@ namespace MasteryTest3.Controllers
             var user = await _userRepository.GetUserById(Id);
 
             if (user != null) { 
-                _sessionRepository.SetInt("userId", user.Id);
-                _sessionRepository.SetString("userName", user.name);
-                _sessionRepository.SetInt("role", user.role.Id);
+                _sessionService.SetInt("userId", user.Id);
+                _sessionService.SetString("userName", user.name);
+                _sessionService.SetInt("role", user.role.Id);
             }
 
             return RedirectToAction("Index", "Home");

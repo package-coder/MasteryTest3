@@ -2,15 +2,30 @@
 
 @{
     int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
+<<<<<<< HEAD
     int? role = int.Parse(httpContextAccessor.HttpContext?.Request.Query["role"] ?? "0");
+=======
+    int? role = int.Parse(httpContextAccessor.HttpContext?.Request.Query["role"]);
+>>>>>>> 6e4e038 (Refator order mvc)
     ViewData["Title"] = httpContextAccessor.HttpContext?.Request.Query["status"];
 }
 
 @model IEnumerable<Order>
 
+<<<<<<< HEAD
 <div class="container mw-primary">
     <div class=" mb-4">
         <h3> @(role != 1 ? "Requests for Approval" : "Order Requests")</h3>
+=======
+<div class="container mw-primary mt-5">
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <h3> @(role != 1 ? "Requests for Approval" : "My Order Requests")</h3>
+            <a href="@Url.ActionLink("request", "order")" class="btn btn-primary">
+                Create New Request
+            </a>
+        </div>
+>>>>>>> 6e4e038 (Refator order mvc)
         <h6>@ViewData["Title"]</h6>
     </div>
 

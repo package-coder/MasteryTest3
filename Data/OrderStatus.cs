@@ -1,4 +1,4 @@
-﻿namespace MasteryTest3.Data
+namespace MasteryTest3.Data
 {
     public enum OrderStatus
     {

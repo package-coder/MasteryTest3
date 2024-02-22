@@ -1,4 +1,5 @@
-﻿using MasteryTest3.Interfaces;
+﻿using MasteryTest3.Data;
+using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 
 namespace MasteryTest3.Services;
@@ -6,10 +7,14 @@ namespace MasteryTest3.Services;
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly ISessionService _sessionService;
+    private int? clientId => _sessionService.GetInt("userId");
+    private int? visibilityLevel => _sessionService.GetInt("visibilityLevel");
 
-    public OrderService(IOrderRepository orderRepository)
+    public OrderService(IOrderRepository orderRepository, ISessionService sessionService)
     {
         _orderRepository = orderRepository;
+        _sessionService = sessionService;
     }
 
     public async Task RequestOrder(Order order, List<OrderItem>? deletedOrderItems)
@@ -25,7 +30,7 @@ public class OrderService : IOrderService
         await _orderRepository.SaveOrderItems((int)order.Id!, unsavedItems);
     }
 
-    public async Task DeleteDraftOrderRequest(Order? order)
+    public async Task DeleteOrderRequest(Order? order)
     {
         if (order == null && order?.Id == null) return;
         await _orderRepository.DeleteDraftOrderRequest(order);
@@ -36,13 +41,26 @@ public class OrderService : IOrderService
         return await _orderRepository.GetOrderById(id);
     }
 
-    public async Task<Order?> GetDraftOrderRequestWithItems()
+    public async Task<IEnumerable<Order>> GetAllDraftOrders()
     {
-        return await _orderRepository.GetDraftOrderRequestWithItems();
+        return await _orderRepository.GetAllUserOrdersByStatus((int)clientId!, "DRAFT");
     }
-
-    public async Task<IEnumerable<Order>> GetDraftOrders()
+    
+    public async Task<IEnumerable<Order>> GetAllOrders(OrderStatus status, Role role)
     {
-        return await _orderRepository.GetDraftOrders();
+        // if (clientId == null)
+        // {
+        //     return new List<Order>();
+        // }
+        
+        switch (role)
+        {
+            case Role.REQUESTOR:
+                return await _orderRepository.GetAllUserOrdersByStatus((int)clientId!, status.ToString());
+            case Role.APPROVER:
+                return await _orderRepository.GetAllOrdersBy(new { visibilityLevel, status = status.ToString() });
+        }
+
+        throw new ArgumentException("Role does not exists.");
     }
 }

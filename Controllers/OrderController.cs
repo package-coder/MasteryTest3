@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using MasteryTest3.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
 using MasteryTest3.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using PdfSharp.Pdf.Advanced;
 
 namespace MasteryTest3.Controllers
@@ -30,33 +32,35 @@ namespace MasteryTest3.Controllers
 
             return File(orderPdf, "application/pdf", $"Order#{order!.Id}.pdf");
         }
-
-        [HttpGet]
-        public new IActionResult Request() => View();
-
-        public async Task<IActionResult> Draft() {
-            var order = await _orderService.GetDraftOrders();
-            return View(order);
-        }
         
-
-        [HttpGet]
-        public async Task<IActionResult> GetDraftOrderRequest()
+        
+        [HttpGet] 
+        public async Task<IActionResult> GetOrderById(int id)
         {
-            var order = await _orderService.GetDraftOrderRequestWithItems();
+            var order = await _orderService.GetOrderById(id);
             return Json(order);
         }
         
-        [HttpPost]
+        [HttpGet]
+        public async Task<IActionResult> Index(OrderStatus status = OrderStatus.DRAFT, Role role = Role.REQUESTOR)
+        {
+            var orders = await _orderService.GetAllOrders(status, role);
+            return View(orders);
+        }
+        
+        [HttpGet] 
+        public new IActionResult Request() => View();
+        
+        [HttpPost] 
         public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
            await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
         }
 
         [HttpDelete]
-        public async Task DeleteDraftOrderRequest([FromBody] Order? order)
+        public async Task DeleteOrderRequest([FromBody] Order? order)
         {
-            await _orderService.DeleteDraftOrderRequest(order);
+            await _orderService.DeleteOrderRequest(order);
         }
 
         [HttpPost]
