@@ -43,6 +43,7 @@ namespace MasteryTest3.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(OrderStatus status = OrderStatus.DRAFT, Role role = Role.REQUESTOR)
         {
+            return View(new List<Order>());
             var orders = await _orderService.GetAllOrders(status, role);
             return View(orders);
         }

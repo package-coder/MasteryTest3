@@ -10,16 +10,10 @@
 <div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
 
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
-        <h3 class="my-4">Request Product</h3>
-        <div class="nav-buttons">
-            <button id="btn-browse-product" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#browseProductModal">
-                Choose Products
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadProductList">
-                Upload Product List
-            </button>
-        </div>
-
+        <h3 class="my-2">Request Product</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadProductList">
+            Upload Product List
+        </button>
     </div>
     @if (userId == null)
     {
@@ -63,6 +57,38 @@
                                 <button type="submit" class="btn btn-primary w-100">Add</button>
                             </td>
                         </tr>
+=======
+                            <tr class="table-input">
+                                <td>
+                                    <input autofocus type="text" id="quantity" required />
+                                </td>
+                                <td>
+                                    <input autofocus type="text" id="unit" required />
+                                </td>
+                                <td style="width: 400px">
+                                    <div class="position-relative">
+                                        <div class="form-item">
+                                            <select id="search-list" tabindex="-1">
+                                                <option selected disabled value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-item position-absolute top-0" style="width: 360px">
+                                            <input class="text-start" autofocus type="text" id="name" required />
+                                            <input type="hidden" name="id" id="id"  tabindex="-1"/>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input autofocus class="text-start" type="text" id="remark" />
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary"
+                                            style="margin: 2px 2px 2px 3px;">
+                                        Add
+                                    </button>
+                                </td>
+                            </tr>
+>>>>>>> Stashed changes
                         </tbody>
                     </table>
 
@@ -79,8 +105,12 @@
 
     }
 
+<<<<<<< Updated upstream
     @* @Html.Partial("~/Views/Shared/Modals/_BrowseProductModal.cshtml") *@
     @* @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml") *@
+=======
+    @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
+>>>>>>> Stashed changes
 </div>
 
-<script src="../Views/Order/Request.cshtml.js" type="module"></script>
+<script src="../Views/Order/Request.cshtml.js"></script>

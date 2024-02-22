@@ -10,4 +10,4 @@ namespace MasteryTest3.Interfaces
         public int? GetInt(string key);
         public SessionUser? GetSessionUser();
     }
- }
+}

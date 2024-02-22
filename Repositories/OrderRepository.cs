@@ -9,20 +9,29 @@ namespace MasteryTest3.Repositories
     {
         private readonly IDbConnection _connection;
         private readonly ISessionService _sessionService;
-        
+
         public OrderRepository(IDbConnection connection, ISessionService sessionService)
         {
             _connection = connection;
             _sessionService = sessionService;
         }
-        
+
         public async Task<IEnumerable<Order>> GetNonDraftOrders()
         {
-            return await _connection.QueryAsync<Order>("GetNonDraftOrders", 
-                new {clientId = _sessionService.GetInt("userId")}, 
+            return await _connection.QueryAsync<Order>("GetNonDraftOrders",
+                new { clientId = _sessionService.GetSessionUser().id },
                 commandType: CommandType.StoredProcedure);
         }
-        
+
+        public async Task<IEnumerable<Order>> GetDraftOrders()
+        {
+            return await _connection.QueryAsync<Order>(
+                "GetDraftOrders",
+                new { clientId = _sessionService.GetSessionUser().id },
+                commandType: CommandType.StoredProcedure
+            );
+        }
+
         public async Task<int?> SaveOrder(Order order)
         {
 
@@ -39,17 +48,18 @@ namespace MasteryTest3.Repositories
 
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
-                clientId = _sessionService.GetInt("userId"),
+                clientId = _sessionService.GetSessionUser().id,
                 order.Id,
                 order.status,
                 order.crc
-            }, commandType: CommandType.StoredProcedure);;
+            }, commandType: CommandType.StoredProcedure); ;
         }
-        
+
         public async Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems)
         {
             var data = orderItems.ToList()
-                .Select(item => new {
+                .Select(item => new
+                {
                     orderId,
                     item.Id,
                     item.name,
@@ -58,15 +68,15 @@ namespace MasteryTest3.Repositories
                     item.unit,
                     productId = item.product?.Id,
                 });
-            return await _connection.ExecuteAsync("SaveOrderItem", data,  commandType: CommandType.StoredProcedure);
+            return await _connection.ExecuteAsync("SaveOrderItem", data, commandType: CommandType.StoredProcedure);
         }
-        
+
         public async Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems)
         {
             var ids = orderItems.Select(item => new { item.Id });
-            return await _connection.ExecuteAsync("DeleteOrderItem", ids,  commandType: CommandType.StoredProcedure);
+            return await _connection.ExecuteAsync("DeleteOrderItem", ids, commandType: CommandType.StoredProcedure);
         }
-        
+
         public async Task<int> DeleteDraftOrderRequest(Order order)
         {
             return await _connection.ExecuteAsync("DeleteDraftOrderRequest", new { order.Id }, commandType: CommandType.StoredProcedure);
@@ -100,17 +110,17 @@ namespace MasteryTest3.Repositories
                     );
             }
             catch (ArgumentException ex)
-            {   
+            {
                 return new List<Order>();
             }
         }
 
-        public Task<IEnumerable<Order>> GetAllOrders() =>  GetAllOrders(null);
+        public Task<IEnumerable<Order>> GetAllOrders() => GetAllOrders(null);
         public Task<IEnumerable<Order>> GetAllOrdersBy(object param) => GetAllOrders(param);
-        public Task<IEnumerable<Order>> GetAllOrdersByStatus(string status) => GetAllOrders( new { status });
-        public Task<IEnumerable<Order>> GetAllUserOrdersByStatus(int clientId, string status) => GetAllOrders( new { status, clientId });
-        
-        public async Task<Order?> GetOrderById(int id) 
+        public Task<IEnumerable<Order>> GetAllOrdersByStatus(string status) => GetAllOrders(new { status });
+        public Task<IEnumerable<Order>> GetAllUserOrdersByStatus(int clientId, string status) => GetAllOrders(new { status, clientId });
+
+        public async Task<Order?> GetOrderById(int id)
         {
             var orders = await GetAllOrders(new { Id = id });
             return orders.SingleOrDefault();

@@ -50,15 +50,11 @@ public class OrderService : IOrderService
     
     public async Task<IEnumerable<Order>> GetAllOrders(OrderStatus status, Role role)
     {
-        // if (clientId == null)
-        // {
-        //     return new List<Order>();
-        // }
         
         switch (role)
         {
             case Role.REQUESTOR:
-                return await _orderRepository.GetAllUserOrdersByStatus((int)clientId!, status.ToString());
+                return await _orderRepository.GetAllUserOrdersByStatus(_sessionService.GetSessionUser().id, status.ToString());
             case Role.APPROVER:
                 return await _orderRepository.GetAllOrdersBy(new { visibilityLevel, status = status.ToString() });
         }
