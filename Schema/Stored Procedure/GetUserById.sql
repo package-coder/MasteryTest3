@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[GetUserById] (
+CREATE PROCEDURE GetUserById (
 	@userId INT
 )
 AS BEGIN
@@ -8,7 +8,8 @@ AS BEGIN
 		a.email,
 		a.[address],
 		u.Id,
-		u.name
+		u.name,
+		u.visibilityLevel
 	FROM 
 		AppUser a
 	JOIN

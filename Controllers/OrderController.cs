@@ -4,7 +4,6 @@ using MasteryTest3.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
-using MasteryTest3.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using PdfSharp.Pdf.Advanced;
@@ -55,8 +54,7 @@ namespace MasteryTest3.Controllers
         public new async Task Request([FromBody] OrderViewModel orderViewModel)
         {
            var orderId = await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
-            Console.WriteLine(orderId);
-            return Json(orderId);
+           return Json(orderId);
         }
 
         [HttpDelete]
@@ -66,10 +64,11 @@ namespace MasteryTest3.Controllers
         }
 
         [HttpPost]
-        public IActionResult UploadExcelFile(IFormFile productList) {
-            if (_excelService.validateExcelFile(productList))
+        public IActionResult UploadExcelFile(IFormFile file) {
+
+            if (_excelService.validateExcelFile(file))
             {
-                var items = _excelService.ParseExcelFile(productList);
+                var items = _excelService.ParseExcelFile(file);
                 return Json(items);
             }
             else {

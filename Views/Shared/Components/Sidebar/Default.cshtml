@@ -1,33 +1,35 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
+﻿@using MasteryTest3.Interfaces
+@using Microsoft.AspNetCore.Http
+@inject ISessionRepository sessionRepository
 @model IEnumerable<User>;
 
 @{
-    string? userName = httpContextAccessor.HttpContext?.Session.GetString("userName");
-    int? role = httpContextAccessor.HttpContext?.Session.GetInt32("role");
+    SessionUser sessionUser = sessionRepository.sessionUser;
 }
+
 
 <div id="sidebar" class="border border-left border-light p-4">
     <div class="d-flex justify-content-center align-items-center flex-column">
         <a class="navbar-brand m-0 mb-1 text-light fs-5" asp-area="" asp-controller="Home" asp-action="Index">MasteryTest</a>
-         <div class="btn-group mb-3 align-self-stretch">
+         <div class="btn-group align-self-stretch">
             <button class="btn rounded-pill border dropdown-toggle" type="button"
                     data-bs-toggle="dropdown">
-                🟢  @userName
+                🟢  @sessionUser.name
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 @foreach (var user in Model)
                 {
                     <li>
-                        <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name (@user.role.name.ToUpper())</a>
+                        <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
                      </li>
                     <li class="dropdown-divider"></li>
                 }
             </ul>
         </div>
+        <span class="text-white-50 fw-bold" style="font-size: 13px">@sessionUser.role.name.ToUpper()</span>
     </div>
 
-    @if (userName != null)
+    @if (sessionRepository != null)
     {
         <div class="nav-group mt-4">
             <ul class="list-unstyled">
@@ -41,7 +43,7 @@
 
             </ul>
         </div>
-        @if (role != 1)
+        @if (sessionUser.role.id != 1)
         {
             <div class="nav-group mt-5">
                 <ul class="list-unstyled">

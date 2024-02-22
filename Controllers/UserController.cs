@@ -1,5 +1,6 @@
 ﻿using MasteryTest3.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace MasteryTest3.Controllers
 {
@@ -19,10 +20,12 @@ namespace MasteryTest3.Controllers
             var Id = Convert.ToInt32(HttpContext.Request.Query["userId"]);
             var user = await _userRepository.GetUserById(Id);
 
-            if (user != null) { 
+            if (user != null) {
                 _sessionService.SetInt("userId", user.Id);
                 _sessionService.SetString("userName", user.name);
-                _sessionService.SetInt("role", user.role.Id);
+                _sessionService.SetString("roleName", user.role.name);
+                _sessionService.SetInt("roleId", user.role.id);
+                _sessionService.SetInt("visibilityLevel", user.role.visibilityLevel);
             }
 
             return RedirectToAction("Index", "Home");
