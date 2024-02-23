@@ -15,28 +15,20 @@ namespace MasteryTest3.Services
 
         public SessionUser GetSessionUser()
         {
-            return sessionUserData;
-        }
-
-        private SessionUser sessionUserData
-        {
-            get
+            return new()
             {
-                return new()
+
+                id = (int)GetInt("userId"),
+                name = GetString("userName"),
+                role = new()
                 {
-
-                    id = (int)GetInt("userId"),
-                    name = GetString("userName"),
-                    role = new()
-                    {
-                        id = (int)GetInt("roleId"),
-                        name = GetString("roleName"),
-                        visibilityLevel = (int)GetInt("visibilityLevel"),
-                    },
-                };
-            }
+                    id = (int)GetInt("roleId"),
+                    name = GetString("roleName"),
+                    visibilityLevel = (int)GetInt("visibilityLevel"),
+                },
+            };
         }
-
+        
         public int? GetInt(string key)
         {
             return _contextAccessor.HttpContext?.Session.GetInt32(key);

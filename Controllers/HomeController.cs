@@ -21,7 +21,7 @@ namespace MasteryTest3.Controllers
         public async Task<IActionResult> Index()
         {
             if (_sessionService.GetInt("userId") == null) {
-                var user = await _userRepository.GetUserById(1);
+                var user = await _userRepository.GetUserById(2);
 
                 if (user != null) {
                     _sessionService.SetInt("userId", user.Id);

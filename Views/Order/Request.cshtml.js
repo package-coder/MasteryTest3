@@ -11,7 +11,7 @@ const actionButtons = document.querySelectorAll("footer button[type=submit]");
 const formElement = document.getElementById("form");
 const modalUploadFormElement = document.getElementById("upload-form");
 const selectFormElement = document.getElementById("search-list");
-const formFields = ['id','quantity', 'unit', 'name', 'remark'];
+const formFields = ['product','quantity', 'unit', 'name', 'remark'];
 const btnSendRequest = document.getElementById("send-request");
 const btnSaveRequest = document.getElementById("save-request");
 const table = document.getElementById("table-request");
@@ -23,36 +23,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchDraftOrderRequest(paramId);
     }
     
-    const formSubmit = () => {
+    document.getElementById("item-submit-button").addEventListener("click", () => {
         const form = {};
         let valid = true;
 
         formFields.forEach((field) => {
             const fieldElement = document.getElementById(field);
+            if(!fieldElement) return;
 
-            if(!fieldElement.value && fieldElement.hasAttribute("required")) {
+            if(fieldElement.hasAttribute("required") && !fieldElement.value) {
                 fieldElement.classList.add('border-danger');
                 valid = false;
                 return;
             } else {
                 fieldElement.classList.remove('border-danger');
             }
-            if (field == 'id') {
-                Object.assign(form, { ['product']: fieldElement.value ? { id: fieldElement.value } : null });
-            } else {
-                Object.assign(form, { [field]: fieldElement.value });
-            }
+
+            Object.assign(form, { [field]: fieldElement.value });
+            fieldElement.value = null;
         });
-        
+
         if (!valid) {
             return
-        } else {
-            formElement.reset()
-        };
-        
+        }
+
         addOrderItem(form);
-        document.getElementById(formFields[0]).focus();
-    });
+        document.getElementById(formFields[formFields.indexOf('quantity')])?.focus();
+    })
 
     modalUploadFormElement.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -124,8 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
     
     ///// Styling
-    document.querySelectorAll("input[required]")
-        .forEach(element =>
+
     document.querySelectorAll(".table-input input[required]")
         .forEach(element => 
             element.addEventListener('change', () => {
@@ -133,9 +129,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         element.classList.remove('border-danger');
                     }
             })
-        )
+        );
     
-    console.log(document.querySelectorAll(".table-input input"))
     document.querySelectorAll(".table-input input")
         .forEach((element, index, array) => {
             element.addEventListener('keyup', (e) => {
@@ -159,19 +154,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const nextElement = Array.from(array.values()).find(item => item.dataset.index === nextIndex.toString());
                     nextElement?.focus();
                 } else if(currentIndex === lastIndex) {
-                    formSubmit()
+                    document.getElementById("item-submit-button").click();
                 }
             })
         })
 
-    selectForm.addEventListener("change", () => {
+    selectFormElement.addEventListener("change", () => {
 
-        if (selectForm.selectedIndex != 0) {
-            selectForm.classList.remove('border-danger');
+        if (selectFormElement.selectedIndex !== 0) {
+            selectFormElement.classList.remove('border-danger');
         }
 
         const unit = document.getElementById("unit2");
-        unit.value = selectForm.options[selectForm.selectedIndex].getAttribute("data-unit").toUpperCase();
+        unit.value = selectFormElement.options[selectFormElement.selectedIndex].getAttribute("data-unit").toUpperCase();
     })
 
     document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
@@ -196,6 +191,7 @@ document.getElementById("name").addEventListener("change", (e) => {
     }
 })
 async function fetchDraftOrderRequest(id) {
+    try {
     const response = await fetch(`/Order/GetDraftOrderRequest/${id}`, { method: "GET" });
     const data = await response.json();
 
@@ -209,7 +205,7 @@ async function fetchDraftOrderRequest(id) {
 }
 async function fetchProductList() {
 
-    if (productList.length == 0) {
+    if (productList.length === 0) {
         const response = await fetch('/Product/GetAllProducts', { method: "GET" });
         productList = await response.json();
         populateSelectList(productList);
