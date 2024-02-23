@@ -48,10 +48,9 @@ namespace MasteryTest3.Repositories
 
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
-                clientId = _sessionService.GetSessionUser().id,
+                clientId = order.user.Id,
                 order.Id,
                 order.status,
-                order.crc
             }, commandType: CommandType.StoredProcedure); ;
         }
 
@@ -85,8 +84,6 @@ namespace MasteryTest3.Repositories
 
         private async Task<IEnumerable<Order>> GetAllOrders(object? param)
         {
-            try
-            {
                 var orders = await _connection.QueryAsync<Order, OrderItem, Product, Order>(
                     "GetAllOrders",
                     (order, orderItem, product) =>
@@ -108,11 +105,6 @@ namespace MasteryTest3.Repositories
                             return first;
                         }
                     );
-            }
-            catch (ArgumentException ex)
-            {
-                return new List<Order>();
-            }
         }
 
         public Task<IEnumerable<Order>> GetAllOrders() => GetAllOrders(null);

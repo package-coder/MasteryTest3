@@ -1,5 +1,5 @@
 ﻿@using MasteryTest3.Interfaces
-@using Microsoft.AspNetCore.Http
+@using MasteryTest3.Data
 @inject ISessionService sessionService
 @model IEnumerable<User>;
 
@@ -30,13 +30,13 @@
 
     @if (sessionUser != null)
     {
-        <div class="nav-group mt-4">
+        <div class="nav-group mt-5">
             <ul class="list-unstyled">
                 <li class="px-3 py-1 text-secondary">My Order Requests</li>
-                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "DRAFT", role = 1 })">
+                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTOR })">
                     <li class="ms-3 px-3 py-1">Drafts</li>
                 </a>
-                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "FOR_APPROVAL", role = 1 })">
+                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.FOR_APPROVAL, role = Role.REQUESTOR })">
                     <li class="ms-3 px-3 py-1">Submitted</li>
                 </a>
 
@@ -44,13 +44,13 @@
         </div>
         @if (sessionUser.role.id != 1)
         {
-            <div class="nav-group mt-5">
+            <div class="nav-group mt-4">
                 <ul class="list-unstyled">
                     <li class="px-3 py-1 text-secondary">Requests for Approval</li>
-                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "FOR_APPROVAL", role = 0 })">
+                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.FOR_APPROVAL, role = Role.APPROVER })">
                         <li class="ms-3 px-3 py-1">Pending (1)</li>
                     </a>
-                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = "APPROVED", role = 0 })">
+                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.APPROVED, role = Role.APPROVER })">
                         <li class="ms-3 px-3 py-1">Approved</li>
                     </a>
                 </ul>

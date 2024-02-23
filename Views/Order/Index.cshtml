@@ -2,19 +2,23 @@
 
 @{
     int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
-    int? role = int.Parse(httpContextAccessor.HttpContext?.Request.Query["role"]);
+    var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
+    
     ViewData["Title"] = httpContextAccessor.HttpContext?.Request.Query["status"];
 }
-
+@using MasteryTest3.Data
 @model IEnumerable<Order>
 
 <div class="container mw-primary mt-5">
     <div class="mb-4">
         <div class="d-flex align-items-center justify-content-between">
-            <h3> @(role != 1 ? "Requests for Approval" : "My Order Requests")</h3>
-            <a href="@Url.ActionLink("request", "order")" class="btn btn-primary">
-                Create New Request
-            </a>
+            <h3> @(role != Role.REQUESTOR.ToString() ? "Requests for Approval" : "My Order Requests")</h3>
+            @if (role == Role.REQUESTOR.ToString())
+            {
+                <a href="@Url.ActionLink("request", "order")" class="btn btn-primary">
+                    Create New Request
+                </a>
+            }
         </div>
         <h6>@ViewData["Title"]</h6>
     </div>

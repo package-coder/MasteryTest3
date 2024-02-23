@@ -38,11 +38,10 @@ namespace MasteryTest3.Controllers
             var order = await _orderService.GetOrderById(id);
             return Json(order);
         }
-        
+
         [HttpGet]
-        public async Task<IActionResult> Index(OrderStatus status = OrderStatus.DRAFT, Role role = Role.REQUESTOR)
+        public async Task<IActionResult> Index(OrderStatus status, Role role)
         {
-            return View(new List<Order>());
             var orders = await _orderService.GetAllOrders(status, role);
             return View(orders);
         }

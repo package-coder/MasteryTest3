@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MasteryTest3.CustomAttributes;
+using MasteryTest3.Data;
 using MasteryTest3.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace MasteryTest3.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return Redirect("/order?status=DRAFT&role=1");
+            return RedirectToAction("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTOR });
         }
 
         public IActionResult Error()

@@ -8,9 +8,8 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ISessionService _sessionService;
-    private int? clientId => _sessionService.GetInt("userId");
-    private int? visibilityLevel => _sessionService.GetInt("visibilityLevel");
-
+    
+    private SessionUser? session => _sessionService.GetSessionUser();
     public OrderService(IOrderRepository orderRepository, ISessionService sessionService)
     {
         _orderRepository = orderRepository;
@@ -19,6 +18,7 @@ public class OrderService : IOrderService
 
     public async Task<int?> RequestOrder(Order order, List<OrderItem>? deletedOrderItems)
     {
+        order.user = new User(id: session!.id);
         order.Id = await _orderRepository.SaveOrder(order);
 
         if (deletedOrderItems is { Count: > 0 })
@@ -45,20 +45,16 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<Order>> GetAllDraftOrders()
     {
-        return await _orderRepository.GetAllUserOrdersByStatus((int)clientId!, "DRAFT");
+        return await _orderRepository.GetAllUserOrdersByStatus(session!.id, "DRAFT");
     }
     
     public async Task<IEnumerable<Order>> GetAllOrders(OrderStatus status, Role role)
     {
-        
-        switch (role)
+        return role switch
         {
-            case Role.REQUESTOR:
-                return await _orderRepository.GetAllUserOrdersByStatus(_sessionService.GetSessionUser().id, status.ToString());
-            case Role.APPROVER:
-                return await _orderRepository.GetAllOrdersBy(new { visibilityLevel, status = status.ToString() });
-        }
-
-        throw new ArgumentException("Role does not exists.");
+            Role.REQUESTOR => await _orderRepository.GetAllUserOrdersByStatus(session!.id, status.ToString()),
+            Role.APPROVER => await _orderRepository.GetAllOrdersBy(new { session!.role.visibilityLevel, status = status.ToString() }),
+            _ => throw new ArgumentException("Role does not exists.")
+        };
     }
 }

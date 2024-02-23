@@ -7,5 +7,13 @@
         public string name { get; set; }
         public string email { get; set; }
         public string address { get; set; }
+
+
+        public User() { }
+
+        public User(int id)
+        {
+            Id = id;
+        }
     }
 }

@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
 })
 
-selectFormElement.addEventListener("click", () => { fetchProductList() });
+selectFormElement.addEventListener("click", fetchProductList);
 
 selectFormElement.addEventListener("change", () => {
     var inputProductName = document.getElementById("name");
