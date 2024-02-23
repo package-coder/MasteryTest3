@@ -1,6 +1,5 @@
 ﻿using MasteryTest3.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace MasteryTest3.Controllers
 {

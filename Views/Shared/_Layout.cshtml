@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using MasteryTest3.Interfaces
+@inject ISessionService sessionService;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,16 +20,17 @@
 </head>
 
 <body class="d-flex flex-column">
-   
-    @await Component.InvokeAsync("Sidebar")
-   
- 
-   <div class="d-flex flex-column mt-4 h-100" style="margin-left: 260px">
+
+    @if (sessionService.GetInt("userId") != null)
+    {
+        @await Component.InvokeAsync("Sidebar")
+    }
+
+    <div class="d-flex flex-column h-100" @(sessionService.GetInt("userId") != null ? "style=margin-left:260px" : "")>
         @RenderBody()
    </div>
   
-
-    @await RenderSectionAsync("Scripts", required: false)
+   @await RenderSectionAsync("Scripts", required: false)
     
 </body>
 

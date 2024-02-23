@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Sign In";
+}
+@model IEnumerable<User>
+<div class="main-content h-100 d-flex align-items-center justify-content-center flex-column">
+    <h3 class="text-center">SELECT A USER</h3>
+    <div class="btn-group">
+        <button class="btn rounded-pill border dropdown-toggle" type="button"
+                data-bs-toggle="dropdown">
+            🟢  Select A User
+        </button>
+        <ul class="dropdown-menu dropdown-menu-center">
+            @foreach (var user in Model)
+            {
+                <li>
+                    <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
+                </li>
+                <li class="dropdown-divider"></li>
+            }
+        </ul>
+    </div>
+</div>

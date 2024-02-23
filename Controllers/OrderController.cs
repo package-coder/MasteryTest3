@@ -1,15 +1,14 @@
 ﻿using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
+using MasteryTest3.CustomAttributes;
 using MasteryTest3.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using PdfSharp.Pdf.Advanced;
 
 namespace MasteryTest3.Controllers
 {
+    [RedirectSignedOut]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class OrderController : Controller
     {

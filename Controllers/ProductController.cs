@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics;
-using System.Text;
+using MasteryTest3.CustomAttributes;
 using MasteryTest3.Interfaces;
-using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace MasteryTest3.Controllers
 {
+    [RedirectSignedOut]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class ProductController : Controller
     {
