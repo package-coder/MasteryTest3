@@ -48,7 +48,7 @@ public class OrderService : IOrderService
         return await _orderRepository.GetAllUserOrdersByStatus(session!.id, "DRAFT");
     }
     
-    public async Task<IEnumerable<Order>> GetAllOrders(OrderStatus status, Role role)
+    public async Task<List<Order>> GetAllOrders(OrderStatus status, Role role)
     {
         return role switch
         {

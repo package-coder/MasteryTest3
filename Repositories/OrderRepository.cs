@@ -16,22 +16,6 @@ namespace MasteryTest3.Repositories
             _sessionService = sessionService;
         }
 
-        public async Task<IEnumerable<Order>> GetNonDraftOrders()
-        {
-            return await _connection.QueryAsync<Order>("GetNonDraftOrders",
-                new { clientId = _sessionService.GetSessionUser().id },
-                commandType: CommandType.StoredProcedure);
-        }
-
-        public async Task<IEnumerable<Order>> GetDraftOrders()
-        {
-            return await _connection.QueryAsync<Order>(
-                "GetDraftOrders",
-                new { clientId = _sessionService.GetSessionUser().id },
-                commandType: CommandType.StoredProcedure
-            );
-        }
-
         public async Task<int?> SaveOrder(Order order)
         {
 
@@ -82,7 +66,7 @@ namespace MasteryTest3.Repositories
         }
 
 
-        private async Task<IEnumerable<Order>> QueryOrders(string sql, object? param = null)
+        private async Task<List<Order>> QueryOrders(string sql, object? param = null)
         {
                 var orders = await _connection.QueryAsync<Order, OrderItem, Product, Order>(
                     sql,
@@ -98,19 +82,23 @@ namespace MasteryTest3.Repositories
                 );
 
                 return orders.GroupBy(item => item.Id)
-                    .Select(item =>
+                    .Select(groupOrder =>
                         {
-                            var first = item.First();
-                            first.orderItems = item.Select(order => order.orderItems.Single()).ToList();
+                            var first = groupOrder.First();
+                            first.orderItems = groupOrder.Select(order =>
+                            {
+                                var single = order.orderItems.Single();
+                                return single;
+                            }).ToList();
                             return first;
                         }
-                    );
+                    ).ToList();
         }
 
-        public Task<IEnumerable<Order>> GetAllOrders() => QueryOrders("GetAllOrders");
-        public Task<IEnumerable<Order>> GetAllOrdersBy(object param) => QueryOrders("GetAllOrders", param);
-        public Task<IEnumerable<Order>> GetAllOrdersByStatus(string status) => QueryOrders("GetAllOrders", new { status });
-        public Task<IEnumerable<Order>> GetAllUserOrdersByStatus(int clientId, string status) => QueryOrders("GetAllOrders", new { status, clientId });
+        public Task<List<Order>> GetAllOrders() => QueryOrders("GetAllOrders");
+        public Task<List<Order>> GetAllOrdersBy(object param) => QueryOrders("GetAllOrders", param);
+        public Task<List<Order>> GetAllOrdersByStatus(string status) => QueryOrders("GetAllOrders", new { status });
+        public Task<List<Order>> GetAllUserOrdersByStatus(int clientId, string status) => QueryOrders("GetAllOrders", new { status, clientId });
 
         public async Task<Order?> GetOrderById(int id)
         {
