@@ -45,14 +45,33 @@ namespace MasteryTest3.Controllers
             var orders = await _orderService.GetAllOrders(status, role);
             return View(orders);
         }
-        
-        [HttpGet] 
-        public new IActionResult Request() => View();
+
+        [HttpGet]
+        public async Task<IActionResult> Process(int id)
+        {
+            var order = await _orderService.GetOrderById(id);
+            if (order == null) return RedirectToAction("Error");
+            return View("ProcessRequest", order);
+        }
         
         [HttpPost] 
-        public new async Task Request([FromBody] OrderViewModel orderViewModel)
+        public async Task<RedirectToActionResult> Process([FromBody] OrderViewModel orderViewModel)
         {
-           await _orderService.RequestOrder(orderViewModel.ToOrder(), orderViewModel.deletedOrderItems);
+            var order = orderViewModel.ToOrder();
+            order.Id =  await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
+            return RedirectToAction("process", "order",new { id = order.Id });
+        }
+        
+        [HttpGet]
+        public new ViewResult Request() => View("NewRequest");
+        
+        [HttpPost] 
+        public new async Task<RedirectToActionResult> Request([FromBody] OrderViewModel orderViewModel)
+        {
+            var order = orderViewModel.ToOrder();
+            await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
+
+            return RedirectToAction("index", "order", new { order.status, role = Role.REQUESTOR });
         }
 
         [HttpDelete]

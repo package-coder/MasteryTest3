@@ -16,7 +16,7 @@ public class OrderService : IOrderService
         _sessionService = sessionService;
     }
 
-    public async Task<int?> RequestOrder(Order order, List<OrderItem>? deletedOrderItems)
+    public async Task<int?> SaveOrderRequest(Order order, List<OrderItem>? deletedOrderItems = null)
     {
         order.user = new User(id: session!.id);
         order.Id = await _orderRepository.SaveOrder(order);

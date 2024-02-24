@@ -82,10 +82,10 @@ namespace MasteryTest3.Repositories
         }
 
 
-        private async Task<IEnumerable<Order>> GetAllOrders(object? param)
+        private async Task<IEnumerable<Order>> QueryOrders(string sql, object? param = null)
         {
                 var orders = await _connection.QueryAsync<Order, OrderItem, Product, Order>(
-                    "GetAllOrders",
+                    sql,
                     (order, orderItem, product) =>
                     {
                         orderItem.product = product;
@@ -107,14 +107,14 @@ namespace MasteryTest3.Repositories
                     );
         }
 
-        public Task<IEnumerable<Order>> GetAllOrders() => GetAllOrders(null);
-        public Task<IEnumerable<Order>> GetAllOrdersBy(object param) => GetAllOrders(param);
-        public Task<IEnumerable<Order>> GetAllOrdersByStatus(string status) => GetAllOrders(new { status });
-        public Task<IEnumerable<Order>> GetAllUserOrdersByStatus(int clientId, string status) => GetAllOrders(new { status, clientId });
+        public Task<IEnumerable<Order>> GetAllOrders() => QueryOrders("GetAllOrders");
+        public Task<IEnumerable<Order>> GetAllOrdersBy(object param) => QueryOrders("GetAllOrders", param);
+        public Task<IEnumerable<Order>> GetAllOrdersByStatus(string status) => QueryOrders("GetAllOrders", new { status });
+        public Task<IEnumerable<Order>> GetAllUserOrdersByStatus(int clientId, string status) => QueryOrders("GetAllOrders", new { status, clientId });
 
         public async Task<Order?> GetOrderById(int id)
         {
-            var orders = await GetAllOrders(new { Id = id });
+            var orders = await QueryOrders("GetOrderById", new { id });
             return orders.SingleOrDefault();
         }
     }

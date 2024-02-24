@@ -10,8 +10,8 @@
 <div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
 
     <div class="d-flex flex-row align-items-center justify-content-between mb-4">
-        <h3 class="my-2">Request Product</h3>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadProductList">
+        <h3 class="my-2">New Order Request</h3>
+        <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#uploadProductList">
             Upload Product List
         </button>
     </div>
@@ -75,10 +75,9 @@
         <footer class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
                 style="left: 0; right: 0; bottom: 0">
             <div id="action-buttons">
-                <button id="discard-request" type="reset" class="btn border">Discard</button>
-                <button id="save-request" type="submit" class="btn border" disabled>Save</button>
+                <button id="save-request" type="submit" class="btn border" disabled>Save as draft</button>
             </div>
-            <button id="send-request" type="submit" class="btn bg-primary" disabled>Send Request</button>
+            <button id="send-request" type="submit" class="btn bg-primary" disabled>Process Request</button>
         </footer>
 
     }
@@ -86,4 +85,4 @@
     @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
 </div>
 
-<script src="../Views/Order/Request.cshtml.js"></script>
+<script src="../Views/Order/NewRequest.cshtml.js"></script>

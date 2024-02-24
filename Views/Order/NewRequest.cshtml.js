@@ -116,9 +116,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         
     });
 
-    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
+    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
     document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
-    document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
     
     ///// Styling
 
@@ -230,38 +229,20 @@ function saveOrderRequest(status) {
         deletedOrderItems
     };
 
-    $.ajax({
-        type: "POST",
-        url: "/Order/Request",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        processData: false,
-        dataType: false,
-        success: (data) => {
-            console.log(data);
-            Swal.fire({
-                title: "Submitted Successfully!",
-                text: "Request has been submitted",
-                icon: "success",
-                background: '#151515',
-                showCancelButton: false,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `/Order/Request?id=${data}`
-                }
-            });
-        },
-        error: () => {
-            Swal.fire({
-                title: "Something went wrong!",
-                text: "Your request has not been submitted",
-                icon: "error",
-                background: '#151515',
-                showCancelButton: false,
-                allowOutsideClick: false
-            });
-        }
+    fetch("/order/process", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: new Headers({'content-type': 'application/json'}),
+    }).then(response => {
+        window.location.replace(response.url)
+    }).catch(() => {
+        Swal.fire({
+            title: "Something went wrong!",
+            text: "Your request has not been submitted",
+            icon: "error",
+            background: '#151515',
+            showCancelButton: false,
+        });
     });
 }
 function addOrderItem(value) {

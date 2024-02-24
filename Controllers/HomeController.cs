@@ -11,9 +11,9 @@ namespace MasteryTest3.Controllers
     public class HomeController : Controller
     {
 
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index()
         {
-            return RedirectToAction("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTOR });
+            return Task.FromResult<IActionResult>(RedirectToAction("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTOR }));
         }
 
         public IActionResult Error()

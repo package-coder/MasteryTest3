@@ -1,0 +1,122 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Request Product";
+    int? userId = HttpContextAccessor.HttpContext?.Session.GetInt32("userId");
+}
+
+@using MasteryTest3.Data
+@model Order;
+
+<div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
+
+    <div class="d-flex flex-row align-items-center justify-content-between mt-5 mb-4">
+        <h3 class="my-2">Process Order Request</h3>
+    </div>
+    @if (userId == null)
+    {
+        <div class="alert alert-dark mb-4" role="alert">
+            Select user first!
+        </div>
+    }
+    else
+    {
+        <div class="overflow-auto" style="height: calc(100% - 180px)">
+                <div class="border rounded rounded-5" style="width: 100%;">
+                    <table id="table-request" class="table table-hover m-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 8ch">Qty</th>
+                                <th class="auto text-center" style="width: 8ch">Unit</th>
+                                <th>Name</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="request-list">
+                        @foreach (var orderItem in Model.orderItems)
+                        {
+                            <tr id="@orderItem.Id">
+                                <td class="text-center">@orderItem.quantity</td>
+                                <td class="text-center">@orderItem.unit</td>
+                                <td>@orderItem.name</td>
+                                <td>@orderItem.remark</td>
+                            </tr>
+                        }
+                        
+                        @* <tr class="table-input"> *@
+                        @*     <td> *@
+                        @*         <input autofocus type="text" id="quantity" required data-index="0"/> *@
+                        @*     </td> *@
+                        @*     <td> *@
+                        @*         <input autofocus type="text" id="unit" required data-index="1"/> *@
+                        @*     </td> *@
+                        @*     <td style="width: 400px"> *@
+                        @*        <div class="position-relative"> *@
+                        @*            <div class="form-item"> *@
+                        @*                <select id="search-list" tabindex="-1"> *@
+                        @*                    <option selected disabled value=""></option> *@
+                        @*                </select> *@
+                        @*            </div> *@
+                        @*            <div class="form-item position-absolute top-0" style="width: 360px"> *@
+                        @*                <input class="text-start" autofocus type="text" id="name" required data-index="2" /> *@
+                        @*                $1$ <input type="hidden" name="id" id="id"  tabindex="-1"/> #1# *@
+                        @*            </div> *@
+                        @*        </div> *@
+                        @*    </td> *@
+                        @*     <td> *@
+                        @*         <input autofocus class="text-start" type="text" id="remark" data-index="3"/> *@
+                        @*     </td> *@
+                        @*     <td class="p-1"> *@
+                        @*         <button id="item-submit-button" type="button" class="btn btn-primary w-100">Add</button> *@
+                        @*     </td> *@
+                        @* </tr> *@
+                        </tbody>
+                    </table>
+
+                </div>
+        </div>
+        <footer class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
+                style="left: 0; right: 0; bottom: 0">
+            <div id="action-buttons">
+                <button id="cancel-request" type="submit" class="btn border">Cancel</button>
+            </div>
+            <button id="submit-request" type="submit" class="btn bg-primary">Submit Request</button>
+        </footer>
+
+    }
+
+</div>
+
+<script>
+    
+    document.getElementById('cancel-request').addEventListener('click', () => {
+        Swal.fire({
+            title: "Do you want to save your request?",
+            background: '#151515',
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+        })
+    });
+    document.getElementById('submit-request').addEventListener('click', () => {
+        Swal.fire({
+            title: "Confirmation",
+            text: "Type \"Confirm\" to submit the request",
+            background: '#151515',
+            allowOutsideClick: false,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+        }).then(result => {
+            //TODO should validate the input
+            if (result.isConfirmed) {
+                return fetch(`/order/request`, { 
+                    method: "POST",
+                    body: JSON.stringify({ Id: '@Model.Id', status: '@OrderStatus.FOR_APPROVAL', orderItems: [] }),
+                    headers: new Headers({'content-type': 'application/json'})
+                });    
+            }
+        }).then(response => window.location.replace(response.url))
+    });
+
+</script>
