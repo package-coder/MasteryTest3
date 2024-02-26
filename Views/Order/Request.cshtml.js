@@ -7,14 +7,14 @@ let productList = [];
 const orderItemsElement = document.getElementById('request-list');
 const alertElement = document.querySelector('#alert');
 const actionButtons = document.querySelectorAll("footer button[type=submit]");
-
 const formElement = document.getElementById("form");
 const modalUploadFormElement = document.getElementById("upload-form");
-const selectFormElement = document.getElementById("search-list");
-const formFields = ['product','quantity', 'unit', 'name', 'remark'];
+const selectFormElement = document.getElementById("product");
+const formFields = ['quantity', 'unit', 'name', 'remark'];
 const btnSendRequest = document.getElementById("send-request");
 const btnSaveRequest = document.getElementById("save-request");
 const table = document.getElementById("table-request");
+const modalFormElement = document.getElementById("modal-form");
 const paramId = new URLSearchParams(window.location.search).get("id");
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -22,16 +22,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (paramId != null) {
         await fetchDraftOrderRequest(paramId);
     }
-    
+
     document.getElementById("item-submit-button").addEventListener("click", () => {
         const form = {};
         let valid = true;
 
         formFields.forEach((field) => {
             const fieldElement = document.getElementById(field);
-            if(!fieldElement) return;
+            if (!fieldElement) return;
 
-            if(fieldElement.hasAttribute("required") && !fieldElement.value) {
+            if (fieldElement.hasAttribute("required") && !fieldElement.value) {
                 fieldElement.classList.add('border-danger');
                 valid = false;
                 return;
@@ -46,10 +46,50 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!valid) {
             return
         }
-
+        
         addOrderItem(form);
         document.getElementById(formFields[formFields.indexOf('quantity')])?.focus();
     })
+
+    modalFormElement.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const modalFormInput = ['quantity2', 'unit2', 'product', 'remark2'];
+        const form = {};
+        let valid = true;
+
+        modalFormInput.forEach((field) => {
+            const fieldElement = document.getElementById(field);
+            if (!fieldElement.value && field != 'remark2') {
+                fieldElement.classList.add('border-danger');
+                valid = false;
+            } else {
+                fieldElement.classList.remove('border-danger');
+            }
+        });
+
+        formFields.forEach((field, index) => {
+            const fieldElement = document.getElementById(modalFormInput[index]);
+
+            if (fieldElement.tagName == 'SELECT') {
+                var productId = fieldElement.value;
+                var productName = fieldElement.options[fieldElement.selectedIndex].text;
+
+                Object.assign(form, { ['product']: { id: productId } });
+                Object.assign(form, { [field]: productName });
+            } else {
+                Object.assign(form, { [field]: fieldElement.value });
+            }
+        });
+
+        if (!valid) return
+
+        var browseProductModal = bootstrap.Modal.getInstance(document.getElementById('browseProducts'));
+        browseProductModal.hide();
+
+        modalFormElement.reset();
+        addOrderItem(form);
+    });
 
     modalUploadFormElement.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -113,24 +153,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         fileInput.classList.add("border-danger");
-        
+
     });
 
     document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
     document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
     document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
-    
+
     ///// Styling
 
-    document.querySelectorAll(".table-input input[required]")
-        .forEach(element => 
+    document.querySelectorAll(".table-input input[required], #modal-form input, select")
+        .forEach(element =>
             element.addEventListener('change', () => {
-                    if(element.value) {
-                        element.classList.remove('border-danger');
-                    }
+                if (element.value) {
+                    element.classList.remove('border-danger');
+                }
             })
         );
-    
+
     document.querySelectorAll(".table-input input")
         .forEach((element, index, array) => {
             element.addEventListener('keyup', (e) => {
@@ -138,62 +178,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const currentIndex = parseInt(element.dataset.index)
                 const lastIndex = array.length - 1
-                
-                if(e.key !== "Enter") return;
-                if(currentIndex !== lastIndex && !element.value) return;
+
+                if (e.key !== "Enter") return;
+                if (currentIndex !== lastIndex && !element.value) return;
 
                 const nextIndex = (currentIndex + 1) % array.length;
                 const valid = Array.from(array.values()).every(item => {
                     const required = item.hasAttribute('required')
-                    if(!required) return true;
-                    
+                    if (!required) return true;
+
                     return item.value;
                 })
 
-                if(!valid || currentIndex !== lastIndex) {
+                if (!valid || currentIndex !== lastIndex) {
                     const nextElement = Array.from(array.values()).find(item => item.dataset.index === nextIndex.toString());
                     nextElement?.focus();
-                } else if(currentIndex === lastIndex) {
+                } else if (currentIndex === lastIndex) {
                     document.getElementById("item-submit-button").click();
                 }
             })
         })
+    document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
+    document.getElementById("quantity2").addEventListener("keypress", function (e) { validateKeyInput(e) });
+});
 
-    selectFormElement.addEventListener("change", () => {
-
-        if (selectFormElement.selectedIndex !== 0) {
-            selectFormElement.classList.remove('border-danger');
+document.addEventListener("keypress", (e) => {
+    if (e.key == "/") {
+        if (!document.getElementById('browseProducts').classList.contains("show")) {
+            var browseProductModal = new bootstrap.Modal(document.getElementById('browseProducts'));
+            browseProductModal.show();
         }
 
-        const unit = document.getElementById("unit2");
-        unit.value = selectFormElement.options[selectFormElement.selectedIndex].getAttribute("data-unit").toUpperCase();
-    })
-
-    document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
+    }
 })
-
 selectFormElement.addEventListener("click", fetchProductList);
 
 selectFormElement.addEventListener("change", () => {
-    var inputProductName = document.getElementById("name");
-    var inputProductId = document.getElementById("id");
-    var inputUnit = document.getElementById("unit");
-
-    inputProductName.value = selectFormElement.options[selectFormElement.selectedIndex].text;
-    inputProductId.value = selectFormElement.options[selectFormElement.selectedIndex].value;
+    var inputUnit = document.getElementById("unit2");
     inputUnit.value = selectFormElement.options[selectFormElement.selectedIndex].getAttribute("data-unit").toUpperCase();
 });
 
-document.getElementById("name").addEventListener("change", (e) => {
-    if (e.target.value.length == 0) {
-        var inputProductId = document.getElementById("id");
-        inputProductId.removeAttribute("value");
-    }
-})
 async function fetchDraftOrderRequest(id) {
     try {
-    const response = await fetch(`/Order/GetDraftOrderRequest/${id}`, { method: "GET" });
-    const data = await response.json();
+        const response = await fetch(`/Order/GetOrderById/${id}`, { method: "GET" });
+        const data = await response.json();
 
         data?.orderItems?.forEach(item => addOrderItem({ ...item }))
         order = data;
@@ -209,7 +237,7 @@ async function fetchProductList() {
         const response = await fetch('/Product/GetAllProducts', { method: "GET" });
         productList = await response.json();
         populateSelectList(productList);
-    } 
+    }
 }
 
 function populateSelectList(productList) {
@@ -238,7 +266,6 @@ function saveOrderRequest(status) {
         processData: false,
         dataType: false,
         success: (data) => {
-            console.log(data);
             Swal.fire({
                 title: "Submitted Successfully!",
                 text: "Request has been submitted",
@@ -248,7 +275,7 @@ function saveOrderRequest(status) {
                 allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = `/Order/Request?id=${data}`
+                    window.location.href = `/`
                 }
             });
         },
@@ -266,11 +293,11 @@ function saveOrderRequest(status) {
 }
 function addOrderItem(value) {
     if (!value) return;
-    
+
     if (orderItems.length === 0) {
         alertElement.classList.add('d-none');
     }
-    
+
     const index = orderItems.length;
     orderItemsElement.append(createOrderItemRowElement(index, value));
     orderItems.push(value);
@@ -284,11 +311,11 @@ function deleteOrderItem(index, rowElement) {
     orderItemsElement.removeChild(rowElement);
 
     deletedOrderItems.push(item);
-    
+
     if (orderItems.length === 0) {
         alertElement.classList.remove('d-none');
     }
-    
+
     setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
 }
 
@@ -304,7 +331,7 @@ function discardOrderRequest() {
         if (result.isConfirmed) {
             $.ajax({
                 type: "DELETE",
-                url: "/Order/DeleteDraftOrderRequest",
+                url: "/Order/DeleteOrderRequest",
                 data: JSON.stringify(order),
                 contentType: "application/json",
                 processData: false,
@@ -356,7 +383,7 @@ function createOrderItemRowElement(index, value) {
     const actionElement = rowElement.appendChild(document.createElement('td'));
     actionElement.classList.add('py-0');
     actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
-    
+
     return rowElement;
 }
 function createOrderItemDeleteButtonElement(index, rowElement) {

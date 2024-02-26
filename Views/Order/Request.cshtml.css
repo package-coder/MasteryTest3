@@ -1,5 +1,5 @@
 ﻿
-.table input, #modal-form div > input, select{ 
+.table input{ 
     width: 100% !important;
     background-color: rgb(15, 15, 15);
     outline: 0 !important;
@@ -25,14 +25,3 @@
 .table-input {
     background-color: transparent !important;
 }
-
-select {
-    background: url("../img/search.png") no-repeat right;
-    -webkit-appearance: none;
-    background-position-x: 365px;
-    background-color: #292828;
-}
-
-    select:hover {
-        cursor: pointer;
-    }

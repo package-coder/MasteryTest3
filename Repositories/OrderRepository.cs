@@ -97,14 +97,18 @@ namespace MasteryTest3.Repositories
                     commandType: CommandType.StoredProcedure
                 );
 
-                return orders.GroupBy(item => item.Id)
-                    .Select(item =>
-                        {
-                            var first = item.First();
-                            first.orderItems = item.Select(order => order.orderItems.Single()).ToList();
-                            return first;
-                        }
-                    );
+            return orders.GroupBy(item => item.Id)
+               .Select(groupOrder =>
+               {
+                   var first = groupOrder.First();
+                   first.orderItems = groupOrder.Select(order =>
+                   {
+                       var single = order.orderItems.Single();
+                       return single;
+                   }).ToList();
+                   return first;
+               }
+               ).ToList();
         }
 
         public Task<IEnumerable<Order>> GetAllOrders() => GetAllOrders(null);
