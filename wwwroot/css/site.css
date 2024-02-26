@@ -239,7 +239,7 @@ label.error {
     border-top: var(--border) !important;
 }
 
-#modal-form div > input, select, input[type="file"] {
+#modal-form input, select, input[type="file"] {
     width: 100% !important;
     background-color: rgb(15, 15, 15);
     outline: 0 !important;

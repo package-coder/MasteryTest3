@@ -85,11 +85,7 @@ namespace MasteryTest3.Repositories
                     .Select(groupOrder =>
                         {
                             var first = groupOrder.First();
-                            first.orderItems = groupOrder.Select(order =>
-                            {
-                                var single = order.orderItems.Single();
-                                return single;
-                            }).ToList();
+                            first.orderItems = groupOrder.Select(order => order.orderItems.Single()).ToList();
                             return first;
                         }
                     ).ToList();

@@ -48,18 +48,8 @@
                                 <input autofocus type="text" id="unit" required data-index="1"/>
                             </td>
                             <td style="width: 400px">
-                               <div class="position-relative">
-                                   <div class="form-item">
-                                       <select id="search-list" tabindex="-1">
-                                           <option selected disabled value=""></option>
-                                       </select>
-                                   </div>
-                                   <div class="form-item position-absolute top-0" style="width: 360px">
-                                       <input class="text-start" autofocus type="text" id="name" required data-index="2" />
-                                       @* <input type="hidden" name="id" id="id"  tabindex="-1"/> *@
-                                   </div>
-                               </div>
-                           </td>
+                                <input class="text-start" autofocus type="text" id="name" required data-index="2" />
+                            </td>
                             <td>
                                 <input autofocus class="text-start" type="text" id="remark" data-index="3"/>
                             </td>
@@ -83,6 +73,7 @@
     }
 
     @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_BrowseProducts.cshtml")
 </div>
 
 <script src="../Views/Order/NewRequest.cshtml.js"></script>

@@ -1,0 +1,38 @@
+﻿<div class="modal fade" id="browseProducts" tabindex="-1" aria-labelledby="browseProducts" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="browseProducts">Browse Products</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modal-form"  novalidate>
+                    <div class="d-flex gap-1">
+                        <div style="width: 60px">
+                            <label>Qty</label>
+                            <input id="quantity2" required />
+                        </div>
+                        <div style="width: 80px">
+                            <label>Unit</label>
+                            <input id="unit2" required />
+                        </div>
+                        <div class="w-100">
+                            <label>Product</label>
+                            <select id="product" required>
+                                <option selected disabled value="">--choose product--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                       <label>Remarks</label>
+                       <input id="remark2"/>
+                    </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
+                <button id="btn-upload-active" type="submit" class="btn btn-primary" form="modal-form" value="submit">Add Item</button>
+            </div>
+        </div>
+    </div>
+</div>
