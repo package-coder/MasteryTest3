@@ -2,6 +2,6 @@
 
 public enum Role
 {
-    REQUESTOR = 1,
+    REQUESTER = 1,
     APPROVER
 }

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchDraftOrderRequest(paramId);
     }
 
-    document.getElementById("item-submit-button").addEventListener("click", () => {
+    document.getElementById("item-submit-button")?.addEventListener("click", () => {
         const form = {};
         let valid = true;
 
@@ -156,10 +156,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     });
 
-    document.getElementById('send-request').addEventListener('click', () => saveOrderRequest('FOR_APPROVAL'));
-    document.getElementById('save-request').addEventListener('click', () => saveOrderRequest('DRAFT'));
-    document.getElementById('discard-request').addEventListener('click', discardOrderRequest);
-
+    document.getElementById('send-request')?.addEventListener('click', () => saveOrderRequest(true));
+    document.getElementById('save-request')?.addEventListener('click', () => saveOrderRequest(false));
+    
     ///// Styling
 
     document.querySelectorAll(".table-input input[required], #modal-form input, select")
@@ -198,8 +197,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             })
         })
-    document.getElementById("quantity").addEventListener("keypress", function (e) { validateKeyInput(e) });
-    document.getElementById("quantity2").addEventListener("keypress", function (e) { validateKeyInput(e) });
+    document.getElementById("quantity")?.addEventListener("keypress", function (e) { validateKeyInput(e) });
+    document.getElementById("quantity2")?.addEventListener("keypress", function (e) { validateKeyInput(e) });
 });
 
 document.addEventListener("keypress", (e) => {
@@ -250,54 +249,39 @@ function populateSelectList(productList) {
     });
 }
 
-function saveOrderRequest(status) {
+function saveOrderRequest(process) {
     const data = {
         ...order,
-        status,
+        status: "DRAFT",
         orderItems: orderItems,
-        deletedOrderItems
+        deletedOrderItems,
+        process
     };
 
-    $.ajax({
-        type: "POST",
-        url: "/Order/Request",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        processData: false,
-        dataType: false,
-        success: (data) => {
-            Swal.fire({
-                title: "Submitted Successfully!",
-                text: "Request has been submitted",
-                icon: "success",
-                background: '#151515',
-                showCancelButton: false,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `/`
-                }
-            });
-        },
-        error: () => {
-            Swal.fire({
-                title: "Something went wrong!",
-                text: "Your request has not been submitted",
-                icon: "error",
-                background: '#151515',
-                showCancelButton: false,
-                allowOutsideClick: false
-            });
-        }
+    fetch("/order/request", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: new Headers({'content-type': 'application/json'}),
+    }).then(response => {
+        window.location.replace(response.url)
+    }).catch(() => {
+        Swal.fire({
+            title: "Something went wrong!",
+            text: "Your request has not been submitted",
+            icon: "error",
+            background: '#151515',
+            showCancelButton: false,
+        });
     });
-}
+} 
+
 function addOrderItem(value) {
     if (!value) return;
 
     if (orderItems.length === 0) {
         alertElement.classList.add('d-none');
     }
-
+    
     const index = orderItems.length;
     orderItemsElement.append(createOrderItemRowElement(index, value));
     orderItems.push(value);
@@ -319,56 +303,17 @@ function deleteOrderItem(index, rowElement) {
     setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
 }
 
-function discardOrderRequest() {
-    Swal.fire({
-        title: "Discard Order Request?",
-        text: "All the items will be deleted",
-        icon: "question",
-        background: '#151515',
-        showCancelButton: true,
-        allowOutsideClick: false
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                type: "DELETE",
-                url: "/Order/DeleteOrderRequest",
-                data: JSON.stringify(order),
-                contentType: "application/json",
-                processData: false,
-                dataType: false,
-                success: () => {
-                    Swal.fire({
-                        title: "Order request has been discarded!",
-                        icon: "success",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/';
-                        }
-                    });
-                },
-                error: () => {
-                    Swal.fire({
-                        title: "Something went wrong!",
-                        text: "Your request has not been submitted",
-                        icon: "error",
-                        background: '#151515',
-                        showCancelButton: false,
-                        allowOutsideClick: false
-                    });
-                }
-            });
-        }
-    });
-}
-
 ///// Element Creation
 function createOrderItemRowElement(index, value) {
     const rowElement = document.createElement('tr');
     rowElement.id = index.toString();
 
+    const indexElement = rowElement.appendChild(document.createElement('td'));
+    indexElement.textContent = index + 1;
+    indexElement.classList.add('text-center', 'text-secondary');
+
+    rowElement.appendChild(document.createElement('td')).textContent = value.name;
+    
     const quantityElement = rowElement.appendChild(document.createElement('td'));
     quantityElement.textContent = value.quantity;
     quantityElement.classList.add('text-center');
@@ -377,13 +322,14 @@ function createOrderItemRowElement(index, value) {
     unitElement.textContent = value.unit;
     unitElement.classList.add('text-center');
 
-    rowElement.appendChild(document.createElement('td')).textContent = value.name;
     rowElement.appendChild(document.createElement('td')).textContent = value.remark;
 
-    const actionElement = rowElement.appendChild(document.createElement('td'));
-    actionElement.classList.add('py-0');
-    actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
-
+    if(order.status === "DRAFT") {
+        const actionElement = rowElement.appendChild(document.createElement('td'));
+        actionElement.classList.add('py-0');
+        actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
+    }
+    
     return rowElement;
 }
 function createOrderItemDeleteButtonElement(index, rowElement) {

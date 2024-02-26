@@ -52,7 +52,7 @@ public class OrderService : IOrderService
     {
         return role switch
         {
-            Role.REQUESTOR => await _orderRepository.GetAllUserOrdersByStatus(session!.id, status.ToString()),
+            Role.REQUESTER => await _orderRepository.GetAllUserOrdersByStatus(session!.id, status.ToString()),
             Role.APPROVER => await _orderRepository.GetAllOrdersBy(new { session!.role.visibilityLevel, status = status.ToString() }),
             _ => throw new ArgumentException("Role does not exists.")
         };

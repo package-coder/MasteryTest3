@@ -1,7 +1,7 @@
 ﻿@inject IHttpContextAccessor HttpContextAccessor
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Request Product";
+    ViewData["Title"] = "Process Order Request";
     int? userId = HttpContextAccessor.HttpContext?.Session.GetInt32("userId");
 }
 
@@ -11,7 +11,7 @@
 <div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
 
     <div class="d-flex flex-row align-items-center justify-content-between mt-5 mb-4">
-        <h3 class="my-2">Process Order Request</h3>
+        <h3 class="my-2">@(Model.status == OrderStatus.DRAFT.ToString() ? "Process" : "Approval of") Order Request</h3>
     </div>
     @if (userId == null)
     {
@@ -25,51 +25,25 @@
                 <div class="border rounded rounded-5" style="width: 100%;">
                     <table id="table-request" class="table table-hover m-0">
                         <thead>
-                            <tr>
-                                <th class="text-center" style="width: 8ch">Qty</th>
-                                <th class="auto text-center" style="width: 8ch">Unit</th>
-                                <th>Name</th>
-                                <th>Remarks</th>
-                            </tr>
+                        <tr>
+                            <th class="auto"></th>
+                            <th>Name</th>
+                            <th class="text-center" style="width: 8ch">Qty</th>
+                            <th class="auto text-center" style="width: 8ch">Unit</th>
+                            <th>Remarks</th>
+                        </tr>
                         </thead>
                         <tbody id="request-list">
-                        @foreach (var orderItem in Model.orderItems)
+                        @for (var index = 0; index < Model.orderItems.Count; index++)
                         {
-                            <tr id="@orderItem.Id">
-                                <td class="text-center">@orderItem.quantity</td>
-                                <td class="text-center">@orderItem.unit</td>
-                                <td>@orderItem.name</td>
-                                <td>@orderItem.remark</td>
+                            <tr id="@Model.orderItems[index].Id">
+                                <td class="auto text-center text-secondary">@(index+1)</td>
+                                <td>@Model.orderItems[index].name</td>
+                                <td class="text-center">@Model.orderItems[index].quantity</td>
+                                <td class="text-center">@Model.orderItems[index].unit</td>
+                                <td>@Model.orderItems[index].remark</td>
                             </tr>
                         }
-                        
-                        @* <tr class="table-input"> *@
-                        @*     <td> *@
-                        @*         <input autofocus type="text" id="quantity" required data-index="0"/> *@
-                        @*     </td> *@
-                        @*     <td> *@
-                        @*         <input autofocus type="text" id="unit" required data-index="1"/> *@
-                        @*     </td> *@
-                        @*     <td style="width: 400px"> *@
-                        @*        <div class="position-relative"> *@
-                        @*            <div class="form-item"> *@
-                        @*                <select id="search-list" tabindex="-1"> *@
-                        @*                    <option selected disabled value=""></option> *@
-                        @*                </select> *@
-                        @*            </div> *@
-                        @*            <div class="form-item position-absolute top-0" style="width: 360px"> *@
-                        @*                <input class="text-start" autofocus type="text" id="name" required data-index="2" /> *@
-                        @*                $1$ <input type="hidden" name="id" id="id"  tabindex="-1"/> #1# *@
-                        @*            </div> *@
-                        @*        </div> *@
-                        @*    </td> *@
-                        @*     <td> *@
-                        @*         <input autofocus class="text-start" type="text" id="remark" data-index="3"/> *@
-                        @*     </td> *@
-                        @*     <td class="p-1"> *@
-                        @*         <button id="item-submit-button" type="button" class="btn btn-primary w-100">Add</button> *@
-                        @*     </td> *@
-                        @* </tr> *@
                         </tbody>
                     </table>
 

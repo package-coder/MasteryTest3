@@ -13,7 +13,7 @@ namespace MasteryTest3.Controllers
 
         public Task<IActionResult> Index()
         {
-            return Task.FromResult<IActionResult>(RedirectToAction("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTOR }));
+            return Task.FromResult<IActionResult>(RedirectToAction("index", "order", new { status = OrderStatus.DRAFT, role = Role.REQUESTER }));
         }
 
         public IActionResult Error()

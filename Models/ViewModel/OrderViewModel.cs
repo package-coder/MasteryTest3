@@ -12,5 +12,7 @@ public class OrderViewModel
     
     public string? status { get; set; }
 
+    public bool process { get; set; } = false;
+
     public Order ToOrder () => new(Id, orderItems, status);
 }

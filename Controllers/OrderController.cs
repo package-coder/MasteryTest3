@@ -15,12 +15,14 @@ namespace MasteryTest3.Controllers
         private readonly IOrderService _orderService;  
         private readonly IReceiptService _receiptService;
         private readonly IExcelService _excelService;
+        private readonly ISessionService _sessionService;
 
-        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService)
+        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService, ISessionService sessionService)
         {
             _receiptService = receiptService;
             _orderService = orderService;
             _excelService = excelService;
+            _sessionService = sessionService;
         }
 
         public async Task<IActionResult> DownloadOrderReceipt(int id) {
@@ -45,33 +47,41 @@ namespace MasteryTest3.Controllers
             var orders = await _orderService.GetAllOrders(status, role);
             return View(orders);
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> Process(int id)
         {
             var order = await _orderService.GetOrderById(id);
             if (order == null) return RedirectToAction("Error");
-            return View("ProcessRequest", order);
-        }
-        
-        [HttpPost] 
-        public async Task<RedirectToActionResult> Process([FromBody] OrderViewModel orderViewModel)
-        {
-            var order = orderViewModel.ToOrder();
-            order.Id =  await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
-            return RedirectToAction("process", "order",new { id = order.Id });
+            return View(order);
         }
         
         [HttpGet]
-        public new ViewResult Request() => View("NewRequest");
-        
+        public new async Task<IActionResult> Request(int id, Role role)
+        {
+            var session = _sessionService.GetSessionUser();
+            var order = await _orderService.GetOrderById(id);
+            
+            if (order == null) return View();
+
+            return role switch
+            {
+                Role.APPROVER when session!.role.id != (int)Role.APPROVER => RedirectToAction("Error"),
+                Role.REQUESTER when session!.id != order.user.Id => RedirectToAction("Error"),
+                _ => View(order)
+            };
+        }
+
         [HttpPost] 
         public new async Task<RedirectToActionResult> Request([FromBody] OrderViewModel orderViewModel)
         {
             var order = orderViewModel.ToOrder();
-            await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
+            order.Id = await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
 
-            return RedirectToAction("index", "order", new { order.status, role = Role.REQUESTOR });
+            if (orderViewModel.process)
+                return RedirectToAction("process", "order",new { id = order.Id });
+            
+            return RedirectToAction("index", "order", new { order.status, role = Role.REQUESTER });
         }
 
         [HttpDelete]

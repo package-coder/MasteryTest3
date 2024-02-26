@@ -2,6 +2,7 @@
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using System.Data;
+using MasteryTest3.Data;
 
 namespace MasteryTest3.Repositories
 {
@@ -68,10 +69,11 @@ namespace MasteryTest3.Repositories
 
         private async Task<List<Order>> QueryOrders(string sql, object? param = null)
         {
-                var orders = await _connection.QueryAsync<Order, OrderItem, Product, Order>(
+                var orders = await _connection.QueryAsync<Order, User, OrderItem, Product, Order>(
                     sql,
-                    (order, orderItem, product) =>
+                    (order, user, orderItem, product) =>
                     {
+                        order.user = user;
                         orderItem.product = product;
                         order.orderItems.Add(orderItem);
                         return order;

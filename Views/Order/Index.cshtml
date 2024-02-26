@@ -3,21 +3,21 @@
 @{
     int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
     var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
-    
-    ViewData["Title"] = httpContextAccessor.HttpContext?.Request.Query["status"];
+    var status = httpContextAccessor.HttpContext?.Request.Query["status"].ToString();
+    ViewData["Title"] = status;
 }
 
 @functions
 {
     private TimeSpan GetDateDifference(DateTime dateTime) => DateTime.Now - dateTime;
-
+    
     private string GetDateStatus(TimeSpan timeSpan)
     {
         return timeSpan switch
         {
             { Days: > 30 } => $"{timeSpan.Days / 30} month/s ago",
             { Days: > 1 } => $"{timeSpan.Days} day/s ago",
-            { Days: 1 } => "Yesterday",
+            { Days: 1, Hours: 0 } => "Yesterday",
             { Hours: > 1 } => $"{timeSpan.Hours} hour/s ago",
             _ => "Just Now"
         };
@@ -30,8 +30,8 @@
 <div class="container mw-primary mt-5">
     <div class="mb-4">
         <div class="d-flex align-items-center justify-content-between">
-            <h3> @(role != Role.REQUESTOR.ToString() ? "Requests for Approval" : "My Order Requests")</h3>
-            @if (role == Role.REQUESTOR.ToString())
+            <h3> @(role != Role.REQUESTER.ToString() ? "Requests for Approval" : "My Order Requests")</h3>
+            @if (role == Role.REQUESTER.ToString())
             {
                 <a href="@Url.ActionLink("request", "order")" class="btn btn-primary">
                     Create New Requests
@@ -58,6 +58,10 @@
                     <thead>
                         <tr>
                             <th class="auto px-3 text-center">Order #</th>
+                            @if (role == Role.APPROVER.ToString())
+                            {
+                                <th>Requester</th>
+                            }
                             <th>Status</th>
                             <th>Total Items</th>
                             <th class="auto px-3 text-center">Date @(role == Role.APPROVER.ToString() ? "Posted" : "Requested")</th>
@@ -71,6 +75,10 @@
                                 <td class="auto px-3 text-center">
                                     @order.Id
                                 </td>
+                                @if (role == Role.APPROVER.ToString())
+                                {
+                                    <td>@order.user.name</td>
+                                }
                                 <td>
                                     <span class="border rounded-pill badge text-secondary">@order.status</span>
                                 </td>
@@ -79,7 +87,7 @@
                                 </td>
                                 <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(order.dateOrdered))</td>
                                 <td class="auto p-1 text-end">
-                                    <a href="/Order/Request?id=@order.Id"class="btn btn-primary"
+                                    <a href="/order/request/@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"?role={role}" : "")" class="btn btn-primary"
                                             style="margin: 2px 2px 2px 3px;">
                                         View
                                     </a>
