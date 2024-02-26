@@ -35,15 +35,4 @@ AS BEGIN
 	    (@status IS NULL OR ord.status = @status) AND
 	    (@visibilityLevel IS NULL OR ord.visibilityLevel = @visibilityLevel) AND
 	    ord.dateDeleted IS NULL
-END;
-
-
-
-      orderItem.name,
-             orderItem.quantity,
-             orderItem.unit,
-             orderItem.remark,
-             product.Id,
-             product.name
-END;
-
+END
