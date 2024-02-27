@@ -76,7 +76,9 @@ CREATE TABLE OrderItem(
 CREATE TABLE OrderApprovalLog(
 	[Id] INT PRIMARY KEY idENTITY(1,1),
 	approverId INT FOREIGN KEY REFERENCES AppUser(Id),
+    orderId INT FOREIGN KEY REFERENCES [Order](Id),
 	[status] VARCHAR(20),
-	approvalDate DATETIME,
-	remark VARCHAR(250)
+	dateLogged DATETIME,
+	remark VARCHAR(250),
+    visibilityLevel INT
 );

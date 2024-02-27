@@ -16,6 +16,7 @@ AS BEGIN
         ) AS 'totalItems',
         ord.dateOrdered,
         ord.datePrinted,
+        ord.visibilityLevel,
         appUser.Id,
         appUser.name,      
         orderItem.Id,
@@ -35,4 +36,5 @@ AS BEGIN
 	    (@status IS NULL OR ord.status = @status) AND
 	    (@visibilityLevel IS NULL OR ord.visibilityLevel = @visibilityLevel) AND
 	    ord.dateDeleted IS NULL
-END
+END;
+

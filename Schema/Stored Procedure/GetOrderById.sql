@@ -12,9 +12,10 @@ AS BEGIN
             FROM OrderItem orderItem
             WHERE orderItem.orderId = ord.Id
         ) AS 'totalItems',
-		ord.attachment,
         ord.dateOrdered,
+        ord.attachment,
         ord.datePrinted,
+        ord.visibilityLevel,
         appUser.Id,
         appUser.name,
         orderItem.Id,
