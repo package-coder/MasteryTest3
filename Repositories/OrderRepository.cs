@@ -9,20 +9,28 @@ namespace MasteryTest3.Repositories
     public class OrderRepository : IOrderRepository
     {
         private readonly IDbConnection _connection;
+        private readonly ICrcUtility _crcUtility;
 
-        public OrderRepository(IDbConnection connection)
+        public OrderRepository(IDbConnection connection, ICrcUtility crcUtility)
         {
             _connection = connection;
+            _crcUtility = crcUtility;
         }
 
         public async Task<int?> SaveOrder(Order order)
         {
+            if (order.status == "FOR_APPROVAL") {
+                var items = await GetOrderById((int)order.Id);
+                order.crc = _crcUtility.GenerateCRC(items.orderItems);
+            }
+
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
                 clientId = order.user.Id,
                 order.Id,
                 order.status,
-                // order.attachment,
+                order.attachment,
+                order.crc,
                 order.visibilityLevel,
             }, commandType: CommandType.StoredProcedure);
         }

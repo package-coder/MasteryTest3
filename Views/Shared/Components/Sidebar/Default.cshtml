@@ -1,7 +1,8 @@
 ﻿@using MasteryTest3.Interfaces
 @using MasteryTest3.Data
+@using MasteryTest3.Models.ViewModel
 @inject ISessionService sessionService
-@model IEnumerable<User>;
+@model SidebarViewModel;
 
 @{
     var sessionUser = sessionService.GetSessionUser();
@@ -16,7 +17,7 @@
                 🟢  @sessionUser?.name
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                @foreach (var user in Model)
+                @foreach (var user in Model.users)
                 {
                     <li>
                         <a class="dropdown-item w-100" href="@Url.Action("ChangeClient","User", new { userId = user.Id })">@user.name</a>
@@ -48,7 +49,7 @@
                 <ul class="list-unstyled">
                     <li class="px-3 py-1 text-secondary">Requests for Approval</li>
                     <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.FOR_APPROVAL, role = Role.APPROVER })">
-                        <li class="ms-3 px-3 py-1">Pending (1)</li>
+                        <li class="ms-3 px-3 py-1">Pending (@Model.pendingApprovalCount)</li>
                     </a>
                     <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.APPROVED, role = Role.APPROVER })">
                         <li class="ms-3 px-3 py-1">Approved</li>

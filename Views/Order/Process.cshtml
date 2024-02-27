@@ -96,8 +96,8 @@
             if (result.isConfirmed) {
                 return fetch(`/order/request`, { 
                     method: "POST",
-                    body: JSON.stringify({ Id: '@Model.Id', status: '@OrderStatus.FOR_APPROVAL', orderItems: [] }),
-                    headers: new Headers({'content-type': 'application/json'})
+                    body: JSON.stringify({ Id: '@Model.Id', status: '@OrderStatus.FOR_APPROVAL', orderItems: [], attachment: '@Html.Raw(Model.attachment)' }),
+    headers: new Headers({'content-type': 'application/json'})
                 });    
             }
             }).then(response => window.location.replace(response.url))

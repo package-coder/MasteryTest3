@@ -80,7 +80,7 @@ namespace MasteryTest3.Services
             graphics.DrawString($"Total Items: ***{order.orderItems.Count()} item(s)", textFont, XBrushes.Black, new XRect(xPosition, yPosition + 35, 0, 0));
 
 
-            graphics.DrawString("For approval by:", textFont, XBrushes.Black, new XRect(400, yPosition + 50, 0, 0));
+            graphics.DrawString("Approved by:", textFont, XBrushes.Black, new XRect(400, yPosition + 50, 0, 0));
             graphics.DrawString("______________________", textFont, XBrushes.Black, new XRect(400, yPosition + 80, 0, 0));
 
             using var stream = new MemoryStream();

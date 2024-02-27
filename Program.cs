@@ -23,6 +23,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddScoped<IFileEncoderUtility, FileEncoderUtility>();
+builder.Services.AddScoped<ICrcUtility, CrcUtitlity>();
 
 //ViewComponents
 builder.Services.AddScoped<SidebarViewComponent>();

@@ -97,10 +97,6 @@ body {
     color: var(--bs-body-color);
 }
 
-.table td, .table th {
-    padding: 8px 16px;
-}
-
     .table td:not(:last-child), .table th:not(:last-child) {
         border-right: var(--border) !important;
     }
@@ -239,7 +235,7 @@ label.error {
     border-top: var(--border) !important;
 }
 
-#modal-form input, select, input[type="file"] {
+#modal-form input, select, input[type="file"], td > input {
     width: 100% !important;
     background-color: rgb(15, 15, 15);
     outline: 0 !important;

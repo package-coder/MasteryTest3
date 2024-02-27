@@ -149,22 +149,24 @@
     data?.orderItems?.forEach(item => addOrderItem({ ...item }));
     attachment = data.attachment;
     
-    const approveBtn = document.getElementById('approve-button');    
-    approveBtn.addEventListener('click', () => {
-                
+    const approveBtn = document.getElementById('approve-button');
+    if (approveBtn != null) { 
+        approveBtn.addEventListener('click', () => {
+
             updateRequest('APPROVED')
-            .then(response => {      
-                Swal.fire({
-                    title: "Success!",
-                    text: "Order request status has been updated",
-                    icon: "success",
-                    background: '#151515',
-                    showCancelButton: false,
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.replace(response.url)
+                .then(response => {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Order request status has been updated",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then(() => {
+                        window.location.replace(response.url)
+                    })
                 })
-            })
-                
-        })
+
+        });
+    }
 </script>
