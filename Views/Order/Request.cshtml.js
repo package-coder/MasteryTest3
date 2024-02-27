@@ -1,5 +1,6 @@
 ﻿
 let order = null;
+let attachment = '';
 let orderItems = [];
 let deletedOrderItems = [];
 let productList = [];
@@ -15,13 +16,11 @@ const btnSendRequest = document.getElementById("send-request");
 const btnSaveRequest = document.getElementById("save-request");
 const table = document.getElementById("table-request");
 const modalFormElement = document.getElementById("modal-form");
+const modalAttachmentForm = document.getElementById("attachmentModal");
 const paramId = new URLSearchParams(window.location.search).get("id");
+const removeAttachmentPdf = document.getElementById("btn-remove-attachment");
 
 document.addEventListener('DOMContentLoaded', async () => {
-
-    if (paramId != null) {
-        await fetchDraftOrderRequest(paramId);
-    }
 
     document.getElementById("item-submit-button")?.addEventListener("click", () => {
         const form = {};
@@ -156,12 +155,84 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     });
 
+    modalAttachmentForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        var fileInput = document.getElementById("attachment");
+        var pdfFile = fileInput.files[0];
+
+        if (pdfFile != null) {
+            var extension = pdfFile.name.substring(pdfFile.name.lastIndexOf('.') + 1);
+            if (extension == 'pdf') {
+                attachment = await getBase64(pdfFile);
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Successfully uploaded your attachment",
+                    icon: "success",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var browseProductModal = bootstrap.Modal.getInstance(modalAttachmentForm);
+                        browseProductModal.hide();
+
+                        var displayAttachment = document.getElementById("display-attachment");
+                        displayAttachment.classList.remove("d-none");
+
+                        var btnDownloadAttachment = document.getElementById("btn-download-attachment");
+                        btnDownloadAttachment?.classList.add("d-none");
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: "Make sure you have uploaded a PDF file",
+                    icon: "error",
+                    background: '#151515',
+                    showCancelButton: false,
+                });
+            }
+
+            return;
+        }
+
+        fileInput.classList.add("border-danger");
+    });
+
+    removeAttachmentPdf?.addEventListener("click", () => {
+        Swal.fire({
+            title: "Proceed?",
+            text: "Do you wish to remove this attachment",
+            icon: "warning",
+            background: '#151515',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                attachment = null
+                var displayAttachment = document.getElementById("display-attachment");
+                displayAttachment.classList.add("d-none");
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Attachment has been removed",
+                    icon: "success",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                });
+            }
+        });
+    })
+
     document.getElementById('send-request')?.addEventListener('click', () => saveOrderRequest(true));
     document.getElementById('save-request')?.addEventListener('click', () => saveOrderRequest(false));
     
     ///// Styling
 
-    document.querySelectorAll(".table-input input[required], #modal-form input, select")
+    document.querySelectorAll(".table-input input[required], #attachment-form input, .modal-form input, select")
         .forEach(element =>
             element.addEventListener('change', () => {
                 if (element.value) {
@@ -217,19 +288,6 @@ selectFormElement.addEventListener("change", () => {
     inputUnit.value = selectFormElement.options[selectFormElement.selectedIndex].getAttribute("data-unit").toUpperCase();
 });
 
-async function fetchDraftOrderRequest(id) {
-    try {
-        const response = await fetch(`/Order/GetOrderById/${id}`, { method: "GET" });
-        const data = await response.json();
-
-        data?.orderItems?.forEach(item => addOrderItem({ ...item }))
-        order = data;
-
-        setDisableActionButtons(table.tBodies[0].rows.length - 1 === 0);
-    } catch (e) {
-        console.info(e);
-    }
-}
 async function fetchProductList() {
 
     if (productList.length === 0) {
@@ -255,7 +313,8 @@ function saveOrderRequest(process) {
         status: "DRAFT",
         orderItems: orderItems,
         deletedOrderItems,
-        process
+        process,
+        attachment
     };
 
     fetch("/order/request", {
@@ -359,3 +418,9 @@ function validateKeyInput(e) {
     }
     return true;
 }
+
+getBase64 = (file) => new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+});

@@ -2,10 +2,9 @@ using System.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Repositories;
 using MasteryTest3.Services;
+using MasteryTest3.Utilities;
 using MasteryTest3.ViewComponents;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Data.SqlClient;
-using PdfSharp.Fonts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +21,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
+builder.Services.AddScoped<IFileEncoderUtility, FileEncoderUtility>();
 
 //ViewComponents
 builder.Services.AddScoped<SidebarViewComponent>();

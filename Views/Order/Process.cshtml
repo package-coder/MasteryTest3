@@ -21,6 +21,16 @@
     }
     else
     {
+        <div id="display-attachment" class="p-2 align-items-center d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+            <span style="font-size:14px">Attached PDF</span>
+            <div class="pdf-action-btn d-flex gap-2">
+                @if (!String.IsNullOrEmpty(Model.attachment))
+                {
+                    <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model.Id" id="btn-download-attachment">View</a>
+                }
+            </div>
+        </div>
+
         <div class="overflow-auto" style="height: calc(100% - 180px)">
                 <div class="border rounded rounded-5" style="width: 100%;">
                     <table id="table-request" class="table table-hover m-0">

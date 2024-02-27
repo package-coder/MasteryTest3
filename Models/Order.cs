@@ -13,11 +13,12 @@
         public DateTime dateOrdered { get; set; }
         public DateTime datePrinted { get; set; }
 
-        public Order(int? id, List<OrderItem> orderItems, string status)
+        public Order(int? id, List<OrderItem> orderItems, string status, string attachment)
         {
             Id = id;
             this.orderItems = orderItems;
             this.status = status;
+            this.attachment = attachment;
         }
 
         public Order()

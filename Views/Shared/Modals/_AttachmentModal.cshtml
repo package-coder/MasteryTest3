@@ -1,0 +1,22 @@
+﻿<div class="modal fade" id="attachmentModal" tabindex="-1" aria-labelledby="attachmentModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="attachmentModal">Attach a PDF file</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1)"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attachment-form" novalidate>
+                    <div>
+                        <label>Upload File</label>
+                        <input type="file" name="attachment" id="attachment" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn border" data-bs-dismiss="modal">Close</button>
+                <button id="btn-upload-active" type="submit" class="btn btn-primary" form="attachment-form" value="submit">Upload Attachment</button>
+            </div>
+        </div>
+    </div>
+</div>

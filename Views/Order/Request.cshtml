@@ -26,9 +26,14 @@
         </div>
         @if (Model.status == OrderStatus.DRAFT.ToString())
         {
-            <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#uploadProductList">
-                Upload Product List
-            </button>
+            <div id="modal-buttons">
+                <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#uploadProductList">
+                    Upload Product List
+                </button>
+                <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#attachmentModal">
+                    Attach PDF file
+                </button>
+            </div>
         }
         else
         {
@@ -53,9 +58,25 @@
             {
                 <div class="p-3 d-flex gap-2 rounded rounded-5 mb-3" style="background-color: rgba(255,255,255, 0.05)">
                     <button type="button" class="btn border">Disapprove</button>
-                    <button type="button" class="btn btn-primary">Approve</button>
+                    <a type="button" class="btn btn-primary">Approve</a>
                 </div>
             }
+            <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+                <span style="font-size:14px">Attached PDF</span>
+                <div class="pdf-action-btn d-flex gap-2">
+                    @if (!String.IsNullOrEmpty(Model.attachment))
+
+                    {
+                        <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model.Id" id="btn-download-attachment">View</a>
+                    }
+
+                    @if (Model.status == OrderStatus.DRAFT.ToString())
+                    {
+                        <button class="btn border" id="btn-remove-attachment">Remove</button>
+                    }
+                </div>
+            </div>
+
             <div class="border rounded rounded-5" style="width: 100%;">
                     <table id="table-request" class="table table-hover m-0">
                         <thead>
@@ -79,7 +100,7 @@
                             <tr class="table-input">
                                 <td class="auto text-center"></td>
                                 <td style="width: 400px">
-                                    <input class="text-start" autofocus type="text" id="name" required data-index="0" />
+                                    <input class="text-start" autofocus type="text" id="name" required data-index="0" placeholder="Press '/' to browse existing products"/>
                                 </td>
                                 <td>
                                     <input autofocus type="text" id="quantity" required data-index="1"/>
@@ -102,6 +123,7 @@
                     </table>
 
                 </div>
+               
         </div>
         @if (Model.status == OrderStatus.DRAFT.ToString())
         {
@@ -117,11 +139,13 @@
 
     @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
     @Html.Partial("~/Views/Shared/Modals/_BrowseProducts.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_AttachmentModal.cshtml")
 </div>
 
 <script src="/Views/Order/Request.cshtml.js" asp-append-version="true"> </script>
 <script>
-    const data = @Html.Raw(Json.Serialize(Model))
-    order = data
-    data?.orderItems?.forEach(item => addOrderItem({ ...item }))
+    const data = @Html.Raw(Json.Serialize(Model));
+    order = data;
+    data?.orderItems?.forEach(item => addOrderItem({ ...item }));
+    attachment = data.attachment;
 </script>

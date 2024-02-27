@@ -9,10 +9,12 @@ public class OrderViewModel
     public List<OrderItem> orderItems { get; set; }
 
     public List<OrderItem>? deletedOrderItems { get; set; }
+
+    public string? attachment { get; set; }
     
     public string? status { get; set; }
 
     public bool process { get; set; } = false;
 
-    public Order ToOrder () => new(Id, orderItems, status);
+    public Order ToOrder () => new(Id, orderItems, status, attachment);
 }

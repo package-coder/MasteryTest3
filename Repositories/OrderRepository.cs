@@ -36,6 +36,7 @@ namespace MasteryTest3.Repositories
                 clientId = order.user.Id,
                 order.Id,
                 order.status,
+                order.attachment
             }, commandType: CommandType.StoredProcedure); ;
         }
 

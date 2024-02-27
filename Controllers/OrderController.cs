@@ -4,6 +4,7 @@ using MasteryTest3.Data;
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using MasteryTest3.Models.ViewModel;
+using MasteryTest3.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MasteryTest3.Controllers
@@ -16,13 +17,15 @@ namespace MasteryTest3.Controllers
         private readonly IReceiptService _receiptService;
         private readonly IExcelService _excelService;
         private readonly ISessionService _sessionService;
+        private readonly IFileEncoderUtility _fileEncoderUtility;
 
-        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService, ISessionService sessionService)
+        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService, ISessionService sessionService, IFileEncoderUtility fileEncoderUtility)
         {
             _receiptService = receiptService;
             _orderService = orderService;
             _excelService = excelService;
             _sessionService = sessionService;
+            _fileEncoderUtility = fileEncoderUtility;
         }
 
         public async Task<IActionResult> DownloadOrderReceipt(int id) {
@@ -73,9 +76,13 @@ namespace MasteryTest3.Controllers
         }
 
         [HttpPost] 
-        public new async Task<RedirectToActionResult> Request([FromBody] OrderViewModel orderViewModel)
+        public new async Task<IActionResult> Request([FromBody] OrderViewModel orderViewModel)
         {
             var order = orderViewModel.ToOrder();
+
+            if (!_fileEncoderUtility.VerifyEncodedPdf(order.attachment))
+                return StatusCode(422);
+
             order.Id = await _orderService.SaveOrderRequest(order, orderViewModel.deletedOrderItems);
 
             if (orderViewModel.process)
@@ -108,6 +115,13 @@ namespace MasteryTest3.Controllers
 
             var templateFile = _excelService.GetExcelTemplate();
             return File(templateFile, "application/vnd.ms-excel", "Product List Template.xlsx");
+        }
+
+        public async Task<IActionResult> DownloadOrderAttachment(int id) {
+            var order = await _orderService.GetOrderById(id);
+            byte[] pdfBytes = Convert.FromBase64String(order.attachment);
+
+            return File(pdfBytes, "application/pdf", true);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
