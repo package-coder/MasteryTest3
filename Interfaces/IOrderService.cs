@@ -9,4 +9,5 @@ public interface IOrderService
     Task DeleteOrderRequest(Order? order);
     Task<Order?> GetOrderById(int id);
     Task<List<Order>> GetAllOrders(OrderStatus status, Role role);
+    Task CompleteOrderRequest(int order, string? remark, OrderStatus status);
 }

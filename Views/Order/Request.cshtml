@@ -57,8 +57,8 @@
             @if (role == Role.APPROVER.ToString())
             {
                 <div class="p-3 d-flex gap-2 rounded rounded-5 mb-3" style="background-color: rgba(255,255,255, 0.05)">
-                    <button type="button" class="btn border">Disapprove</button>
-                    <a type="button" class="btn btn-primary">Approve</a>
+                    @Html.Partial("Modals/_RequestDisapprovalModal")
+                    <button type="button" id="approve-button" class="btn btn-primary">Approve</button>
                 </div>
             }
             <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
@@ -142,10 +142,29 @@
     @Html.Partial("~/Views/Shared/Modals/_AttachmentModal.cshtml")
 </div>
 
-<script src="/Views/Order/Request.cshtml.js" asp-append-version="true"> </script>
+<script src="/Views/Order/Request.cshtml.js"> </script>
 <script>
     const data = @Html.Raw(Json.Serialize(Model));
     order = data;
     data?.orderItems?.forEach(item => addOrderItem({ ...item }));
     attachment = data.attachment;
+    
+    const approveBtn = document.getElementById('approve-button');    
+    approveBtn.addEventListener('click', () => {
+                
+            updateRequest('APPROVED')
+            .then(response => {      
+                Swal.fire({
+                    title: "Success!",
+                    text: "Order request status has been updated",
+                    icon: "success",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.replace(response.url)
+                })
+            })
+                
+        })
 </script>

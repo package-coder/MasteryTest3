@@ -9,35 +9,22 @@ namespace MasteryTest3.Repositories
     public class OrderRepository : IOrderRepository
     {
         private readonly IDbConnection _connection;
-        private readonly ISessionService _sessionService;
 
-        public OrderRepository(IDbConnection connection, ISessionService sessionService)
+        public OrderRepository(IDbConnection connection)
         {
             _connection = connection;
-            _sessionService = sessionService;
         }
 
         public async Task<int?> SaveOrder(Order order)
         {
-
-            // if (order.status == "FOR_APPROVAL") {
-            //     var items = await GetDraftOrderRequest();
-            //     
-            //     foreach (var item in items.orderItems) {
-            //        int productNameTotal = item.name.Sum(ch => ch);
-            //        int unitTotal = item.unit.Sum(ch => ch);
-            //
-            //        order.crc += productNameTotal + unitTotal + (int)item.quantity;
-            //     }
-            // }
-
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
             {
                 clientId = order.user.Id,
                 order.Id,
                 order.status,
-                order.attachment
-            }, commandType: CommandType.StoredProcedure); ;
+                // order.attachment,
+                order.visibilityLevel,
+            }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<int> SaveOrderItems(int orderId, IEnumerable<OrderItem> orderItems)

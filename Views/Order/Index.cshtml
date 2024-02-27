@@ -64,7 +64,7 @@
                             }
                             <th>Status</th>
                             <th>Total Items</th>
-                            <th class="auto px-3 text-center">Date @(role == Role.APPROVER.ToString() ? "Posted" : "Requested")</th>
+                            <th class="auto px-3 text-center">Date Requested</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -87,7 +87,7 @@
                                 </td>
                                 <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(order.dateOrdered))</td>
                                 <td class="auto p-1 text-end">
-                                    <a href="/order/request/@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"?role={role}" : "")" class="btn btn-primary"
+                                    <a href="/order/request?id=@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn btn-primary"
                                             style="margin: 2px 2px 2px 3px;">
                                         View
                                     </a>

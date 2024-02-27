@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.Xml;
+using MasteryTest3.Data;
 
 namespace MasteryTest3.Models
 {
@@ -6,8 +7,9 @@ namespace MasteryTest3.Models
     {
         public int Id { get; set; }
         public User user { get; set; }
-        public string status { get; set; }
-        public DateTime? approvalDate { get; set; }
+        public OrderStatus status { get; set; }
+        public Order order { get; set; }
+        public DateTime? dateLogged { get; set; }
         public string? remark { get; set; }
     }
 }

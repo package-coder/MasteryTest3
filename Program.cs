@@ -16,6 +16,7 @@ builder.Services.AddTransient<IDbConnection>(e => new SqlConnection(connectionSt
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IOrderApprovalRepository, OrderApprovalRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();

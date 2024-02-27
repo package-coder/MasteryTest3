@@ -91,6 +91,14 @@ namespace MasteryTest3.Controllers
             return RedirectToAction("index", "order", new { order.status, role = Role.REQUESTER });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Complete(int id, OrderStatus status, string? remark)
+        {
+            await _orderService.CompleteOrderRequest(id, remark, status);
+            
+            return RedirectToAction("index", "order", new { status = OrderStatus.APPROVED, role = Role.APPROVER });
+        }
+
         [HttpDelete]
         public async Task DeleteOrderRequest([FromBody] Order? order)
         {
