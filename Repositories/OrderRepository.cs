@@ -2,19 +2,16 @@
 using MasteryTest3.Interfaces;
 using MasteryTest3.Models;
 using System.Data;
-using MasteryTest3.Data;
 
 namespace MasteryTest3.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
         private readonly IDbConnection _connection;
-        private readonly ISessionService _sessionService;
 
-        public OrderRepository(IDbConnection connection, ISessionService sessionService)
+        public OrderRepository(IDbConnection connection)
         {
             _connection = connection;
-            _sessionService = sessionService;
         }
 
         public async Task<int?> SaveOrder(Order order)

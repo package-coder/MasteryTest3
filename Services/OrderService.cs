@@ -25,9 +25,8 @@ public class OrderService : IOrderService
         {
             await _orderRepository.DeleteOrderItems(deletedOrderItems);
         }
-        
-        var unsavedItems = order.orderItems.Where(item => item.Id == null);
-        await _orderRepository.SaveOrderItems((int)order.Id!, unsavedItems);
+
+        await _orderRepository.SaveOrderItems((int)order.Id!, order.orderItems);
 
         return order.Id;
     }

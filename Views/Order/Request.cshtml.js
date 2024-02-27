@@ -322,7 +322,7 @@ function saveOrderRequest(process) {
         body: JSON.stringify(data),
         headers: new Headers({'content-type': 'application/json'}),
     }).then(response => {
-        window.location.replace(response.url)
+       window.location.replace(response.url)
     }).catch(() => {
         Swal.fire({
             title: "Something went wrong!",
@@ -385,21 +385,80 @@ function createOrderItemRowElement(index, value) {
 
     if(order.status === "DRAFT") {
         const actionElement = rowElement.appendChild(document.createElement('td'));
-        actionElement.classList.add('py-0');
+        actionElement.classList.add('py-2', 'd-flex');
         actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
+        actionElement.append(createOrderItemEditButtonElement(index, rowElement));
     }
     
     return rowElement;
 }
 function createOrderItemDeleteButtonElement(index, rowElement) {
+
+    const deleteButtonElement = createButtonElement();
+    deleteButtonElement.addEventListener('click', () => deleteOrderItem(index, rowElement));
+
+    const child = deleteButtonElement.appendChild(document.createElement('span'));
+    child.textContent = "delete";
+    child.classList.add('material-symbols-outlined', 'h-100');
+
+    return deleteButtonElement;
+}
+
+function createOrderItemEditButtonElement(index, rowElement) {
+    const editButtonElement = createButtonElement();
+
+    const child = editButtonElement.appendChild(document.createElement('span'));
+    child.textContent = "Edit";
+
+    editButtonElement?.addEventListener("click", () => {
+        const item = orderItems[index];
+        const fieldName = ['name', 'quantity', 'unit', 'remark'];
+
+        if (child.textContent.toUpperCase() === "EDIT") {
+            child.textContent = "Save";
+            makeCellsEditable(fieldName, item, rowElement, index);
+
+        } else {
+            child.textContent = "Edit";
+            saveRowItem(fieldName, item, rowElement, index);
+        }
+    });
+
+    child.classList.add('material-symbols-outlined', 'h-100');
+
+    return editButtonElement;
+}
+
+function makeCellsEditable(fieldName, orderItem, rowElement, rowIndex) {
+
+    fieldName.forEach((item, index) => {
+
+        rowElement.cells[index+1].innerHTML = "";
+        var inputElement = document.createElement("input");
+
+        inputElement.type = "text";
+        inputElement.setAttribute("id", item + (rowIndex + 1));
+        inputElement.value = orderItem[item] === undefined ? "" : orderItem[item];
+
+        rowElement.cells[index+1].appendChild(inputElement);
+    });
+}
+
+function saveRowItem(fieldName, orderItem, rowElement, rowIndex) {
+    fieldName.forEach((field, index) => {
+        var item = document.getElementById(field + (rowIndex + 1));
+
+        rowElement.cells[index + 1].innerHTML = item.value;
+        orderItem[field] = item.value;
+
+        item.remove();
+    })
+}
+
+function createButtonElement(){
     const buttonElement = document.createElement('button');
     buttonElement.classList.add('btn', 'd-flex', 'align-items-center');
     buttonElement.type = 'button';
-    buttonElement.addEventListener('click', () => deleteOrderItem(index, rowElement));
-
-    const child = buttonElement.appendChild(document.createElement('span'));
-    child.textContent = "delete";
-    child.classList.add('material-symbols-outlined', 'h-100');
 
     return buttonElement;
 }
