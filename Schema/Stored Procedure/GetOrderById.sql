@@ -19,7 +19,7 @@ AS BEGIN
         appUser.Id,
         appUser.name,
         appUser.email,
-		appUser.[address],     
+		appUser.[address],
         orderItem.Id,
         orderItem.orderId,
         orderItem.name,
@@ -33,6 +33,11 @@ AS BEGIN
             JOIN OrderItem orderItem ON orderItem.orderId = ord.Id
             JOIN AppUser appUser ON appUser.Id = ord.clientId
             FULL OUTER JOIN Product product ON orderItem.productId = product.Id
+    WHERE ord.Id = @id AND (@clientId IS NULL OR ord.clientId = @clientId)
+END
+go
+
+
     WHERE ord.Id = @id AND (@clientId IS NULL OR ord.clientId = @clientId)
 END;
 
