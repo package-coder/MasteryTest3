@@ -13,7 +13,6 @@ public class OrderApprovalRepository : IOrderApprovalRepository
     {
         _connection = connection;
     }
-
     public async Task<int?> SaveLog(Order order, User user, string? remark)
     {
         return await _connection.QuerySingleAsync<int?>("SaveOrderApprovalLog", new
@@ -24,5 +23,17 @@ public class OrderApprovalRepository : IOrderApprovalRepository
             order.visibilityLevel,
             remark
         }, commandType: CommandType.StoredProcedure); ;
+    }
+
+    public async Task<IEnumerable<OrderApprovalLog>> GetAllApprovals(int orderId)
+    {
+        return await _connection.QueryAsync<OrderApprovalLog, User, OrderApprovalLog>(
+            "GetAllApprovals",
+                (orderApprovalLog, user) =>{ 
+                    orderApprovalLog.user = user;
+                    return orderApprovalLog;
+                },
+                new { orderId}, splitOn: "Id"
+            );
     }
 }

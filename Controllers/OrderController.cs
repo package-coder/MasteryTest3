@@ -18,20 +18,23 @@ namespace MasteryTest3.Controllers
         private readonly IExcelService _excelService;
         private readonly ISessionService _sessionService;
         private readonly IFileEncoderUtility _fileEncoderUtility;
+        private readonly IOrderApprovalRepository _orderApprovalRepository;
 
-        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService, ISessionService sessionService, IFileEncoderUtility fileEncoderUtility)
+        public OrderController(IReceiptService receiptService, IOrderService orderService, IExcelService excelService, ISessionService sessionService, IFileEncoderUtility fileEncoderUtility, IOrderApprovalRepository orderApprovalRepository)
         {
             _receiptService = receiptService;
             _orderService = orderService;
             _excelService = excelService;
             _sessionService = sessionService;
             _fileEncoderUtility = fileEncoderUtility;
+            _orderApprovalRepository = orderApprovalRepository;
         }
 
         public async Task<IActionResult> DownloadOrderReceipt(int id) {
             var order = await _orderService.GetOrderById(id);
+            var approvals = await _orderApprovalRepository.GetAllApprovals(id);
 
-            var orderPdf = _receiptService.GenerateOrderReceipt(id, order!);
+            var orderPdf = _receiptService.GenerateOrderReceipt(order!, approvals);
 
             return File(orderPdf, "application/pdf", $"Order#{order!.Id}.pdf");
         }

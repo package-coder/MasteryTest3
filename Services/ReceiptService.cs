@@ -3,7 +3,6 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Fonts;
 using MasteryTest3.Models;
-using MasteryTest3.Repositories;
 
 namespace MasteryTest3.Services
 {
@@ -34,7 +33,7 @@ namespace MasteryTest3.Services
     }
     public class ReceiptService : IReceiptService
     {
-        public byte[] GenerateOrderReceipt(int id, Order order)
+        public byte[] GenerateOrderReceipt(Order order, IEnumerable<OrderApprovalLog> approvals)
         {
             if (GlobalFontSettings.FontResolver == null)
             {
@@ -47,6 +46,7 @@ namespace MasteryTest3.Services
 
             XFont titleFont = new("Calibri", 20, XFontStyleEx.Bold);
             XFont textFont = new("Calibri", 14);
+            XFont dateLoggedFont = new("Calibri", 10);
 
             graphics.DrawString("ORDER INFO", titleFont, XBrushes.Black, new XRect(30, 30, 0, 0));
             graphics.DrawString($"Order No: {order.Id}      CRC No: {order.crc}      Date Printed: {DateTime.Now.ToShortDateString()}", textFont, XBrushes.Black, new XRect(30, 50, 0, 0));
@@ -79,9 +79,17 @@ namespace MasteryTest3.Services
             graphics.DrawString("************** nothing follows **************", textFont, XBrushes.Black, new XRect(150, yPosition + 20, 0, 0));
             graphics.DrawString($"Total Items: ***{order.orderItems.Count()} item(s)", textFont, XBrushes.Black, new XRect(xPosition, yPosition + 35, 0, 0));
 
+            yPosition += 50;
 
-            graphics.DrawString("Approved by:", textFont, XBrushes.Black, new XRect(400, yPosition + 50, 0, 0));
-            graphics.DrawString("______________________", textFont, XBrushes.Black, new XRect(400, yPosition + 80, 0, 0));
+            graphics.DrawString("Approved by:", textFont, XBrushes.Black, new XRect(380, yPosition, 0, 0));
+
+            yPosition += 20;
+            foreach (var approver in approvals)
+            {
+                graphics.DrawString(approver.user.name, textFont, XBrushes.Black, new XRect(400, yPosition, 0, 0));
+                graphics.DrawString($"{approver.status}: {approver.dateLogged}", dateLoggedFont, XBrushes.Black, new XRect(410, yPosition + 15, 0, 0));
+                yPosition += 35;
+            }
 
             using var stream = new MemoryStream();
             document.Save(stream);

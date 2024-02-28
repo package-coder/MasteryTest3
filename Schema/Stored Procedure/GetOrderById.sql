@@ -18,6 +18,8 @@ AS BEGIN
         ord.visibilityLevel,
         appUser.Id,
         appUser.name,
+        appUser.email,
+		appUser.[address],     
         orderItem.Id,
         orderItem.orderId,
         orderItem.name,
