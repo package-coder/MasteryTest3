@@ -5,6 +5,8 @@ namespace MasteryTest3.Data
         APPROVED,
         DISAPPROVED,
         FOR_APPROVAL,
-        DRAFT
+        DRAFT,
+        REQUESTED,
+        COMPLETED
     }
 }

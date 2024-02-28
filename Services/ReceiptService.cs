@@ -52,7 +52,7 @@ namespace MasteryTest3.Services
             graphics.DrawString($"Order No: {order.Id}      CRC No: {order.crc}      Date Printed: {DateTime.Now.ToShortDateString()}", textFont, XBrushes.Black, new XRect(30, 50, 0, 0));
             graphics.DrawString($"Client Name: {order.user.name}", textFont, XBrushes.Black, new XRect(30, 90, 0, 0));
             graphics.DrawString($"Email Address: {order.user.email}", textFont, XBrushes.Black, new XRect(30, 110, 0, 0));
-            graphics.DrawString($"Date of Order: {order.dateOrdered.ToShortDateString()}", textFont, XBrushes.Black, new XRect(30, 130, 0, 0));
+            graphics.DrawString($"Date of Order: {order.dateOrdered?.ToShortDateString()}", textFont, XBrushes.Black, new XRect(30, 130, 0, 0));
 
             int xPosition = 30;
 

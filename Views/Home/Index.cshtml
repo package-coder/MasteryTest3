@@ -61,7 +61,7 @@
                                 </td>
                                 <td class="text-end px-3">@order.totalItems item(s)</td>
 
-                                <td class="auto px-3 text-end">@order.dateOrdered.ToString("MM/dd/yyyy")</td>
+                                <td class="auto px-3 text-end">@order.dateOrdered?.ToString("MM/dd/yyyy")</td>
                                 <td class="auto px-3">
                                     <a class="btn btn-primary btn-sm box-shadow shadow-sm"
                                        asp-action="DownloadOrderReceipt"

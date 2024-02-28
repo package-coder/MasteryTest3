@@ -10,10 +10,11 @@
         public int totalItems { get; set; }
         
         public double totalAmount { get; set; }
-        
         public int visibilityLevel { get; set; }
         public string attachment { get; set; }
-        public DateTime dateOrdered { get; set; }
+        public DateTime? dateOrdered { get; set; }
+        public DateTime dateAdded { get; set; }
+
         public DateTime datePrinted { get; set; }
 
         public Order(int? id, List<OrderItem> orderItems, string status, string attachment)
