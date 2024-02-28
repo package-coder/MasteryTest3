@@ -3,6 +3,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Fonts;
 using MasteryTest3.Models;
+using MasteryTest3.Data;
 
 namespace MasteryTest3.Services
 {
@@ -86,8 +87,15 @@ namespace MasteryTest3.Services
             yPosition += 20;
             foreach (var approver in approvals)
             {
+                var fontColor = XBrushes.Black;
+
+                if (approver.status == OrderStatus.DISAPPROVED) {
+                    fontColor = XBrushes.Red;
+                }
+
                 graphics.DrawString(approver.user.name, textFont, XBrushes.Black, new XRect(400, yPosition, 0, 0));
-                graphics.DrawString($"{approver.status}: {approver.dateLogged}", dateLoggedFont, XBrushes.Black, new XRect(410, yPosition + 15, 0, 0));
+
+                graphics.DrawString($"{approver.status}: {approver.dateLogged}", dateLoggedFont, fontColor, new XRect(410, yPosition + 15, 0, 0));
                 yPosition += 35;
             }
 

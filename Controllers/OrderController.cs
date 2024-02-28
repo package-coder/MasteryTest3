@@ -125,9 +125,9 @@ namespace MasteryTest3.Controllers
         }
 
         [HttpDelete]
-        public async Task DeleteOrderRequest([FromBody] Order? order)
+        public async Task DeleteOrderRequest(int id)
         {
-            await _orderService.DeleteOrderRequest(order);
+            await _orderService.DeleteOrderRequest(id);
         }
 
         [HttpPost]

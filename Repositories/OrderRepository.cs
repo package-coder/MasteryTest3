@@ -57,9 +57,9 @@ namespace MasteryTest3.Repositories
             return await _connection.ExecuteAsync("DeleteOrderItem", ids, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<int> DeleteDraftOrderRequest(Order order)
+        public async Task<int> DeleteDraftOrderRequest(int id)
         {
-            return await _connection.ExecuteAsync("DeleteDraftOrderRequest", new { order.Id }, commandType: CommandType.StoredProcedure);
+            return await _connection.ExecuteAsync("DeleteDraftOrderRequest", new { id }, commandType: CommandType.StoredProcedure);
         }
 
 

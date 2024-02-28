@@ -383,7 +383,7 @@ function createOrderItemRowElement(index, value) {
 
     rowElement.appendChild(document.createElement('td')).textContent = value.remark;
 
-    if(order?.status === "DRAFT") {
+    if (order?.status == null || order?.status == 'DRAFT') {
         const actionElement = rowElement.appendChild(document.createElement('td'));
         actionElement.classList.add('py-2', 'd-flex');
         actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));

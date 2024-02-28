@@ -33,10 +33,9 @@ public class OrderService : IOrderService
         return order.Id;
     }
 
-    public async Task DeleteOrderRequest(Order? order)
+    public async Task DeleteOrderRequest(int id)
     {
-        if (order == null && order?.Id == null) return;
-        await _orderRepository.DeleteDraftOrderRequest(order);
+        await _orderRepository.DeleteDraftOrderRequest(id);
     }
 
     public async Task<Order?> GetOrderById(int id)

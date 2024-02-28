@@ -24,7 +24,7 @@
             </h3>
             <h6 class="text-secondary">@Model?.status</h6>
         </div>
-        @if (Model?.status == OrderStatus.DRAFT.ToString())
+        @if (Model?.status == OrderStatus.DRAFT.ToString() || Model?.status == null)
         {
             <div id="modal-buttons">
                 <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#uploadProductList">
@@ -61,22 +61,30 @@
                     <button type="button" id="approve-button" class="btn btn-primary">Approve</button>
                 </div>
             }
-            <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
-                <span style="font-size:14px">Attached PDF</span>
-                <div class="pdf-action-btn d-flex gap-2">
-                    @if (!String.IsNullOrEmpty(Model?.attachment))
 
-                    {
-                        <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model?.Id" id="btn-download-attachment">View</a>
-                    }
+            <div class="d-flex gap-2 align-items-center">
+                <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+                    <span style="font-size:14px">Attached PDF</span>
+                    <div class="pdf-action-btn d-flex gap-2">
+                        @if (!String.IsNullOrEmpty(Model?.attachment))
 
-                    @if (Model?.status == OrderStatus.DRAFT.ToString())
-                    {
-                        <button class="btn border" id="btn-remove-attachment">Remove</button>
-                    }
+                        {
+                            <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model?.Id" id="btn-download-attachment">View</a>
+                        }
+
+                        @if (Model?.status == OrderStatus.DRAFT.ToString())
+                        {
+                            <button class="btn border" id="btn-remove-attachment">Remove</button>
+                        }
+                    </div>
                 </div>
+                @if (Model?.status != OrderStatus.DRAFT.ToString() && Model != null)
+                {
+                    <div class="pb-2">
+                        <a class="btn btn-primary" href=@($"/order/downloadOrderReceipt/{Model.Id}")>Download Receipt</a>
+                    </div>
+                }
             </div>
-
             <div class="border rounded rounded-5" style="width: 100%;">
                     <table id="table-request" class="table table-hover m-0">
                         <thead>
@@ -120,9 +128,7 @@
                         }
                         </tbody>
                     </table>
-
                 </div>
-               
         </div>
         @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
         {
@@ -146,7 +152,7 @@
     const data = @Html.Raw(Json.Serialize(Model));
     order = data;
     data?.orderItems?.forEach(item => addOrderItem({ ...item }));
-    attachment = data.attachment;
+    attachment = data?.attachment;
     
     const approveBtn = document.getElementById('approve-button');
     if (approveBtn != null) { 

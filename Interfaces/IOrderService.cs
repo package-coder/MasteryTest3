@@ -6,7 +6,7 @@ namespace MasteryTest3.Interfaces;
 public interface IOrderService
 {
     Task<int?> SaveOrderRequest(Order order, List<OrderItem>? deletedOrderItems = null);
-    Task DeleteOrderRequest(Order? order);
+    Task DeleteOrderRequest(int id);
     Task<Order?> GetOrderById(int id);
     Task<List<Order>> GetAllOrders(OrderStatus status, Role role);
     Task<List<OrderApprovalLog>> GetAllOrderLogs(Role role);

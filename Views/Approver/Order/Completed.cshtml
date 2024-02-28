@@ -82,7 +82,7 @@
                                 <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(log.dateLogged))</td>
                                 <td class="text-secondary">@log.remark</td>
                                 <td class="auto p-1 text-end">
-                                    <a href="/order/request?id=@log.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn border"
+                                    <a href="/order/request?id=@log.order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn border"
                                             style="margin: 2px 2px 2px 3px;">
                                         View
                                     </a>
