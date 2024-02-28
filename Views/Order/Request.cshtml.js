@@ -395,7 +395,20 @@ function createOrderItemRowElement(index, value) {
 function createOrderItemDeleteButtonElement(index, rowElement) {
 
     const deleteButtonElement = createButtonElement();
-    deleteButtonElement.addEventListener('click', () => deleteOrderItem(index, rowElement));
+    deleteButtonElement.addEventListener('click', () => {
+
+        Swal.fire({
+            title: "Proceed?",
+            text: "Do your wish to delete this item?",
+            icon: "question",
+            background: '#151515',
+            showCancelButton: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteOrderItem(index, rowElement);
+            }
+        });
+    });
 
     const child = deleteButtonElement.appendChild(document.createElement('span'));
     child.textContent = "delete";
