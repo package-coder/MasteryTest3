@@ -472,6 +472,12 @@ function makeCellsEditable(fieldName, orderItem, rowElement, rowIndex) {
             inputElement.addEventListener("keypress", (e) => { validateKeyInput(e) });
         }
 
+        inputElement.addEventListener("change", () => {
+            if (inputElement.value) {
+                inputElement.classList.remove('border-danger');
+            }
+        });
+
         rowElement.cells[index + 1].appendChild(inputElement);
     });
 }
