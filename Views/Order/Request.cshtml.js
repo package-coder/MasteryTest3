@@ -413,14 +413,29 @@ function createOrderItemEditButtonElement(index, rowElement) {
     editButtonElement?.addEventListener("click", () => {
         const item = orderItems[index];
         const fieldName = ['name', 'quantity', 'unit', 'remark'];
+        let valid = true;
 
         if (child.textContent.toUpperCase() === "EDIT") {
             child.textContent = "Save";
             makeCellsEditable(fieldName, item, rowElement, index);
 
         } else {
-            child.textContent = "Edit";
-            saveRowItem(fieldName, item, rowElement, index);
+            fieldName.forEach((item) => {
+                var inputElement = document.getElementById(item + (index+1));
+
+                if (!inputElement.value && item != 'remark') {
+                    
+                    inputElement.classList.add('border-danger');
+                    valid = false
+                } else {
+                    inputElement.classList.remove('border-danger');
+                }
+            });
+
+            if (valid) {
+                child.textContent = "Edit";
+                saveRowItem(fieldName, item, rowElement, index);
+            }
         }
     });
 
