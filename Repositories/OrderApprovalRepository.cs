@@ -36,4 +36,27 @@ public class OrderApprovalRepository : IOrderApprovalRepository
                 new { orderId}, splitOn: "Id"
             );
     }
+
+    private async Task<List<OrderApprovalLog>> QueryLogs(string sql, object? param = null)
+    {
+        var logs = await _connection.QueryAsync<OrderApprovalLog, Order, User, OrderApprovalLog>(
+            sql,
+            (approvalLog, order, user) =>
+            {
+                order.user = user;
+                approvalLog.order = order;
+                return approvalLog;
+            },
+            param,
+            splitOn: "Id",
+            commandType: CommandType.StoredProcedure
+        );
+        return logs.ToList();
+    }
+
+    public Task<List<OrderApprovalLog>> GetAllOrderLogsByApprover(int approverId) =>
+        QueryLogs("GetAllOrderApprovalLogs", new { approverId });
+    
+    public Task<List<OrderApprovalLog>> GetAllOrderLogsByUser(int clientId) =>
+        QueryLogs("GetAllOrderApprovalLogs", new { clientId });
 }

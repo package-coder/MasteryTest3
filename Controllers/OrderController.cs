@@ -48,10 +48,32 @@ namespace MasteryTest3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(OrderStatus status, Role role)
+        public async Task<IActionResult> Index(string status, string role)
         {
-            var orders = await _orderService.GetAllOrders(status, role);
-            return View(orders);
+            if (!Enum.IsDefined(typeof(Role), role) || !Enum.IsDefined(typeof(OrderStatus), status)) 
+                return RedirectToAction("Error");
+
+            var statusEnum = Enum.Parse<OrderStatus>(status);
+            var roleEnum = Enum.Parse<Role>(role);
+            
+            switch (statusEnum)
+            {
+                case OrderStatus.COMPLETED:
+                {
+                    var orderLogs = await _orderService.GetAllOrderLogs(roleEnum);
+                    return View($"~/Views/{role}/Order/Completed.cshtml", orderLogs);
+                }
+                case OrderStatus.REQUESTED:
+                {
+                    var orderLogs = await _orderService.GetAllOrderLogs(roleEnum);
+                    return View($"~/Views/{role}/Order/Requested.cshtml", orderLogs);
+                }
+                default:
+                {
+                    var orders = await _orderService.GetAllOrders(statusEnum, roleEnum);
+                    return View($"~/Views/{role}/Order/Index.cshtml", orders);
+                }
+            }
         }
         
         [HttpGet]
@@ -72,7 +94,7 @@ namespace MasteryTest3.Controllers
 
             return role switch
             {
-                Role.APPROVER when session!.role.id != (int)Role.APPROVER => RedirectToAction("Error"),
+                Role.APPROVER when session!.role.name != Role.APPROVER.ToString() => RedirectToAction("Error"),
                 Role.REQUESTER when session!.id != order.user.Id => RedirectToAction("Error"),
                 _ => View(order)
             };

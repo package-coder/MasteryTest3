@@ -383,7 +383,7 @@ function createOrderItemRowElement(index, value) {
 
     rowElement.appendChild(document.createElement('td')).textContent = value.remark;
 
-    if(order.status === "DRAFT") {
+    if(order?.status === "DRAFT") {
         const actionElement = rowElement.appendChild(document.createElement('td'));
         actionElement.classList.add('py-2', 'd-flex');
         actionElement.append(createOrderItemDeleteButtonElement(index, rowElement));
@@ -497,10 +497,10 @@ function createButtonElement() {
 
 ///// Styling
 function setDisableActionButtons(value) {
-    if (btnSaveRequest != null && btnSendRequest != null) {
-        btnSaveRequest.disabled = value;
-        btnSendRequest.disabled = value;
-    }
+
+    if(!btnSaveRequest || !btnSendRequest) return;
+    btnSaveRequest.disabled = value;
+    btnSendRequest.disabled = value;
 }
 
 function validateKeyInput(e) {

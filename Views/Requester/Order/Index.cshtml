@@ -1,4 +1,4 @@
-﻿@inject IHttpContextAccessor httpContextAccessor
+@inject IHttpContextAccessor httpContextAccessor
 
 @{
     int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
@@ -9,16 +9,21 @@
 
 @functions
 {
-    private TimeSpan GetDateDifference(DateTime dateTime) => DateTime.Now - dateTime;
-    
-    private string GetDateStatus(TimeSpan timeSpan)
+    private TimeSpan? GetDateDifference(DateTime? dateTime)
     {
+        if (dateTime == null) return null;
+        return DateTime.Now - dateTime;
+    }
+
+    private string? GetDateStatus(TimeSpan? timeSpan)
+    {
+        if (timeSpan == null) return null;
         return timeSpan switch
         {
-            { Days: > 30 } => $"{timeSpan.Days / 30} month/s ago",
-            { Days: > 1 } => $"{timeSpan.Days} day/s ago",
+            { Days: > 30 } => $"{timeSpan.Value.Days / 30} month/s ago",
+            { Days: > 1 } => $"{timeSpan.Value.Days} day/s ago",
             { Days: 1, Hours: 0 } => "Yesterday",
-            { Hours: > 1 } => $"{timeSpan.Hours} hour/s ago",
+            { Hours: > 1 } => $"{timeSpan.Value.Hours} hour/s ago",
             _ => "Just Now"
         };
     }
@@ -58,13 +63,12 @@
                     <thead>
                         <tr>
                             <th class="auto px-3 text-center">Order #</th>
-                            @if (role == Role.APPROVER.ToString())
+                            @if (status == OrderStatus.COMPLETED.ToString())
                             {
-                                <th>Requester</th>
+                                <th>Status</th>
                             }
-                            <th>Status</th>
                             <th>Total Items</th>
-                            <th class="auto px-3 text-center">Date Requested</th>
+                            <th class="auto px-3 text-center">@(status == OrderStatus.DRAFT.ToString() ? "Date Created" : "Date Ordered")</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -75,17 +79,16 @@
                                 <td class="auto px-3 text-center">
                                     @order.Id
                                 </td>
-                                @if (role == Role.APPROVER.ToString())
+                                @if (status == OrderStatus.COMPLETED.ToString())
                                 {
-                                    <td>@order.user.name</td>
+                                    <td>
+                                        <span class="border rounded-pill badge text-secondary">@order.status</span>
+                                    </td>
                                 }
-                                <td>
-                                    <span class="border rounded-pill badge text-secondary">@order.status</span>
-                                </td>
                                 <td>
                                     @order.totalItems
                                 </td>
-                                <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(order.dateOrdered))</td>
+                                <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(status == OrderStatus.DRAFT.ToString() ? order.dateAdded : order.dateOrdered))</td>
                                 <td class="auto p-1 text-end">
                                     <a href="/order/request?id=@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn btn-primary"
                                             style="margin: 2px 2px 2px 3px;">

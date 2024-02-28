@@ -58,13 +58,36 @@ public class OrderService : IOrderService
         await _approvalRepository.SaveLog(order, approver, remark);
     }
     
+    public async Task<List<OrderApprovalLog>> GetAllOrderLogs(Role role)
+    {
+        switch(role)
+        {
+            case Role.REQUESTER:
+            {
+                var logs = await _approvalRepository.GetAllOrderLogsByUser(session!.id);
+                return logs.GroupBy(item => item.order.Id)
+                    .Select(item =>
+                    {
+                        return item.First(log => log.dateLogged < DateTime.Now);
+                    })
+                    .ToList();
+            }
+            case Role.APPROVER:
+            {
+                return await _approvalRepository.GetAllOrderLogsByApprover(session!.id);
+            }
+            default:
+                throw new ArgumentOutOfRangeException(nameof(role), role, null);
+        }
+    }
+    
     public async Task<List<Order>> GetAllOrders(OrderStatus status, Role role)
     {
         return role switch
         {
             Role.REQUESTER => await _orderRepository.GetAllUserOrdersByStatus(session!.id, status.ToString()),
             Role.APPROVER => await _orderRepository.GetAllOrdersBy(new { session!.role.visibilityLevel, status = status.ToString() }),
-            _ => throw new ArgumentException("Role does not exists.")
+            _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
     }
 }

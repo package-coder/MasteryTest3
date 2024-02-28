@@ -38,6 +38,9 @@
                     <li class="ms-3 px-3 py-1">Drafts</li>
                 </a>
                 <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.FOR_APPROVAL, role = Role.REQUESTER })">
+                    <li class="ms-3 px-3 py-1">For Approval</li>
+                </a>
+                <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.REQUESTED, role = Role.REQUESTER })">
                     <li class="ms-3 px-3 py-1">Requested</li>
                 </a>
 
@@ -51,8 +54,8 @@
                     <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.FOR_APPROVAL, role = Role.APPROVER })">
                         <li class="ms-3 px-3 py-1">Pending (@Model.pendingApprovalCount)</li>
                     </a>
-                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.APPROVED, role = Role.APPROVER })">
-                        <li class="ms-3 px-3 py-1">Approved</li>
+                    <a class="text-decoration-none text-white" href="@Url.ActionLink("index", "order", new { status = OrderStatus.COMPLETED, role = Role.APPROVER })">
+                        <li class="ms-3 px-3 py-1">Completed</li>
                     </a>
                 </ul>
             </div>
