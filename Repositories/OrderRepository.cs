@@ -22,6 +22,7 @@ namespace MasteryTest3.Repositories
             if (order.status == "FOR_APPROVAL") {
                 var items = await GetOrderById((int)order.Id);
                 order.crc = _crcUtility.GenerateCRC(items.orderItems);
+                order.totalItems = items.orderItems.Count();
             }
 
             return await _connection.QuerySingleAsync<int?>("SaveOrder", new
@@ -30,6 +31,7 @@ namespace MasteryTest3.Repositories
                 order.Id,
                 order.status,
                 order.attachment,
+                order.totalItems,
                 order.crc,
                 order.visibilityLevel,
             }, commandType: CommandType.StoredProcedure);
