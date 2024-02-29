@@ -26,6 +26,8 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Cart\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Cart\Update.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Approver\Order\Completed.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Approver\Order\Index.cshtml" />
   </ItemGroup>
 
 </Project>

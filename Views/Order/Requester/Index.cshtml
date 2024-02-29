@@ -1,9 +1,9 @@
 @inject IHttpContextAccessor httpContextAccessor
 
 @{
-    int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
-    var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
     var status = httpContextAccessor.HttpContext?.Request.Query["status"].ToString();
+    OrderStatus? statusEnum = status != null ? Enum.Parse<OrderStatus>(status) : null;
+
     ViewData["Title"] = status;
 }
 
@@ -35,40 +35,27 @@
 <div class="container mw-primary mt-5">
     <div class="mb-4">
         <div class="d-flex align-items-center justify-content-between">
-            <h3> @(role != Role.REQUESTER.ToString() ? "Requests for Approval" : "My Order Requests")</h3>
-            @if (role == Role.REQUESTER.ToString())
-            {
-                <a href="@Url.ActionLink("request", "order")" class="btn btn-primary">
-                    Create New Requests
-                </a>
-            }
+            <h3>My Order Requests</h3>
+            <a href="@Url.ActionLink("save", "order")" class="btn btn-primary">
+                Create New Requests
+            </a>
         </div>
         <h6 class="text-secondary">@ViewData["Title"]</h6>
     </div>
-
-    @if (userId == null)
-    {
-        <div class="alert alert-dark mb-4" role="alert">
-            Select user first!
-        </div>
-
-    }
-
+    
     <div>
 
-        @if (userId != null)
-        {
-            <div class="border rounded rounded-5" style="width: 100%;">
+        <div class="border rounded rounded-5" style="width: 100%;">
                 <table class="table table-hover m-0">
                     <thead>
                         <tr>
                             <th class="auto px-3 text-center">Order #</th>
-                            @if (status == OrderStatus.COMPLETED.ToString())
+                            @if (statusEnum is OrderStatus.REQUESTED)
                             {
                                 <th>Status</th>
                             }
                             <th>Total Items</th>
-                            <th class="auto px-3 text-center">@(status == OrderStatus.DRAFT.ToString() ? "Date Created" : "Date Ordered")</th>
+                            <th class="auto px-3 text-center">@(statusEnum is OrderStatus.DRAFT ? "Date Created" : "Date Ordered")</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -79,7 +66,7 @@
                                 <td class="auto px-3 text-center">
                                     @order.Id
                                 </td>
-                                @if (status == OrderStatus.COMPLETED.ToString())
+                                @if (statusEnum is OrderStatus.REQUESTED)
                                 {
                                     <td>
                                         <span class="border rounded-pill badge text-secondary">@order.status</span>
@@ -88,9 +75,9 @@
                                 <td>
                                     @order.totalItems
                                 </td>
-                                <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(status == OrderStatus.DRAFT.ToString() ? order.dateAdded : order.dateOrdered))</td>
+                                <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(statusEnum is OrderStatus.DRAFT ? order.dateAdded : order.dateOrdered))</td>
                                 <td class="auto p-1 text-end">
-                                    <a href="/order/request?id=@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn btn-primary"
+                                    <a href="/order/save?id=@order.Id" class="btn btn-primary"
                                             style="margin: 2px 2px 2px 3px;">
                                         View
                                     </a>
@@ -106,6 +93,5 @@
                     </div>
                 }
             </div>
-        }
     </div>
 </div>

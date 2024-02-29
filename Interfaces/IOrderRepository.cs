@@ -9,7 +9,7 @@ namespace MasteryTest3.Interfaces
         public Task<Order?> GetOrderById(int id);
         public Task<List<Order>> GetAllOrders();
         public Task<List<Order>> GetAllOrdersBy(object param);
-        public Task<List<Order>> GetAllUserOrdersByStatus(int clientId, string status);
+        public Task<List<Order>> GetAllUserOrdersByStatus(int clientId, string status, int visibilityLevel = 0);
         public Task<int> DeleteOrderItems(IEnumerable<OrderItem> orderItems);
         public Task<int> DeleteDraftOrderRequest(int id);
     }

@@ -91,7 +91,7 @@ namespace MasteryTest3.Repositories
 
         public Task<List<Order>> GetAllOrders() => QueryOrders("GetAllOrders");
         public Task<List<Order>> GetAllOrdersBy(object param) => QueryOrders("GetAllOrders", param);
-        public Task<List<Order>> GetAllUserOrdersByStatus(int clientId, string status) => QueryOrders("GetAllOrders", new { status, clientId });
+        public Task<List<Order>> GetAllUserOrdersByStatus(int clientId, string status, int visibilityLevel = 0) => QueryOrders("GetAllOrders", new { status, clientId, visibilityLevel });
         public async Task<Order?> GetOrderById(int id)
         {
             var orders = await QueryOrders("GetOrderById", new { id });

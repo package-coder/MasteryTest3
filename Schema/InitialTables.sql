@@ -58,7 +58,8 @@ CREATE TABLE [Order](
 	totalItems INT NOT NULL,
 	attachment VARCHAR(MAX),
 	visibilityLevel INT DEFAULT(0),
-	dateOrdered DATETIME DEFAULT CURRENT_TIMESTAMP,
+	dateOrdered DATETIME,
+    dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
 	dateDeleted DATETIME,
 	datePrinted DATETIME,
 );

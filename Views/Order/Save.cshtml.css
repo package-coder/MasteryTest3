@@ -1,0 +1,27 @@
+﻿
+.table input{ 
+    width: 100% !important;
+    background-color: rgb(15, 15, 15);
+    outline: 0 !important;
+    border-color: var(--border-color);
+    border-width: 2px;
+    border-style: solid;
+    color: var(--bs-body-color);
+    text-align: center;
+    padding: 0 12px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.table input:focus {
+    border-color: var(--bs-primary) !important;
+    border-width: 2px !important;
+}
+
+.table-input td {
+    padding: 2px 2px;
+}
+
+.table-input {
+    background-color: transparent !important;
+}

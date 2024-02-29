@@ -65,10 +65,7 @@ public class OrderService : IOrderService
             {
                 var logs = await _approvalRepository.GetAllOrderLogsByUser(session!.id);
                 return logs.GroupBy(item => item.order.Id)
-                    .Select(item =>
-                    {
-                        return item.First(log => log.dateLogged < DateTime.Now);
-                    })
+                    .Select(item => item.First(log => log.dateLogged < DateTime.Now))
                     .ToList();
             }
             case Role.APPROVER:

@@ -1,0 +1,147 @@
+﻿@inject IHttpContextAccessor httpContextAccessor
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Order Request";
+    var id = httpContextAccessor.HttpContext?.Request.Query["id"].ToString();
+}
+
+@using MasteryTest3.Data
+@model Order?
+@Html.Partial("~/Views/Shared/_NavbarBack.cshtml")
+
+<div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
+
+    <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+        <div>
+            <h3 class="my-2">
+                @(Model == null ? "New" : "") Order Request
+                @if (Model != null)
+                {
+                    <span class="text-secondary"> #@Model?.Id</span>
+                }
+            </h3>
+            <h6 class="text-secondary">@Model?.status</h6>
+        </div>
+        @if (Model?.status == OrderStatus.DRAFT.ToString())
+        {
+            <div id="modal-buttons">
+                <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#uploadProductList">
+                    Upload Product List
+                </button>
+                <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#attachmentModal">
+                    Attach PDF file
+                </button>
+            </div>
+        }
+    </div>
+    <div class="overflow-auto" style="height: calc(100% - 180px)">
+        <div id="alert" class="alert alert-dark mb-4">
+            This table is empty
+        </div>
+
+        <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+            <span style="font-size:14px">Attached PDF</span>
+            <div class="pdf-action-btn d-flex gap-2">
+                @if (!String.IsNullOrEmpty(Model?.attachment))
+
+                {
+                    <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model?.Id" id="btn-download-attachment">View</a>
+                }
+
+                @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
+                {
+                    <button class="btn border" id="btn-remove-attachment">Remove</button>
+                }
+            </div>
+        </div>
+
+        <div class="border rounded rounded-5" style="width: 100%;">
+            <table id="table-request" class="table table-hover m-0">
+                <thead>
+                <tr>
+                    <th class="auto text-center"></th>
+                    <th>Name</th>
+                    <th class="text-center" style="width: 8ch">Qty</th>
+                    <th class="auto text-center" style="width: 8ch">Unit</th>
+                    <th>Remarks</th>
+                    @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
+                    {
+                        <th class="auto text-center vertical-align-center"></th>
+                    }
+                </tr>
+                </thead>
+                <tbody id="request-list">
+                @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
+                {
+                    <tr class="table-input">
+                        <td class="auto text-center"></td>
+                        <td style="width: 400px">
+                            <input class="text-start" autofocus type="text" id="name" required data-index="0" placeholder="Press '/' to browse existing products"/>
+                        </td>
+                        <td>
+                            <input autofocus type="text" id="quantity" required data-index="1"/>
+                        </td>
+                        <td>
+                            <input autofocus type="text" id="unit" required data-index="2"/>
+                        </td>
+                        <td>
+                            <input autofocus class="text-start" type="text" id="remark" data-index="3"/>
+                        </td>
+                        @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
+                        {
+                            <td class="p-1">
+                                <button id="item-submit-button" type="button" class="btn btn-primary w-100">Add</button>
+                            </td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    @if (Model == null || Model?.status == OrderStatus.DRAFT.ToString())
+    {
+        <footer class="d-flex align-items-center justify-content-between pt-4 pb-5 px-3 position-absolute"
+                style="left: 0; right: 0; bottom: 0">
+            <div id="action-buttons">
+                <button id="save-request" type="submit" class="btn border" disabled>Save as draft</button>
+            </div>
+            <button id="send-request" type="submit" class="btn bg-primary" disabled>Process Request</button>
+        </footer>
+    }
+
+    @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_BrowseProducts.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_AttachmentModal.cshtml")
+</div>
+
+<script src="../Views/Order/Save.cshtml.js"> </script>
+<script>
+    const data = @Html.Raw(Json.Serialize(Model));
+    order = data;
+    data?.orderItems?.forEach(item => addOrderItem({ ...item }));
+    attachment = data?.attachment;
+    
+    const approveBtn = document.getElementById('approve-button');
+    if (approveBtn != null) { 
+        approveBtn.addEventListener('click', () => {
+
+            updateRequest('APPROVED')
+                .then(response => {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Order request status has been updated",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then(() => {
+                        window.location.replace(response.url)
+                    })
+                })
+
+        });
+    }
+</script>
