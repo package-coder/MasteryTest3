@@ -28,10 +28,6 @@
         </h6>
     </div>
     <div class="overflow-auto" style="height: calc(100% - 180px)">
-        <div id="alert" class="alert alert-dark mb-4">
-            This table is empty
-        </div>
-        
         @if (roleEnum is Role.APPROVER && visibilityLevel <= Model.visibilityLevel)
         {
             <div class="p-3 d-flex gap-2 rounded rounded-5 mb-3" style="background-color: rgba(255,255,255, 0.05)">
@@ -46,14 +42,28 @@
                 }
             </div>
         }
-        <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
-            <span style="font-size:14px">Attached PDF</span>
-            <div class="pdf-action-btn d-flex gap-2">
-                @if (!String.IsNullOrEmpty(Model?.attachment))
-                {
-                    <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model.Id">View</a>
-                }
+        <div class="d-flex gap-2 align-items-center">
+            <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+                <span style="font-size:14px">Attached PDF</span>
+                <div class="pdf-action-btn d-flex gap-2">
+                    @if (!String.IsNullOrEmpty(Model?.attachment))
+
+                    {
+                        <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model?.Id" id="btn-download-attachment">View</a>
+                    }
+
+                    @if (Model?.status == OrderStatus.DRAFT.ToString())
+                    {
+                        <button class="btn border" id="btn-remove-attachment">Remove</button>
+                    }
+                </div>
             </div>
+            @if (Model?.status != OrderStatus.DRAFT.ToString() && Model != null)
+            {
+                <div class="pb-2">
+                    <a class="btn btn-primary" href=@($"/order/downloadOrderReceipt/{Model.Id}")>Download Receipt</a>
+                </div>
+            }
         </div>
 
         <div class="border rounded rounded-5" style="width: 100%;">
@@ -70,11 +80,13 @@
                 <tbody>
                     @for (int i = 0; i < Model!.orderItems.Count(); i++)
                     {
-                        <td class="auto text-center text-secondary">@(i+1)</td>
-                        <td>@Model.orderItems[i].name</td>
-                        <td class="text-center" style="width: 8ch">@Model.orderItems[i].quantity</td>
-                        <td class="auto text-center" style="width: 8ch">@Model.orderItems[i].unit</td>
-                        <td>@Model.orderItems[i].remark</td>
+                        <tr>
+                            <td class="auto text-center text-secondary">@(i + 1)</td>
+                            <td>@Model.orderItems[i].name</td>
+                            <td class="text-center" style="width: 8ch">@Model.orderItems[i].quantity</td>
+                            <td class="auto text-center" style="width: 8ch">@Model.orderItems[i].unit</td>
+                            <td>@Model.orderItems[i].remark</td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -82,19 +94,9 @@
         </div>
 
     </div>
-
-    @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
-    @Html.Partial("~/Views/Shared/Modals/_BrowseProducts.cshtml")
-    @Html.Partial("~/Views/Shared/Modals/_AttachmentModal.cshtml")
 </div>
 
-<script src="/Views/Order/Request.cshtml.js"> </script>
-<script>
-    const data = @Html.Raw(Json.Serialize(Model));
-    order = data;
-    data?.orderItems?.forEach(item => addOrderItem({ ...item }));
-    attachment = data?.attachment;
-    
+<script> 
     const approveBtn = document.getElementById('approve-button');
     if (approveBtn != null) { 
         approveBtn.addEventListener('click', () => {
