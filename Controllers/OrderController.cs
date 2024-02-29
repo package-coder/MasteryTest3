@@ -39,69 +39,53 @@ namespace MasteryTest3.Controllers
             return File(orderPdf, "application/pdf", $"Order#{order!.Id}.pdf");
         }
         
-        
-        [HttpGet] 
-        public async Task<IActionResult> GetOrderById(int id)
-        {
-            var order = await _orderService.GetOrderById(id);
-            return Json(order);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> Index(string status, string role)
+        public async Task<IActionResult> Index(OrderStatus status, Role role)
         {
-            if (!Enum.IsDefined(typeof(Role), role) || !Enum.IsDefined(typeof(OrderStatus), status)) 
-                return RedirectToAction("Error");
-
-            var statusEnum = Enum.Parse<OrderStatus>(status);
-            var roleEnum = Enum.Parse<Role>(role);
-            
-            switch (statusEnum)
+            if (status is OrderStatus.COMPLETED or OrderStatus.REQUESTED)
             {
-                case OrderStatus.COMPLETED:
-                {
-                    var orderLogs = await _orderService.GetAllOrderLogs(roleEnum);
-                    return View($"~/Views/{role}/Order/Completed.cshtml", orderLogs);
-                }
-                case OrderStatus.REQUESTED:
-                {
-                    var orderLogs = await _orderService.GetAllOrderLogs(roleEnum);
-                    return View($"~/Views/{role}/Order/Requested.cshtml", orderLogs);
-                }
-                default:
-                {
-                    var orders = await _orderService.GetAllOrders(statusEnum, roleEnum);
-                    return View($"~/Views/{role}/Order/Index.cshtml", orders);
-                }
+                var orderLogs = await _orderService.GetAllOrderLogs(role);
+                return View($"~/Views/Order/{role}/{status}.cshtml", orderLogs);
             }
+            
+            var orders = await _orderService.GetAllOrders(status, role);
+            return View($"~/Views/Order/{role}/Index.cshtml", orders);
         }
         
         [HttpGet]
-        public async Task<IActionResult> Process(int id)
-        {
-            var order = await _orderService.GetOrderById(id);
-            if (order == null) return RedirectToAction("Error");
-            return View(order);
-        }
-        
-        [HttpGet]
-        public new async Task<IActionResult> Request(int id, Role role)
+        public async Task<IActionResult> Detail(int id, Role role)
         {
             var session = _sessionService.GetSessionUser();
             var order = await _orderService.GetOrderById(id);
             
-            if (order == null) return View();
+            if (order == null)
+                return RedirectToAction("Error");
+            if (role == Role.APPROVER && session!.role.name != Role.APPROVER.ToString() && order.status != OrderStatus.DRAFT.ToString())
+                return RedirectToAction("Error");
+            if (role == Role.REQUESTER && session!.id != order.user.Id)
+                return RedirectToAction("Error");
 
-            return role switch
-            {
-                Role.APPROVER when session!.role.name != Role.APPROVER.ToString() => RedirectToAction("Error"),
-                Role.REQUESTER when session!.id != order.user.Id => RedirectToAction("Error"),
-                _ => View(order)
-            };
+            return View("~/Views/Order/Detail.cshtml", order);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Save(int? id)
+        {
+            if(id == null) return View("~/Views/Order/Save.cshtml");
+            
+            var session = _sessionService.GetSessionUser();
+            var order = await _orderService.GetOrderById((int)id);
+            
+            if (order == null)
+                return RedirectToAction("Error");
+            if (session!.id != order.user.Id)
+                return RedirectToAction("Error");
+
+            return View("~/Views/Order/Save.cshtml", order);
         }
 
         [HttpPost] 
-        public new async Task<IActionResult> Request([FromBody] OrderViewModel orderViewModel)
+        public async Task<IActionResult> Save([FromBody] OrderViewModel orderViewModel)
         {
             var order = orderViewModel.ToOrder();
 
@@ -116,6 +100,14 @@ namespace MasteryTest3.Controllers
             return RedirectToAction("index", "order", new { order.status, role = Role.REQUESTER });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Process(int id)
+        {
+            var order = await _orderService.GetOrderById(id);
+            if (order == null) return RedirectToAction("Error");
+            return View(order);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Complete(int id, OrderStatus status, string? remark)
         {

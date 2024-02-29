@@ -1,8 +1,6 @@
 ﻿@inject IHttpContextAccessor httpContextAccessor
 
 @{
-    int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
-    var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
     var status = httpContextAccessor.HttpContext?.Request.Query["status"].ToString();
     ViewData["Title"] = status;
 }
@@ -69,7 +67,7 @@
                         </td>
                         <td class="auto px-3 text-center">@GetDateStatus(GetDateDifference(order.dateOrdered))</td>
                         <td class="auto p-1 text-end">
-                            <a href="/order/request?id=@order.Id@(status == OrderStatus.FOR_APPROVAL.ToString() ? $"&role={role}" : "")" class="btn btn-primary"
+                            <a href="/order/detail?id=@order.Id&role=@(Role.APPROVER)" class="btn btn-primary"
                                style="margin: 2px 2px 2px 3px;">
                                 View
                             </a>

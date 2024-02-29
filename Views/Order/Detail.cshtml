@@ -1,0 +1,118 @@
+﻿@inject IHttpContextAccessor httpContextAccessor
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Order Request";
+    var visibilityLevel = httpContextAccessor.HttpContext?.Session.GetInt32("visibilityLevel");
+
+    var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
+    Role? roleEnum = role != null ? Enum.Parse<Role>(role) : null;
+}
+
+@using MasteryTest3.Data
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Order
+@Html.Partial("~/Views/Shared/_NavbarBack.cshtml")
+
+<div class="flex-column container mw-primary h-100 overflow-hidden position-relative">
+
+    <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+        <div>
+            <h3 class="my-2">
+                Order Request
+                <span class="text-secondary"> #@Model.Id</span>
+            </h3>
+            <h6 class="text-secondary">@Model.status</h6>
+        </div>
+        <h6 style="font-size: smaller">
+            Date Ordered: @Model.dateOrdered
+        </h6>
+    </div>
+    <div class="overflow-auto" style="height: calc(100% - 180px)">
+        <div id="alert" class="alert alert-dark mb-4">
+            This table is empty
+        </div>
+        
+        @if (roleEnum is Role.APPROVER && visibilityLevel <= Model.visibilityLevel)
+        {
+            <div class="p-3 d-flex gap-2 rounded rounded-5 mb-3" style="background-color: rgba(255,255,255, 0.05)">
+                @if (Model.status == OrderStatus.FOR_APPROVAL.ToString() && visibilityLevel == Model.visibilityLevel)
+                {
+                    @Html.Partial("Modals/_RequestDisapprovalModal")
+                    <button type="button" id="approve-button" class="btn btn-primary">Approve</button>
+                }
+                else
+                {
+                    <div>Your action of approval for this request has been submitted.</div>
+                }
+            </div>
+        }
+        <div id="display-attachment" class="p-2 align-items-center mt-2 d-flex gap-2 rounded rounded-5 mb-3 @((!String.IsNullOrEmpty(Model?.attachment) ? "" : "d-none"))" style="background-color: rgba(255,255,255, 0.05); width: max-content">
+            <span style="font-size:14px">Attached PDF</span>
+            <div class="pdf-action-btn d-flex gap-2">
+                @if (!String.IsNullOrEmpty(Model?.attachment))
+                {
+                    <a id="btn-download-attachment" target="_blank" class="btn border" asp-controller="order" asp-action="DownloadOrderAttachment" asp-route-id="@Model.Id">View</a>
+                }
+            </div>
+        </div>
+
+        <div class="border rounded rounded-5" style="width: 100%;">
+            <table id="table-request" class="table table-hover m-0">
+                <thead>
+                <tr>
+                    <th class="auto text-center"></th>
+                    <th>Name</th>
+                    <th class="text-center" style="width: 8ch">Qty</th>
+                    <th class="auto text-center" style="width: 8ch">Unit</th>
+                    <th>Remarks</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model!.orderItems.Count(); i++)
+                    {
+                        <td class="auto text-center text-secondary">@(i+1)</td>
+                        <td>@Model.orderItems[i].name</td>
+                        <td class="text-center" style="width: 8ch">@Model.orderItems[i].quantity</td>
+                        <td class="auto text-center" style="width: 8ch">@Model.orderItems[i].unit</td>
+                        <td>@Model.orderItems[i].remark</td>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    @Html.Partial("~/Views/Shared/Modals/_UploadProductListModal.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_BrowseProducts.cshtml")
+    @Html.Partial("~/Views/Shared/Modals/_AttachmentModal.cshtml")
+</div>
+
+<script src="/Views/Order/Request.cshtml.js"> </script>
+<script>
+    const data = @Html.Raw(Json.Serialize(Model));
+    order = data;
+    data?.orderItems?.forEach(item => addOrderItem({ ...item }));
+    attachment = data?.attachment;
+    
+    const approveBtn = document.getElementById('approve-button');
+    if (approveBtn != null) { 
+        approveBtn.addEventListener('click', () => {
+
+            updateRequest('APPROVED')
+                .then(response => {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Order request status has been updated",
+                        icon: "success",
+                        background: '#151515',
+                        showCancelButton: false,
+                        allowOutsideClick: false
+                    }).then(() => {
+                        window.location.replace(response.url)
+                    })
+                })
+
+        });
+    }
+</script>

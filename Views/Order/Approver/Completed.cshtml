@@ -1,0 +1,90 @@
+﻿@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    int? userId = httpContextAccessor.HttpContext?.Session.GetInt32("userId");
+    var role = httpContextAccessor.HttpContext?.Request.Query["role"].ToString();
+    var status = httpContextAccessor.HttpContext?.Request.Query["status"].ToString();
+    ViewData["Title"] = status;
+}
+
+@functions
+{
+    private TimeSpan? GetDateDifference(DateTime? dateTime)
+    {
+        if (dateTime == null) return null;
+        return DateTime.Now - dateTime;
+    }
+
+    private string? GetDateStatus(TimeSpan? timeSpan)
+    {
+        if (timeSpan == null) return null;
+
+        return timeSpan switch
+        {
+            { Days: > 30 } => $"{timeSpan.Value.Days / 30} month/s ago",
+            { Days: > 1 } => $"{timeSpan.Value.Days} day/s ago",
+            { Days: 1, Hours: 0 } => "Yesterday",
+            { Hours: > 1 } => $"{timeSpan.Value.Hours} hour/s ago",
+            _ => "Just Now"
+        };
+    }
+}
+
+@using MasteryTest3.Data
+@model List<OrderApprovalLog>
+
+<div class="container mw-primary mt-5">
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <h3>Completed Request Log</h3>
+        </div>
+    </div>
+
+    <div>
+        <div class="border rounded rounded-5" style="width: 100%;">
+            <table class="table table-hover m-0">
+                <thead>
+                <tr>
+                    <th class="auto px-3 text-center">Order #</th>
+                    <th>Requester</th>
+                    <th>Date Ordered</th>
+
+                    <th>Action Made</th>
+                    <th>Remarks</th>
+                    <th>Date Logged</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td class="auto px-3 text-center">
+                            @log.order.Id
+                        </td>
+                        <td>@log.order.user.name</td>
+                        <td>@GetDateStatus(GetDateDifference(log.order.dateOrdered))</td>
+                        <td>
+                            <span class="border rounded-pill badge text-secondary">@log.status</span>
+                        </td>
+                        <td class="text-secondary">@log.remark</td>
+                        <td>@GetDateStatus(GetDateDifference(log.dateLogged))</td>
+                        <td class="auto p-1 text-end">
+                            <a href="/order/detail?id=@log.order.Id&role=@(Role.APPROVER)" class="btn border"
+                               style="margin: 2px 2px 2px 3px;">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            @if (!Model.Any())
+            {
+                <div class="p-5 text-secondary text-center">
+                    No data for this table yet
+                </div>
+            }
+        </div>
+    </div>
+</div>
