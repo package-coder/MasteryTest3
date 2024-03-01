@@ -23,37 +23,39 @@
     function updateRequest(status) {
         const remarkElem = document.getElementById('disapproval-remark');
         const params = new URLSearchParams(window.location.search);
-        
+
         const data = new FormData();
         data.append('status', status)
         data.append('id', params.get('id'))
         data.append('remark', remarkElem.value)
-        
+
         return fetch('/order/complete', {
             method: 'POST',
             body: data
-        })   
-    }
-    
-    const modal = new bootstrap.Modal('#staticBackdrop');
-    const submitBtn = document.getElementById('submit-button');    
-    submitBtn.addEventListener('click', () => {
-            
-        updateRequest('DISAPPROVED')
-        .then(response => {      
-            modal.toggle();
-            Swal.fire({
-                title: "Success!",
-                text: "Order request status has been updated",
-                icon: "success",
-                background: '#151515',
-                showCancelButton: false,
-                allowOutsideClick: false
-            }).then(() => {
-                window.location.replace(response.url)
-            })
         })
-            
+    }
+
+    const modal = new bootstrap.Modal('#staticBackdrop');
+    const submitBtn = document.getElementById('submit-button');
+    submitBtn.addEventListener('click', () => {
+        const remarkElem = document.getElementById('disapproval-remark');
+        if (!remarkElem.value) return;
+
+        updateRequest('DISAPPROVED')
+            .then(response => {
+                modal.toggle();
+                Swal.fire({
+                    title: "Success!",
+                    text: "Order request status has been updated",
+                    icon: "success",
+                    background: '#151515',
+                    showCancelButton: false,
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.replace(response.url)
+                })
+            })
+
     })
-        
+
 </script>
